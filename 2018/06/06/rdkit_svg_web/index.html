@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.birdlet.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.19.1","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="There are two kinds of images: bitmap and vectorgram in the computer. The vectorgram is very suitable for illustrating chemical structures which can be easily drawled by edge and text. The RDKit pac">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Render molecules as inline SVG in web by RDkit">
+<meta property="og:url" content="https://www.birdlet.github.io/2018/06/06/rdkit_svg_web/index.html">
+<meta property="og:site_name" content="Life is Worth Living">
+<meta property="og:description" content="There are two kinds of images: bitmap and vectorgram in the computer. The vectorgram is very suitable for illustrating chemical structures which can be easily drawled by edge and text. The RDKit pac">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2018-06-06T14:08:00.000Z">
+<meta property="article:modified_time" content="2024-02-18T06:12:27.792Z">
+<meta property="article:author" content="Birdlet">
+<meta property="article:tag" content="cheminfomatics">
+<meta property="article:tag" content="rdkit">
+<meta property="article:tag" content="svg">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://www.birdlet.github.io/2018/06/06/rdkit_svg_web/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://www.birdlet.github.io/2018/06/06/rdkit_svg_web/","path":"2018/06/06/rdkit_svg_web/","title":"Render molecules as inline SVG in web by RDkit"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Render molecules as inline SVG in web by RDkit | Life is Worth Living</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Life is Worth Living</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="user fa-fw"></i>About</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Generate-SVG-code-for-a-molecuar"><span class="nav-number">1.</span> <span class="nav-text">Generate SVG code for a molecuar</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Birdlet</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/birdlet" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;birdlet" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:dk_dingkang@126.com" title="E-Mail → mailto:dk_dingkang@126.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://www.birdlet.github.io/2018/06/06/rdkit_svg_web/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Birdlet">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Life is Worth Living">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Render molecules as inline SVG in web by RDkit | Life is Worth Living">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Render molecules as inline SVG in web by RDkit
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2018-06-06 22:08:00" itemprop="dateCreated datePublished" datetime="2018-06-06T22:08:00+08:00">2018-06-06</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-02-18 14:12:27" itemprop="dateModified" datetime="2024-02-18T14:12:27+08:00">2024-02-18</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+<p>There are two kinds of images: bitmap and vectorgram in the computer. The vectorgram is very suitable for illustrating chemical structures which can be easily drawled by edge and text.</p>
+<p>The RDKit package can draw chemical structures in bitmap or vactorgram with only several codes. Sometime we want to dynamically render high quality figures of molecules in web, and the SVG format is the best choice to do this.</p>
+<span id="more"></span>
+
+<h2 id="Generate-SVG-code-for-a-molecuar"><a href="#Generate-SVG-code-for-a-molecuar" class="headerlink" title="Generate SVG code for a molecuar"></a>Generate SVG code for a molecuar</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> rdkit <span class="keyword">import</span> Chem</span><br><span class="line"><span class="keyword">from</span> rdkit.Chem.Draw <span class="keyword">import</span> rdMolDraw2D</span><br><span class="line"><span class="keyword">from</span> rdkit.Chem <span class="keyword">import</span> PandasTools</span><br><span class="line"><span class="comment"># PandasTools ~ rdDepictor</span></span><br><span class="line"><span class="keyword">from</span> rdkit <span class="keyword">import</span> DataStructs</span><br><span class="line"><span class="keyword">import</span> re</span><br><span class="line"></span><br><span class="line">pattern = re.<span class="built_in">compile</span>(<span class="string">&quot;&lt;\?xml.*\?&gt;&quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">DrawMol</span>(<span class="params">mol, molSize=(<span class="params"><span class="number">450</span>,<span class="number">150</span></span>), kekulize=<span class="literal">True</span></span>):</span><br><span class="line">    mc = Chem.MolFromSmiles(mol)</span><br><span class="line">    <span class="keyword">if</span> kekulize:</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            Chem.Kekulize(mc)</span><br><span class="line">        <span class="keyword">except</span>:</span><br><span class="line">            mc = Chem.Mol(mol.ToBinary())</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> mc.GetNumConformers():</span><br><span class="line">        Chem.rdDepictor.Compute2DCoords(mc)</span><br><span class="line"></span><br><span class="line">    drawer = rdMolDraw2D.MolDraw2DSVG(*molSize)</span><br><span class="line">    drawer.DrawMolecule(mc)</span><br><span class="line">    drawer.FinishDrawing()</span><br><span class="line">    svg = drawer.GetDrawingText().replace(<span class="string">&#x27;svg:&#x27;</span>, <span class="string">&#x27;&#x27;</span>)</span><br><span class="line">    svg = re.sub(pattern, <span class="string">&#x27;&#x27;</span>, svg)</span><br><span class="line">    <span class="keyword">return</span> svg</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(DrawMol(<span class="string">&quot;CC1=COC2=C1C(=O)C(=O)C3=C2C=CC4=C3CCCC4(C)C&quot;</span>))</span><br><span class="line"><span class="comment">#Tanshinone IIA</span></span><br></pre></td></tr></table></figure>
+
+<p>The output is:</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">svg</span> <span class="attr">version</span>=<span class="string">&#x27;1.1&#x27;</span> <span class="attr">baseProfile</span>=<span class="string">&#x27;full&#x27;</span></span></span><br><span class="line"><span class="tag">              <span class="attr">xmlns:svg</span>=<span class="string">&#x27;http://www.w3.org/2000/svg&#x27;</span></span></span><br><span class="line"><span class="tag">                      <span class="attr">xmlns:rdkit</span>=<span class="string">&#x27;http://www.rdkit.org/xml&#x27;</span></span></span><br><span class="line"><span class="tag">                      <span class="attr">xmlns:xlink</span>=<span class="string">&#x27;http://www.w3.org/1999/xlink&#x27;</span></span></span><br><span class="line"><span class="tag">                  <span class="attr">xml:space</span>=<span class="string">&#x27;preserve&#x27;</span></span></span><br><span class="line"><span class="tag"><span class="attr">width</span>=<span class="string">&#x27;220px&#x27;</span> <span class="attr">height</span>=<span class="string">&#x27;220px&#x27;</span> &gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">rect</span> <span class="attr">style</span>=<span class="string">&#x27;opacity:1.0;fill:#FFFFFF;stroke:none&#x27;</span> <span class="attr">width</span>=<span class="string">&#x27;220&#x27;</span> <span class="attr">height</span>=<span class="string">&#x27;220&#x27;</span> <span class="attr">x</span>=<span class="string">&#x27;0&#x27;</span> <span class="attr">y</span>=<span class="string">&#x27;0&#x27;</span>&gt;</span> <span class="tag">&lt;/<span class="name">rect</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">path</span> <span class="attr">d</span>=<span class="string">&#x27;M 10,112.851 32.2657,96.9013&#x27;</span> <span class="attr">style</span>=<span class="string">&#x27;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1&#x27;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">path</span> <span class="attr">d</span>=<span class="string">&#x27;M 32.2657,96.9013 32.4495,69.5129&#x27;</span> <span class="attr">style</span>=<span class="string">&#x27;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1&#x27;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">path</span> <span class="attr">d</span>=<span class="string">&#x27;M 37.771,92.8298 37.8996,73.6579&#x27;</span> <span class="attr">style</span>=<span class="string">&#x27;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1&#x27;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">path</span> <span class="attr">d</span>=<span class="string">&#x27;M 32.2657,96.9013 58.2568,105.54&#x27;</span> <span class="attr">style</span>=<span class="string">&#x27;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1&#x27;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">path</span> <span class="attr">d</span>=<span class="string">&#x27;M 32.4495,69.5129 43.3701,66.0454&#x27;</span> <span class="attr">style</span>=<span class="string">&#x27;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1&#x27;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">path</span> <span class="attr">d</span>=<span class="string">&#x27;M 43.3701,66.0454 54.2908,62.5779&#x27;</span> <span class="attr">style</span>=<span class="string">&#x27;fill:none;fill-rule:evenodd;stroke:#FF0000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1&#x27;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">path</span> <span class="attr">d</span>=<span class="string">&#x27;M 61.8242,65.789 68.1641,74.6395&#x27;</span> <span class="attr">style</span>=<span class="string">&#x27;fill:none;fill-rule:evenodd;stroke:#FF0000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1&#x27;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">path</span> <span class="attr">d</span>=<span class="string">&#x27;M 68.1641,74.6395 74.504,83.4899&#x27;</span> <span class="attr">style</span>=<span class="string">&#x27;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1&#x27;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">path</span> <span class="attr">d</span>=<span class="string">&#x27;M 74.504,83.4899 58.2568,105.54&#x27;</span> <span class="attr">style</span>=<span class="string">&#x27;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1&#x27;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">path</span> <span class="attr">d</span>=<span class="string">&#x27;M 67.657,83.5479 56.284,98.9827&#x27;</span> <span class="attr">style</span>=<span class="string">&#x27;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1&#x27;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">path</span> <span class="attr">d</span>=<span class="string">&#x27;M 74.504,83.4899 101.723,86.5355&#x27;</span> <span class="attr">style</span>=<span class="string">&#x27;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1&#x27;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">path</span> <span class="attr">d</span>=<span class="string">&#x27;M 58.2568,105.54 69.2288,130.635&#x27;</span> <span class="attr">style</span>=<span class="string">&#x27;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1&#x27;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">path</span> <span class="attr">d</span>=<span class="string">&#x27;M 67.0238,129.01 60.582,137.753&#x27;</span> <span class="attr">style</span>=<span class="string">&#x27;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1&#x27;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">path</span> <span class="attr">d</span>=<span class="string">&#x27;M 60.582,137.753 54.1402,146.495&#x27;</span> <span class="attr">style</span>=<span class="string">&#x27;fill:none;fill-rule:evenodd;stroke:#FF0000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1&#x27;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">path</span> <span class="attr">d</span>=<span class="string">&#x27;M 71.4338,132.26 64.992,141.002&#x27;</span> <span class="attr">style</span>=<span class="string">&#x27;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1&#x27;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">path</span> <span class="attr">d</span>=<span class="string">&#x27;M 64.992,141.002 58.5502,149.744&#x27;</span> <span class="attr">style</span>=<span class="string">&#x27;fill:none;fill-rule:evenodd;stroke:#FF0000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1&#x27;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">path</span> <span class="attr">d</span>=<span class="string">&#x27;M 69.2288,130.635 96.448,133.681&#x27;</span> <span class="attr">style</span>=<span class="string">&#x27;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1&#x27;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">path</span> <span class="attr">d</span>=<span class="string">&#x27;M 93.9384,134.778 98.4265,145.043&#x27;</span> <span class="attr">style</span>=<span class="string">&#x27;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1&#x27;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">path</span> <span class="attr">d</span>=<span class="string">&#x27;M 98.4265,145.043 102.915,155.308&#x27;</span> <span class="attr">style</span>=<span class="string">&#x27;fill:none;fill-rule:evenodd;stroke:#FF0000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1&#x27;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">path</span> <span class="attr">d</span>=<span class="string">&#x27;M 98.9575,132.583 103.446,142.849&#x27;</span> <span class="attr">style</span>=<span class="string">&#x27;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1&#x27;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">path</span> <span class="attr">d</span>=<span class="string">&#x27;M 103.446,142.849 107.934,153.114&#x27;</span> <span class="attr">style</span>=<span class="string">&#x27;fill:none;fill-rule:evenodd;stroke:#FF0000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1&#x27;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">path</span> <span class="attr">d</span>=<span class="string">&#x27;M 96.448,133.681 112.695,111.631&#x27;</span> <span class="attr">style</span>=<span class="string">&#x27;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1&#x27;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">path</span> <span class="attr">d</span>=<span class="string">&#x27;M 112.695,111.631 101.723,86.5355&#x27;</span> <span class="attr">style</span>=<span class="string">&#x27;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1&#x27;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">path</span> <span class="attr">d</span>=<span class="string">&#x27;M 106.03,110.061 98.3499,92.4942&#x27;</span> <span class="attr">style</span>=<span class="string">&#x27;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1&#x27;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">path</span> <span class="attr">d</span>=<span class="string">&#x27;M 112.695,111.631 139.914,114.677&#x27;</span> <span class="attr">style</span>=<span class="string">&#x27;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1&#x27;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">path</span> <span class="attr">d</span>=<span class="string">&#x27;M 101.723,86.5355 117.97,64.4859&#x27;</span> <span class="attr">style</span>=<span class="string">&#x27;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1&#x27;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">path</span> <span class="attr">d</span>=<span class="string">&#x27;M 117.97,64.4859 145.19,67.5315&#x27;</span> <span class="attr">style</span>=<span class="string">&#x27;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1&#x27;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">path</span> <span class="attr">d</span>=<span class="string">&#x27;M 121.444,70.3866 140.498,72.5185&#x27;</span> <span class="attr">style</span>=<span class="string">&#x27;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1&#x27;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">path</span> <span class="attr">d</span>=<span class="string">&#x27;M 145.19,67.5315 156.162,92.6269&#x27;</span> <span class="attr">style</span>=<span class="string">&#x27;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1&#x27;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">path</span> <span class="attr">d</span>=<span class="string">&#x27;M 156.162,92.6269 139.914,114.677&#x27;</span> <span class="attr">style</span>=<span class="string">&#x27;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1&#x27;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">path</span> <span class="attr">d</span>=<span class="string">&#x27;M 149.315,92.6849 137.941,108.12&#x27;</span> <span class="attr">style</span>=<span class="string">&#x27;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1&#x27;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">path</span> <span class="attr">d</span>=<span class="string">&#x27;M 156.162,92.6269 183.381,95.6725&#x27;</span> <span class="attr">style</span>=<span class="string">&#x27;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1&#x27;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">path</span> <span class="attr">d</span>=<span class="string">&#x27;M 139.914,114.677 150.886,139.772&#x27;</span> <span class="attr">style</span>=<span class="string">&#x27;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1&#x27;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">path</span> <span class="attr">d</span>=<span class="string">&#x27;M 150.886,139.772 178.105,142.817&#x27;</span> <span class="attr">style</span>=<span class="string">&#x27;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1&#x27;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">path</span> <span class="attr">d</span>=<span class="string">&#x27;M 178.105,142.817 194.353,120.768&#x27;</span> <span class="attr">style</span>=<span class="string">&#x27;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1&#x27;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">path</span> <span class="attr">d</span>=<span class="string">&#x27;M 194.353,120.768 183.381,95.6725&#x27;</span> <span class="attr">style</span>=<span class="string">&#x27;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1&#x27;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">path</span> <span class="attr">d</span>=<span class="string">&#x27;M 183.381,95.6725 181.654,68.338&#x27;</span> <span class="attr">style</span>=<span class="string">&#x27;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1&#x27;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">path</span> <span class="attr">d</span>=<span class="string">&#x27;M 183.381,95.6725 210,89.225&#x27;</span> <span class="attr">style</span>=<span class="string">&#x27;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1&#x27;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">text</span> <span class="attr">x</span>=<span class="string">&#x27;54.2908&#x27;</span> <span class="attr">y</span>=<span class="string">&#x27;65.789&#x27;</span> <span class="attr">style</span>=<span class="string">&#x27;font-size:9px;font-style:normal;font-weight:normal;fill-opacity:1;stroke:none;font-family:sans-serif;text-anchor:start;fill:#FF0000&#x27;</span> &gt;</span><span class="tag">&lt;<span class="name">tspan</span>&gt;</span>O<span class="tag">&lt;/<span class="name">tspan</span>&gt;</span><span class="tag">&lt;/<span class="name">text</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">text</span> <span class="attr">x</span>=<span class="string">&#x27;48.7182&#x27;</span> <span class="attr">y</span>=<span class="string">&#x27;157.249&#x27;</span> <span class="attr">style</span>=<span class="string">&#x27;font-size:9px;font-style:normal;font-weight:normal;fill-opacity:1;stroke:none;font-family:sans-serif;text-anchor:start;fill:#FF0000&#x27;</span> &gt;</span><span class="tag">&lt;<span class="name">tspan</span>&gt;</span>O<span class="tag">&lt;/<span class="name">tspan</span>&gt;</span><span class="tag">&lt;/<span class="name">text</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">text</span> <span class="attr">x</span>=<span class="string">&#x27;103.157&#x27;</span> <span class="attr">y</span>=<span class="string">&#x27;163.341&#x27;</span> <span class="attr">style</span>=<span class="string">&#x27;font-size:9px;font-style:normal;font-weight:normal;fill-opacity:1;stroke:none;font-family:sans-serif;text-anchor:start;fill:#FF0000&#x27;</span> &gt;</span><span class="tag">&lt;<span class="name">tspan</span>&gt;</span>O<span class="tag">&lt;/<span class="name">tspan</span>&gt;</span><span class="tag">&lt;/<span class="name">text</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">svg</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><strong>Tanshinone IIA:</strong></p>
+<div><svg version='1.1' baseProfile='full' xmlns:svg='http://www.w3.org/2000/svg' xmlns:rdkit='http://www.rdkit.org/xml'  xmlns:xlink='http://www.w3.org/1999/xlink' xml:space='preserve' width='220px' height='220px' ><rect style='opacity:1.0;fill:#FFFFFF;stroke:none' width='220' height='220' x='0' y='0'> </rect><path d='M 10,112.851 32.2657,96.9013' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' /><path d='M 32.2657,96.9013 32.4495,69.5129' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' /><path d='M 37.771,92.8298 37.8996,73.6579' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' /><path d='M 32.2657,96.9013 58.2568,105.54' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' /><path d='M 32.4495,69.5129 43.3701,66.0454' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' /><path d='M 43.3701,66.0454 54.2908,62.5779' style='fill:none;fill-rule:evenodd;stroke:#FF0000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' /><path d='M 61.8242,65.789 68.1641,74.6395' style='fill:none;fill-rule:evenodd;stroke:#FF0000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' /><path d='M 68.1641,74.6395 74.504,83.4899' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' /><path d='M 74.504,83.4899 58.2568,105.54' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' /><path d='M 67.657,83.5479 56.284,98.9827' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' /><path d='M 74.504,83.4899 101.723,86.5355' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' /><path d='M 58.2568,105.54 69.2288,130.635' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' /><path d='M 67.0238,129.01 60.582,137.753' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' /><path d='M 60.582,137.753 54.1402,146.495' style='fill:none;fill-rule:evenodd;stroke:#FF0000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' /><path d='M 71.4338,132.26 64.992,141.002' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' /><path d='M 64.992,141.002 58.5502,149.744' style='fill:none;fill-rule:evenodd;stroke:#FF0000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' /><path d='M 69.2288,130.635 96.448,133.681' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' /><path d='M 93.9384,134.778 98.4265,145.043' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' /><path d='M 98.4265,145.043 102.915,155.308' style='fill:none;fill-rule:evenodd;stroke:#FF0000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' /><path d='M 98.9575,132.583 103.446,142.849' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' /><path d='M 103.446,142.849 107.934,153.114' style='fill:none;fill-rule:evenodd;stroke:#FF0000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' /><path d='M 96.448,133.681 112.695,111.631' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' /><path d='M 112.695,111.631 101.723,86.5355' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' /><path d='M 106.03,110.061 98.3499,92.4942' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' /><path d='M 112.695,111.631 139.914,114.677' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' /><path d='M 101.723,86.5355 117.97,64.4859' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' /><path d='M 117.97,64.4859 145.19,67.5315' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' /><path d='M 121.444,70.3866 140.498,72.5185' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' /><path d='M 145.19,67.5315 156.162,92.6269' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' /><path d='M 156.162,92.6269 139.914,114.677' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' /><path d='M 149.315,92.6849 137.941,108.12' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' /><path d='M 156.162,92.6269 183.381,95.6725' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' /><path d='M 139.914,114.677 150.886,139.772' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' /><path d='M 150.886,139.772 178.105,142.817' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' /><path d='M 178.105,142.817 194.353,120.768' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' /><path d='M 194.353,120.768 183.381,95.6725' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' /><path d='M 183.381,95.6725 181.654,68.338' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' /><path d='M 183.381,95.6725 210,89.225' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' /><text x='54.2908' y='65.789' style='font-size:9px;font-style:normal;font-weight:normal;fill-opacity:1;stroke:none;font-family:sans-serif;text-anchor:start;fill:#FF0000' ><tspan>O</tspan></text><text x='48.7182' y='157.249' style='font-size:9px;font-style:normal;font-weight:normal;fill-opacity:1;stroke:none;font-family:sans-serif;text-anchor:start;fill:#FF0000' ><tspan>O</tspan></text><text x='103.157' y='163.341' style='font-size:9px;font-style:normal;font-weight:normal;fill-opacity:1;stroke:none;font-family:sans-serif;text-anchor:start;fill:#FF0000' ><tspan>O</tspan></text></svg></div>
+
+<hr>
+<p>update: 20191001 - fix a bug of <code>molSize</code></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/cheminfomatics/" rel="tag"># cheminfomatics</a>
+              <a href="/tags/rdkit/" rel="tag"># rdkit</a>
+              <a href="/tags/svg/" rel="tag"># svg</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2017/12/13/fasta2csv/" rel="prev" title="A Simple Python Script to Convert FASTA file to CSV format">
+                  <i class="fa fa-angle-left"></i> A Simple Python Script to Convert FASTA file to CSV format
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2019/05/25/logs_prediction/" rel="next" title="Molecular Water solubility (LogS) prediction by Machine Learning Method">
+                  Molecular Water solubility (LogS) prediction by Machine Learning Method <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Birdlet</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+Visited <span id="busuanzi value site_pv"></span> Visitors <span id="busuanzi value site uv"></span>
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"birdlet","repo":"birdlet.github.io","client_id":"0f3d8d5b00e8b378ccd0","client_secret":"049507faf0c3169f86f9e6e2c9422a32c24393b7","admin_user":"birdlet","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"en","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"360968fbb287d799d9fbd4e92039b45c"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.birdlet.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.19.1","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Water solubility of compounds significantly affect its druggability, absorption and distribution property, such as oral bioavailability, intestinal absorption and BBB penetration. Typically, a low s">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Molecular Water solubility (LogS) prediction by Machine Learning Method">
+<meta property="og:url" content="https://www.birdlet.github.io/2019/05/25/logs_prediction/index.html">
+<meta property="og:site_name" content="Life is Worth Living">
+<meta property="og:description" content="Water solubility of compounds significantly affect its druggability, absorption and distribution property, such as oral bioavailability, intestinal absorption and BBB penetration. Typically, a low s">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://www.birdlet.github.io/picture/logs_prediction_8_1.png">
+<meta property="og:image" content="https://www.birdlet.github.io/picture/logs_prediction_10_1.png">
+<meta property="og:image" content="https://www.birdlet.github.io/picture/logs_prediction_12_1.png">
+<meta property="og:image" content="https://www.birdlet.github.io/picture/logs_prediction_14_1.png">
+<meta property="og:image" content="https://www.birdlet.github.io/picture/logs_prediction_16_1.png">
+<meta property="og:image" content="https://www.birdlet.github.io/picture/logs_prediction_18_1.png">
+<meta property="og:image" content="https://www.birdlet.github.io/picture/logs_prediction_18_2.png">
+<meta property="og:image" content="https://www.birdlet.github.io/picture/logs_prediction_20_1.png">
+<meta property="og:image" content="https://www.birdlet.github.io/picture/logs_prediction_21_0.png">
+<meta property="og:image" content="https://www.birdlet.github.io/picture/logs_prediction_21_1.png">
+<meta property="article:published_time" content="2019-05-25T08:15:00.000Z">
+<meta property="article:modified_time" content="2024-02-18T06:12:27.723Z">
+<meta property="article:author" content="Birdlet">
+<meta property="article:tag" content="cheminfomatics">
+<meta property="article:tag" content="rdkit">
+<meta property="article:tag" content="keras">
+<meta property="article:tag" content="sklearn">
+<meta property="article:tag" content="machine learning">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.birdlet.github.io/picture/logs_prediction_8_1.png">
+
+
+<link rel="canonical" href="https://www.birdlet.github.io/2019/05/25/logs_prediction/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://www.birdlet.github.io/2019/05/25/logs_prediction/","path":"2019/05/25/logs_prediction/","title":"Molecular Water solubility (LogS) prediction by Machine Learning Method"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Molecular Water solubility (LogS) prediction by Machine Learning Method | Life is Worth Living</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Life is Worth Living</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="user fa-fw"></i>About</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Reading-and-Preprocessing"><span class="nav-number">1.</span> <span class="nav-text">Reading and Preprocessing</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Model-Selection"><span class="nav-number">2.</span> <span class="nav-text">Model Selection</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Basic-Linear-Regression-model"><span class="nav-number">2.1.</span> <span class="nav-text">Basic Linear Regression model</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SVM-Regression"><span class="nav-number">2.2.</span> <span class="nav-text">SVM Regression</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#KNN-Regression"><span class="nav-number">2.3.</span> <span class="nav-text">KNN Regression</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Random-Forest-Regression"><span class="nav-number">2.4.</span> <span class="nav-text">Random Forest Regression</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Neural-Network-Perception"><span class="nav-number">3.</span> <span class="nav-text">Neural Network Perception</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Search-for-Best-type-of-features"><span class="nav-number">4.</span> <span class="nav-text">Search for Best type of features</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Conclusion"><span class="nav-number">5.</span> <span class="nav-text">Conclusion</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Reference"><span class="nav-number">6.</span> <span class="nav-text">Reference</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Birdlet</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/birdlet" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;birdlet" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:dk_dingkang@126.com" title="E-Mail → mailto:dk_dingkang@126.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://www.birdlet.github.io/2019/05/25/logs_prediction/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Birdlet">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Life is Worth Living">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Molecular Water solubility (LogS) prediction by Machine Learning Method | Life is Worth Living">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Molecular Water solubility (LogS) prediction by Machine Learning Method
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2019-05-25 16:15:00" itemprop="dateCreated datePublished" datetime="2019-05-25T16:15:00+08:00">2019-05-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-02-18 14:12:27" itemprop="dateModified" datetime="2024-02-18T14:12:27+08:00">2024-02-18</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+<p>Water solubility of compounds significantly affect its druggability, absorption and distribution property, such as oral bioavailability, intestinal absorption and BBB penetration. Typically, a low solubility goes along with a bad absorption and therefore the general aim is to avoid poorly soluble compounds. For convenient, water solubility (mol&#x2F;Liter) are converted to logarithm value as LogS.</p>
+<p>There are two major methods to predict LogS, atom contribution method and machine learning based method. The atom contribution method predict solubility via an increment system by adding atom contributions depending on their atom types. The machine learning method uses 2D or 3D features generated from molecular structures to fit a regression model for prediction.</p>
+<p>The atom contribution method requires solid domain knowledge of cheminformatics, while machine learning method can use out-of-box cheminformatic toolkit to generate features for fitting models. Sounds easy, right? ;)</p>
+<p>Here, we use python with <code>rdkit</code> and <code>sklearn</code> to predict LogS trained from a public <a target="_blank" rel="noopener" href="http://www.vcclab.org/lab/alogps/">dataset</a> of water solubility</p>
+<span id="more"></span>
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> csv</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> sklearn.externals <span class="keyword">import</span> joblib</span><br><span class="line"><span class="keyword">from</span> sklearn.preprocessing <span class="keyword">import</span> StandardScaler</span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> train_test_split</span><br><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> mean_absolute_error, r2_score, make_scorer</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> rdkit <span class="keyword">import</span> Chem</span><br><span class="line"><span class="keyword">from</span> rdkit.Chem <span class="keyword">import</span> AllChem, DataStructs, Descriptors, ReducedGraphs</span><br><span class="line"><span class="keyword">from</span> rdkit.Avalon.pyAvalonTools <span class="keyword">import</span> GetAvalonFP</span><br><span class="line"><span class="keyword">from</span> rdkit.ML.Descriptors <span class="keyword">import</span> MoleculeDescriptors</span><br><span class="line"><span class="keyword">from</span> rdkit.Chem.EState <span class="keyword">import</span> Fingerprinter</span><br><span class="line"><span class="keyword">from</span> rdkit.Chem <span class="keyword">import</span> Descriptors</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> sklearn.feature_selection <span class="keyword">import</span> mutual_info_regression</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">fingerprint</span>(<span class="params">mol, fptype=<span class="string">&quot;MACCSKeys&quot;</span>, radius=<span class="number">2</span>, bits=<span class="number">1024</span></span>):</span><br><span class="line">    npfp = np.zeros((<span class="number">1</span>,))</span><br><span class="line">    <span class="keyword">if</span> fptype == <span class="string">&quot;MACCSKeys&quot;</span>:</span><br><span class="line">        DataStructs.ConvertToNumpyArray(AllChem.GetMACCSKeysFingerprint(mol), npfp)</span><br><span class="line">    <span class="keyword">elif</span> fptype == <span class="string">&quot;Avalon&quot;</span>:</span><br><span class="line">        DataStructs.ConvertToNumpyArray(GetAvalonFP(mol), npfp)</span><br><span class="line">    <span class="keyword">elif</span> fptype == <span class="string">&quot;ECFP&quot;</span>:</span><br><span class="line">        DataStructs.ConvertToNumpyArray(AllChem.GetMorganFingerprintAsBitVect(mol, radius, bits), npfp)</span><br><span class="line">    <span class="keyword">elif</span> fptype == <span class="string">&quot;ErG&quot;</span>:</span><br><span class="line">        npfp = ReducedGraphs.GetErGFingerprint(mol)</span><br><span class="line">    <span class="keyword">elif</span> fptype == <span class="string">&quot;Estate&quot;</span>:</span><br><span class="line">        npfp = Fingerprinter.FingerprintMol(mol)[<span class="number">0</span>]</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">raise</span> TypeError()</span><br><span class="line">    <span class="keyword">return</span> npfp</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">descriptors</span>(<span class="params">mol</span>):</span><br><span class="line">    calc=MoleculeDescriptors.MolecularDescriptorCalculator([x[<span class="number">0</span>] <span class="keyword">for</span> x <span class="keyword">in</span> Descriptors._descList])</span><br><span class="line">    ds = np.asarray(calc.CalcDescriptors(mol))</span><br><span class="line">    <span class="keyword">return</span> ds</span><br></pre></td></tr></table></figure>
+
+<h2 id="Reading-and-Preprocessing"><a href="#Reading-and-Preprocessing" class="headerlink" title="Reading and Preprocessing"></a>Reading and Preprocessing</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">smis = []</span><br><span class="line">logs = []</span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&quot;LogS.txt&quot;</span>, <span class="string">&quot;r&quot;</span>) <span class="keyword">as</span> f:</span><br><span class="line">    reader = csv.reader(f, delimiter=<span class="string">&quot; &quot;</span>)</span><br><span class="line">    <span class="keyword">for</span> row <span class="keyword">in</span> reader:</span><br><span class="line">        smis.append(row[<span class="number">1</span>])</span><br><span class="line">        logs.append(<span class="built_in">float</span>(row[<span class="number">2</span>]))</span><br><span class="line">    </span><br><span class="line"><span class="built_in">print</span>(smis[:<span class="number">5</span>], logs[:<span class="number">5</span>])</span><br></pre></td></tr></table></figure>
+
+<pre><code>[&#39;CC(N)=O&#39;, &#39;CNN&#39;, &#39;CC(O)=O&#39;, &#39;C1CCCN1&#39;, &#39;NC([NH]O)=O&#39;] [1.58, 1.34, 1.22, 1.15, 1.12]
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">%%time</span><br><span class="line">mols = [Chem.MolFromSmiles(smi) <span class="keyword">for</span> smi <span class="keyword">in</span> smis]</span><br><span class="line">feature = [np.append(fingerprint(mol), descriptors(mol)) <span class="keyword">for</span> mol <span class="keyword">in</span> mols]</span><br></pre></td></tr></table></figure>
+
+<pre><code>CPU times: user 14.4 s, sys: 109 ms, total: 14.5 s
+Wall time: 14.7 s
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">%%time</span><br><span class="line"><span class="comment"># random seed was set as 2 for reproduction</span></span><br><span class="line">np.random.seed(<span class="number">2</span>)</span><br><span class="line">X = np.array(feature)</span><br><span class="line">y = np.array(logs)</span><br><span class="line"></span><br><span class="line">X_train, X_test, y_train, y_test = train_test_split(X, y, </span><br><span class="line">                                                    test_size=<span class="number">0.2</span>, </span><br><span class="line">                                                    random_state=<span class="number">2</span>)</span><br><span class="line">minfo = mutual_info_regression(X_train, y_train)</span><br></pre></td></tr></table></figure>
+
+<pre><code>CPU times: user 5.52 s, sys: 62.5 ms, total: 5.58 s
+Wall time: 5.59 s
+</code></pre>
+<h2 id="Model-Selection"><a href="#Model-Selection" class="headerlink" title="Model Selection"></a>Model Selection</h2><h3 id="Basic-Linear-Regression-model"><a href="#Basic-Linear-Regression-model" class="headerlink" title="Basic Linear Regression model"></a>Basic Linear Regression model</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.linear_model <span class="keyword">import</span> LinearRegression</span><br><span class="line"></span><br><span class="line">model = LinearRegression()</span><br><span class="line">model.fit(X_train, y_train)</span><br><span class="line"></span><br><span class="line">y_pred_train = model.predict(X_train)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Train set R^2: &quot;</span>, r2_score(y_train, y_pred_train))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Train MAE score: %.4f&quot;</span> % mean_absolute_error(y_train, y_pred_train))</span><br><span class="line"></span><br><span class="line">y_pred_test = model.predict(X_test)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Test set R^2: &quot;</span>, r2_score(y_test, y_pred_test))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Test MAE score: %.4f&quot;</span> % mean_absolute_error(y_test, y_pred_test))</span><br><span class="line"></span><br><span class="line"><span class="comment">#plt.xlim((-12,2))</span></span><br><span class="line"><span class="comment">#plt.ylim((-12,2))</span></span><br><span class="line">plt.title(<span class="string">&quot;LinerRegression Prediction&quot;</span>)</span><br><span class="line">plt.xlabel(<span class="string">&quot;Real LogS&quot;</span>)</span><br><span class="line">plt.ylabel(<span class="string">&quot;Predicted LogS&quot;</span>)</span><br><span class="line">plt.grid()</span><br><span class="line">plt.scatter(y_train, model.predict(X_train), </span><br><span class="line">            color=<span class="string">&quot;blue&quot;</span>, alpha=<span class="number">0.8</span>, label=<span class="string">&quot;train&quot;</span>)</span><br><span class="line">plt.scatter(y_test, model.predict(X_test), </span><br><span class="line">            color=<span class="string">&quot;lightgreen&quot;</span>, alpha=<span class="number">0.8</span>, label=<span class="string">&quot;test&quot;</span>)</span><br><span class="line">plt.legend(loc = <span class="string">&#x27;best&#x27;</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<pre><code>Train set R^2:  0.959263340625798
+Train MAE score: 0.3102
+Test set R^2:  0.06907362861596777
+Test MAE score: 0.6906
+</code></pre>
+<p><img src="/picture/logs_prediction_8_1.png" alt="png"></p>
+<h3 id="SVM-Regression"><a href="#SVM-Regression" class="headerlink" title="SVM Regression"></a>SVM Regression</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.svm <span class="keyword">import</span> SVR</span><br><span class="line"></span><br><span class="line">model = SVR()</span><br><span class="line">model.fit(X_train, y_train)</span><br><span class="line"></span><br><span class="line">y_pred_train = model.predict(X_train)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Train set R^2: &quot;</span>, r2_score(y_train, y_pred_train))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Train MAE score: %.4f&quot;</span> % mean_absolute_error(y_train, y_pred_train))</span><br><span class="line"></span><br><span class="line">y_pred_test = model.predict(X_test)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Test set R^2: &quot;</span>, r2_score(y_test, y_pred_test))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Test MAE score: %.4f&quot;</span> % mean_absolute_error(y_test, y_pred_test))</span><br><span class="line"></span><br><span class="line">plt.xlim((-<span class="number">12</span>,<span class="number">2</span>))</span><br><span class="line">plt.ylim((-<span class="number">12</span>,<span class="number">2</span>))</span><br><span class="line">plt.title(<span class="string">&quot;SVM Regression Prediction&quot;</span>)</span><br><span class="line">plt.xlabel(<span class="string">&quot;Real LogS&quot;</span>)</span><br><span class="line">plt.ylabel(<span class="string">&quot;Predicted LogS&quot;</span>)</span><br><span class="line">plt.grid()</span><br><span class="line">plt.scatter(y_train, model.predict(X_train), </span><br><span class="line">            color=<span class="string">&quot;blue&quot;</span>, alpha=<span class="number">0.8</span>, label=<span class="string">&quot;train&quot;</span>)</span><br><span class="line">plt.scatter(y_test, model.predict(X_test), </span><br><span class="line">            color=<span class="string">&quot;lightgreen&quot;</span>, alpha=<span class="number">0.8</span>, label=<span class="string">&quot;test&quot;</span>)</span><br><span class="line">plt.legend(loc = <span class="string">&#x27;best&#x27;</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<pre><code>Train set R^2:  0.5843761663378015
+Train MAE score: 0.7394
+Test set R^2:  0.09632083916211343
+Test MAE score: 1.4035
+</code></pre>
+<p><img src="/picture/logs_prediction_10_1.png" alt="png"></p>
+<p>SVM Regression (SVR) model shows very bad prediction results, because we haven’t normalize features into (-1, 1). Data normalization can promote the performance in common machine learning problems, and speed up the coverage of gradient descent algorithm. We use <code>StandardScaler</code>, a rescaling method, to scale features to (-1, 1) range. After scaling, SVR works perfectly.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">stds = StandardScaler()</span><br><span class="line">stds.fit(X_train)</span><br><span class="line"></span><br><span class="line">model = SVR()</span><br><span class="line">model.fit(stds.transform(X_train), y_train)</span><br><span class="line"></span><br><span class="line">y_pred_train = model.predict(stds.transform(X_train))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Train set R^2: &quot;</span>, r2_score(y_train, y_pred_train))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Train MAE score: %.4f&quot;</span> % mean_absolute_error(y_train, y_pred_train))</span><br><span class="line"></span><br><span class="line">y_pred_test = model.predict(stds.transform(X_test))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Test set R^2: &quot;</span>, r2_score(y_test, y_pred_test))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Test MAE score: %.4f&quot;</span> % mean_absolute_error(y_test, y_pred_test))</span><br><span class="line"></span><br><span class="line">plt.xlim((-<span class="number">12</span>,<span class="number">2</span>))</span><br><span class="line">plt.ylim((-<span class="number">12</span>,<span class="number">2</span>))</span><br><span class="line">plt.title(<span class="string">&quot;SVM Regression Prediction with Scaler&quot;</span>)</span><br><span class="line">plt.xlabel(<span class="string">&quot;Real LogS&quot;</span>)</span><br><span class="line">plt.ylabel(<span class="string">&quot;Predicted LogS&quot;</span>)</span><br><span class="line">plt.grid()</span><br><span class="line">plt.scatter(y_train, y_pred_train, </span><br><span class="line">            color=<span class="string">&quot;blue&quot;</span>, alpha=<span class="number">0.8</span>, label=<span class="string">&quot;train&quot;</span>)</span><br><span class="line">plt.scatter(y_test, y_pred_test, </span><br><span class="line">            color=<span class="string">&quot;lightgreen&quot;</span>, alpha=<span class="number">0.8</span>, label=<span class="string">&quot;test&quot;</span>)</span><br><span class="line">plt.legend(loc = <span class="string">&#x27;best&#x27;</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<pre><code>Train set R^2:  0.9529119367162064
+Train MAE score: 0.2789
+Test set R^2:  0.8969447643834331
+Test MAE score: 0.4498
+</code></pre>
+<p><img src="/picture/logs_prediction_12_1.png" alt="png"></p>
+<h3 id="KNN-Regression"><a href="#KNN-Regression" class="headerlink" title="KNN Regression"></a>KNN Regression</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">stds = StandardScaler()</span><br><span class="line">stds.fit(X_train)</span><br><span class="line"></span><br><span class="line">model = KNeighborsRegressor()</span><br><span class="line">model.fit(stds.transform(X_train), y_train)</span><br><span class="line"></span><br><span class="line">y_pred_train = model.predict(stds.transform(X_train))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Train set R^2: &quot;</span>, r2_score(y_train, y_pred_train))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Train MAE score: %.4f&quot;</span> % mean_absolute_error(y_train, y_pred_train))</span><br><span class="line"></span><br><span class="line">y_pred_test = model.predict(stds.transform(X_test))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Test set R^2: &quot;</span>, r2_score(y_test, y_pred_test))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Test MAE score: %.4f&quot;</span> % mean_absolute_error(y_test, y_pred_test))</span><br><span class="line"></span><br><span class="line">plt.xlim((-<span class="number">12</span>,<span class="number">2</span>))</span><br><span class="line">plt.ylim((-<span class="number">12</span>,<span class="number">2</span>))</span><br><span class="line">plt.title(<span class="string">&quot;KNN-Regression Prediction with Scaler&quot;</span>)</span><br><span class="line">plt.xlabel(<span class="string">&quot;Real LogS&quot;</span>)</span><br><span class="line">plt.ylabel(<span class="string">&quot;Predicted LogS&quot;</span>)</span><br><span class="line">plt.grid()</span><br><span class="line">plt.scatter(y_train, y_pred_train, </span><br><span class="line">            color=<span class="string">&quot;blue&quot;</span>, alpha=<span class="number">0.8</span>, label=<span class="string">&quot;train&quot;</span>)</span><br><span class="line">plt.scatter(y_test, y_pred_test, </span><br><span class="line">            color=<span class="string">&quot;lightgreen&quot;</span>, alpha=<span class="number">0.8</span>, label=<span class="string">&quot;test&quot;</span>)</span><br><span class="line">plt.legend(loc = <span class="string">&#x27;best&#x27;</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<pre><code>Train set R^2:  0.8662481382255657
+Train MAE score: 0.5540
+Test set R^2:  0.7600020560030265
+Test MAE score: 0.7197
+</code></pre>
+<p><img src="/picture/logs_prediction_14_1.png" alt="png"></p>
+<h3 id="Random-Forest-Regression"><a href="#Random-Forest-Regression" class="headerlink" title="Random Forest Regression"></a>Random Forest Regression</h3><p>Random Forest (RF) method is an ensemble method, which is an ensemble of Decision Tree models, thus we call it “Forest”. Feature normalization is not needed for RF, because RF didn’t compare magnitude of different features and it didn’t use gradient descent algorithm.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.ensemble <span class="keyword">import</span> RandomForestRegressor</span><br><span class="line"></span><br><span class="line">model = RandomForestRegressor()</span><br><span class="line">model.fit(X_train, y_train)</span><br><span class="line"></span><br><span class="line">y_true, y_pred = y_test, model.predict(X_test)</span><br><span class="line"></span><br><span class="line">y_pred_train = model.predict(X_train)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Train set R^2: &quot;</span>, r2_score(y_train, y_pred_train))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Train MAE score: %.4f&quot;</span> % mean_absolute_error(y_train, y_pred_train))</span><br><span class="line"></span><br><span class="line">y_pred_test = model.predict(X_test)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Test set R^2: &quot;</span>, r2_score(y_test, y_pred_test))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Test MAE score: %.4f&quot;</span> % mean_absolute_error(y_test, y_pred_test))</span><br><span class="line"></span><br><span class="line">plt.xlim((-<span class="number">12</span>,<span class="number">2</span>))</span><br><span class="line">plt.ylim((-<span class="number">12</span>,<span class="number">2</span>))</span><br><span class="line">plt.title(<span class="string">&quot;Random Forest Regression Prediction&quot;</span>)</span><br><span class="line">plt.xlabel(<span class="string">&quot;Real LogS&quot;</span>)</span><br><span class="line">plt.ylabel(<span class="string">&quot;Predicted LogS&quot;</span>)</span><br><span class="line">plt.grid()</span><br><span class="line">plt.scatter(y_train, y_pred_train, </span><br><span class="line">            color=<span class="string">&quot;blue&quot;</span>, alpha=<span class="number">0.8</span>, label=<span class="string">&quot;train&quot;</span>)</span><br><span class="line">plt.scatter(y_test, y_pred_test, </span><br><span class="line">            color=<span class="string">&quot;lightgreen&quot;</span>, alpha=<span class="number">0.8</span>, label=<span class="string">&quot;test&quot;</span>)</span><br><span class="line">plt.legend(loc = <span class="string">&#x27;best&#x27;</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<pre><code>Train set R^2:  0.9826342744246852
+Train MAE score: 0.1889
+Test set R^2:  0.8906418060478993
+Test MAE score: 0.4818
+</code></pre>
+<p><img src="/picture/logs_prediction_16_1.png" alt="png"></p>
+<h2 id="Neural-Network-Perception"><a href="#Neural-Network-Perception" class="headerlink" title="Neural Network Perception"></a>Neural Network Perception</h2><p>Neural Network (NN) is a hot-topic after alpha-go defated the world champine, it can also used to build regression model. Here we will build a shallow NN to predict LogS</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> keras.models <span class="keyword">import</span> Sequential</span><br><span class="line"><span class="keyword">from</span> keras.layers <span class="keyword">import</span> Dense</span><br><span class="line"></span><br><span class="line">stds = StandardScaler()</span><br><span class="line">stds.fit(X_train)</span><br><span class="line"></span><br><span class="line">model = Sequential()</span><br><span class="line">model.add(Dense(units = <span class="number">128</span>, input_dim = X.shape[<span class="number">1</span>], activation=<span class="string">&#x27;relu&#x27;</span>))</span><br><span class="line">model.add(Dense(units = <span class="number">1</span>))</span><br><span class="line"> </span><br><span class="line"><span class="comment"># model.summary()</span></span><br><span class="line"></span><br><span class="line">model.<span class="built_in">compile</span>(loss = <span class="string">&#x27;mae&#x27;</span>,</span><br><span class="line">    optimizer = <span class="string">&#x27;adam&#x27;</span>,</span><br><span class="line">    metrics=[<span class="string">&#x27;accuracy&#x27;</span>])</span><br><span class="line">history = model.fit(stds.transform(X_train), y_train, epochs = <span class="number">100</span>, batch_size = <span class="number">32</span>,</span><br><span class="line">    validation_data = (stds.transform(X_test), y_test), verbose=<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">y_pred_train = model.predict(stds.transform(X_train))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Train set R^2: &quot;</span>, r2_score(y_train, y_pred_train))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Train MAE score: %.4f&quot;</span> % mean_absolute_error(y_train, y_pred_train))</span><br><span class="line"></span><br><span class="line">y_pred_test = model.predict(stds.transform(X_test))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Test set R^2: &quot;</span>, r2_score(y_test, y_pred_test))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Test MAE score: %.4f&quot;</span> % mean_absolute_error(y_test, y_pred_test))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">loss = history.history[<span class="string">&#x27;loss&#x27;</span>]</span><br><span class="line">val_loss = history.history[<span class="string">&#x27;val_loss&#x27;</span>]</span><br><span class="line">epochs = <span class="built_in">len</span>(loss)</span><br><span class="line">plt.xlim((<span class="number">0</span>, <span class="number">50</span>))</span><br><span class="line">plt.ylim((<span class="number">0</span>, <span class="number">1</span>))</span><br><span class="line">plt.plot(<span class="built_in">range</span>(epochs), loss, marker = <span class="string">&#x27;.&#x27;</span>, label = <span class="string">&#x27;loss&#x27;</span>)</span><br><span class="line">plt.plot(<span class="built_in">range</span>(epochs), val_loss, marker = <span class="string">&#x27;.&#x27;</span>, label = <span class="string">&#x27;val_loss&#x27;</span>)</span><br><span class="line">plt.legend(loc = <span class="string">&#x27;best&#x27;</span>)</span><br><span class="line">plt.grid()</span><br><span class="line">plt.xlabel(<span class="string">&#x27;epoch&#x27;</span>)</span><br><span class="line">plt.ylabel(<span class="string">&#x27;loss&#x27;</span>)</span><br><span class="line">plt.show()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">#plt.xlim((-12,2))</span></span><br><span class="line"><span class="comment">#plt.ylim((-12,2))</span></span><br><span class="line">plt.title(<span class="string">&quot;Neural Network Prediction with Scaler&quot;</span>)</span><br><span class="line">plt.xlabel(<span class="string">&quot;Real LogS&quot;</span>)</span><br><span class="line">plt.ylabel(<span class="string">&quot;Predicted LogS&quot;</span>)</span><br><span class="line">plt.grid()</span><br><span class="line">plt.scatter(y_train, y_pred_train, </span><br><span class="line">            color=<span class="string">&quot;blue&quot;</span>, alpha=<span class="number">0.8</span>, label=<span class="string">&quot;train&quot;</span>)</span><br><span class="line">plt.scatter(y_test, y_pred_test, </span><br><span class="line">            color=<span class="string">&quot;lightgreen&quot;</span>, alpha=<span class="number">0.8</span>, label=<span class="string">&quot;test&quot;</span>)</span><br><span class="line">plt.legend(loc = <span class="string">&#x27;best&#x27;</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<pre><code>Train set R^2:  0.9901072859319796
+Train MAE score: 0.1366
+Test set R^2:  -0.11753402040517735
+Test MAE score: 0.5345
+</code></pre>
+<p><img src="/picture/logs_prediction_18_1.png" alt="png"></p>
+<p><img src="/picture/logs_prediction_18_2.png" alt="png"></p>
+<p>Obviously, NN predicted an abnormal value, why? Let’s dig out this abnormal compounds.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> rdkit.Chem.Draw <span class="keyword">import</span> IPythonConsole</span><br><span class="line">v = X_test[np.argwhere(y_pred_test == y_pred_test.<span class="built_in">max</span>())[<span class="number">0</span>,<span class="number">0</span>]]</span><br><span class="line"><span class="keyword">for</span> smi, s <span class="keyword">in</span> <span class="built_in">zip</span>(smis, X):</span><br><span class="line">    <span class="keyword">if</span> np.<span class="built_in">all</span>(s == v):</span><br><span class="line">        abnorm_smi = smi</span><br><span class="line"><span class="built_in">print</span>(abnorm_smi)</span><br><span class="line">m = Chem.MolFromSmiles(abnorm_smi)</span><br><span class="line"><span class="built_in">print</span>(Descriptors.MolWt(m))</span><br><span class="line">m</span><br></pre></td></tr></table></figure>
+
+<pre><code>CC(CC=CC=CC=CC=CC(OC4OC(C)C(O)C(N)C4O)CC(C(C(O)=O)C(O)C3)OC3(O)CC(O)CC(O2)C2C=C1)OC1=O
+665.7330000000004
+</code></pre>
+<p><img src="/picture/logs_prediction_20_1.png" alt="png"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">mws = [Descriptors.MolWt(mol) <span class="keyword">for</span> mol <span class="keyword">in</span> mols]</span><br><span class="line"></span><br><span class="line">plt.xlabel(<span class="string">&quot;Molecular Weight&quot;</span>)</span><br><span class="line">plt.ylabel(<span class="string">&quot;No. of Compounds&quot;</span>)</span><br><span class="line">plt.title(<span class="string">&quot;Distribution of Molecular Weight&quot;</span>)</span><br><span class="line">plt.hist(mws, color=<span class="string">&quot;gray&quot;</span>, alpha=<span class="number">0.8</span>)</span><br><span class="line">plt.show()</span><br><span class="line"></span><br><span class="line">plt.xlabel(<span class="string">&quot;Molecular LogS&quot;</span>)</span><br><span class="line">plt.ylabel(<span class="string">&quot;No. of Compounds&quot;</span>)</span><br><span class="line">plt.title(<span class="string">&quot;Distribution of Molecular LogS&quot;</span>)</span><br><span class="line">plt.hist(logs, color=<span class="string">&quot;green&quot;</span>, alpha=<span class="number">0.2</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+
+<p><img src="/picture/logs_prediction_21_0.png" alt="png"></p>
+<p><img src="/picture/logs_prediction_21_1.png" alt="png"></p>
+<p>This molecular is a macrocycle and has many hydrophilic functional groups. These hydrophilic groups contribute too much positive features and covered negative  features of hydrophobic backbone. And of course, only 5 compounds have molecular weight greater than 500. Large compounds and macrocycles are unbalanced samples in this dataset, and this model is overfitted on small molecules.</p>
+<p>This illustrate that it is not wise to predict LogS of large compounds and macrocycles by model trained on this dataset. On the other hand, this model is good at predicting LogS for small organic molecules.</p>
+<h2 id="Search-for-Best-type-of-features"><a href="#Search-for-Best-type-of-features" class="headerlink" title="Search for Best type of features"></a>Search for Best type of features</h2><p>There are many kind of molecular finger prints and descriptors, which one or which kind of them is vital for LogS prediction?</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># different features</span></span><br><span class="line"><span class="keyword">for</span> fptype <span class="keyword">in</span> [<span class="string">&quot;MACCSKeys&quot;</span>, <span class="string">&quot;ErG&quot;</span>, <span class="string">&quot;Avalon&quot;</span>, <span class="string">&quot;ECFP&quot;</span>, <span class="string">&quot;Descriptor&quot;</span>, <span class="string">&quot;MACCSKeys+Descriptors&quot;</span>]:</span><br><span class="line">    <span class="keyword">if</span> fptype == <span class="string">&quot;Descriptor&quot;</span>:</span><br><span class="line">        feature = [descriptors(mol) <span class="keyword">for</span> mol <span class="keyword">in</span> mols]</span><br><span class="line">    <span class="keyword">elif</span> fptype == <span class="string">&quot;MACCSKeys+Descriptors&quot;</span>:</span><br><span class="line">        feature = [np.append(fingerprint(mol, <span class="string">&quot;MACCSKeys&quot;</span>), descriptors(mol)) <span class="keyword">for</span> mol <span class="keyword">in</span> mols]</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        feature = [fingerprint(mol, fptype) <span class="keyword">for</span> mol <span class="keyword">in</span> mols]</span><br><span class="line"></span><br><span class="line">    <span class="comment"># random seed was set as 2 for reproduction</span></span><br><span class="line">    np.random.seed(<span class="number">2</span>)</span><br><span class="line">    </span><br><span class="line">    X = np.array(feature)</span><br><span class="line">    y = np.array(logs)</span><br><span class="line"></span><br><span class="line">    X_train, X_test, y_train, y_test = train_test_split(X, y, </span><br><span class="line">                                                        test_size=<span class="number">0.2</span>, </span><br><span class="line">                                                        random_state=<span class="number">2</span>)</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    stds = StandardScaler()</span><br><span class="line">    stds.fit(X_train)</span><br><span class="line"></span><br><span class="line">    model = SVR()</span><br><span class="line">    model.fit(stds.transform(X_train), y_train)</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Feature Type:\t%s&quot;</span> % fptype)</span><br><span class="line">    y_pred_train = model.predict(stds.transform(X_train))</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;\tTrain set R^2: &quot;</span>, r2_score(y_train, y_pred_train))</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;\tTrain MAE score: %.4f&quot;</span> % mean_absolute_error(y_train, y_pred_train))</span><br><span class="line"></span><br><span class="line">    y_pred_test = model.predict(stds.transform(X_test))</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;\tTest set R^2: &quot;</span>, r2_score(y_test, y_pred_test))</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;\tTest MAE score: %.4f&quot;</span> % mean_absolute_error(y_test, y_pred_test))</span><br><span class="line"></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;-&quot;</span>*<span class="number">40</span>,<span class="string">&quot;\n\n&quot;</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<pre><code>Feature Type:	MACCSKeys
+    Train set R^2:  0.8348432537253556
+    Train MAE score: 0.5340
+    Test set R^2:  0.7269931078788134
+    Test MAE score: 0.7887
+---------------------------------------- 
+
+
+Feature Type:	ErG
+    Train set R^2:  0.43533956678068464
+    Train MAE score: 1.0801
+    Test set R^2:  0.41443974442003917
+    Test MAE score: 1.1513
+---------------------------------------- 
+
+
+Feature Type:	Avalon
+    Train set R^2:  0.8411296883499888
+    Train MAE score: 0.5065
+    Test set R^2:  0.7501108238770297
+    Test MAE score: 0.7341
+---------------------------------------- 
+
+
+Feature Type:	ECFP
+    Train set R^2:  0.7829458742941775
+    Train MAE score: 0.5726
+    Test set R^2:  0.5447519853586031
+    Test MAE score: 1.0134
+---------------------------------------- 
+
+
+Feature Type:	Descriptor
+    Train set R^2:  0.9429008343024807
+    Train MAE score: 0.3142
+    Test set R^2:  0.892167479543334
+    Test MAE score: 0.4646
+---------------------------------------- 
+
+
+Feature Type:	MACCSKeys+Descriptors
+    Train set R^2:  0.9529119367162064
+    Train MAE score: 0.2789
+    Test set R^2:  0.8969447643834331
+    Test MAE score: 0.4498
+---------------------------------------- 
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># different feature selection cutoff</span></span><br><span class="line">minfo = mutual_info_regression(X_train, y_train)</span><br><span class="line"><span class="keyword">for</span> cutoff <span class="keyword">in</span> (<span class="number">0.</span>, <span class="number">0.01</span>, <span class="number">0.05</span>, <span class="number">0.1</span>):</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Feature left at cutoff %.2f:\t%d feature&quot;</span> % (cutoff, np.<span class="built_in">sum</span>(minfo &gt; cutoff)))</span><br><span class="line">    stds = StandardScaler()</span><br><span class="line">    stds.fit(X_train[:, minfo &gt; cutoff])</span><br><span class="line"></span><br><span class="line">    model = SVR()</span><br><span class="line">    model.fit(stds.transform(X_train[:, minfo &gt; cutoff]), y_train)</span><br><span class="line"></span><br><span class="line">    y_pred_train = model.predict(stds.transform(X_train[:, minfo &gt; cutoff]))</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;\tTrain set R^2: &quot;</span>, r2_score(y_train, y_pred_train))</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;\tTrain MAE score: %.4f&quot;</span> % mean_absolute_error(y_train, y_pred_train))</span><br><span class="line"></span><br><span class="line">    y_pred_test = model.predict(stds.transform(X_test[:, minfo &gt; cutoff]))</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;\tTest set R^2: &quot;</span>, r2_score(y_test, y_pred_test))</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;\tTest MAE score: %.4f&quot;</span> % mean_absolute_error(y_test, y_pred_test))</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;-&quot;</span>*<span class="number">40</span>, <span class="string">&quot;\n\n&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<pre><code>Feature left at cutoff 0.00:	300 feature
+    Train set R^2:  0.9547396313014773
+    Train MAE score: 0.2688
+    Test set R^2:  0.9018933828417203
+    Test MAE score: 0.4386
+---------------------------------------- 
+
+
+Feature left at cutoff 0.01:	232 feature
+    Train set R^2:  0.9560197972695562
+    Train MAE score: 0.2641
+    Test set R^2:  0.9144409662106348
+    Test MAE score: 0.4106
+---------------------------------------- 
+
+
+Feature left at cutoff 0.05:	107 feature
+    Train set R^2:  0.9388813570437281
+    Train MAE score: 0.3228
+    Test set R^2:  0.905214588528981
+    Test MAE score: 0.4471
+---------------------------------------- 
+
+
+Feature left at cutoff 0.10:	73 feature
+    Train set R^2:  0.9306199986641003
+    Train MAE score: 0.3609
+    Test set R^2:  0.8990763861247755
+    Test MAE score: 0.4719
+---------------------------------------- 
+</code></pre>
+<h2 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h2><p>In this article, I used different models, features and feature selection cutoff to build a state-of-art LogS prediction model on a public dataset. On this dataset, my SVR-0.01 model (R^2 0.92, MAE:0.41) shows best performance on test set. Roughly compared to other blog and ALOGPS, this model shows best performance, but I still need an external validation set to estimate its generalization. Since most compounds in this dataset are soluble (-8 &lt; LogS &lt; 2) small compounds (50 &lt; MW &lt; 400), this model is very suitable to estimate drug-like moleculars LogS.</p>
+<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><p>[1] <a target="_blank" rel="noopener" href="http://www.ag.kagawa-u.ac.jp/charlesy/2017/07/21/keras%E3%81%A7%E5%8C%96%E5%90%88%E7%89%A9%E3%81%AE%E6%BA%B6%E8%A7%A3%E5%BA%A6%E4%BA%88%E6%B8%AC%EF%BC%88%E3%83%8B%E3%83%A5%E3%83%BC%E3%83%A9%E3%83%AB%E3%83%8D%E3%83%83%E3%83%88%E3%83%AF%E3%83%BC/">Kerasで化合物の溶解度予測（ニューラルネットワーク，回帰分析）</a></p>
+<p>[2] <a target="_blank" rel="noopener" href="https://www.wildcardconsulting.dk/molecular-neural-network-models-with-rdkit-and-keras-in-python/">Wash that gold- Modelling solubility with Molecular fingerprints by Esben Jannik Bjerrum</a></p>
+<p>[3] <a target="_blank" rel="noopener" href="http://cheminformist.itmol.com/TEST/?p=1583">Chainer: クラス分類による溶解度の予測 – Cheminformist3</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/cheminfomatics/" rel="tag"># cheminfomatics</a>
+              <a href="/tags/rdkit/" rel="tag"># rdkit</a>
+              <a href="/tags/keras/" rel="tag"># keras</a>
+              <a href="/tags/sklearn/" rel="tag"># sklearn</a>
+              <a href="/tags/machine-learning/" rel="tag"># machine learning</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2018/06/06/rdkit_svg_web/" rel="prev" title="Render molecules as inline SVG in web by RDkit">
+                  <i class="fa fa-angle-left"></i> Render molecules as inline SVG in web by RDkit
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2019/10/02/py3dmol_example/" rel="next" title="py3Dmol in Jupyter">
+                  py3Dmol in Jupyter <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Birdlet</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+Visited <span id="busuanzi value site_pv"></span> Visitors <span id="busuanzi value site uv"></span>
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"birdlet","repo":"birdlet.github.io","client_id":"0f3d8d5b00e8b378ccd0","client_secret":"049507faf0c3169f86f9e6e2c9422a32c24393b7","admin_user":"birdlet","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"en","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"ea790ed873b4745ba2a59a2d4b823d81"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>

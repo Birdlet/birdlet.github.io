@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.birdlet.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.19.1","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="计算生物学的定义 “Computational biology involves the development and application of data-analytical and theoretical methods, mathematical modeling and computational simulation techniques to the study of bio">
+<meta property="og:type" content="article">
+<meta property="og:title" content="计算生物学入门资料整理">
+<meta property="og:url" content="https://www.birdlet.github.io/2017/05/13/computainal_biology_intro/index.html">
+<meta property="og:site_name" content="Life is Worth Living">
+<meta property="og:description" content="计算生物学的定义 “Computational biology involves the development and application of data-analytical and theoretical methods, mathematical modeling and computational simulation techniques to the study of bio">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2017-05-12T16:35:02.000Z">
+<meta property="article:modified_time" content="2024-02-18T06:12:27.639Z">
+<meta property="article:author" content="Birdlet">
+<meta property="article:tag" content="computational biology">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://www.birdlet.github.io/2017/05/13/computainal_biology_intro/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://www.birdlet.github.io/2017/05/13/computainal_biology_intro/","path":"2017/05/13/computainal_biology_intro/","title":"计算生物学入门资料整理"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>计算生物学入门资料整理 | Life is Worth Living</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Life is Worth Living</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="user fa-fw"></i>About</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97%E7%94%9F%E7%89%A9%E5%AD%A6%E7%9A%84%E5%AE%9A%E4%B9%89"><span class="nav-number">1.</span> <span class="nav-text">计算生物学的定义</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E8%AE%A1%E7%AE%97%E7%94%9F%E7%89%A9%E5%AD%A6%E7%9A%84%E7%A0%94%E7%A9%B6%E5%86%85%E5%AE%B9"><span class="nav-number"></span> <span class="nav-text">1. 计算生物学的研究内容</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E8%AE%A1%E7%AE%97%E7%94%9F%E7%89%A9%E5%AD%A6%E7%9A%84%E5%85%A5%E9%97%A8%E6%95%99%E6%9D%90"><span class="nav-number"></span> <span class="nav-text">2. 计算生物学的入门教材</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E3%80%8AMolecular-Modelling-Principles-and-Applications%E3%80%8BAndrew-R-Leach"><span class="nav-number"></span> <span class="nav-text">1. 《Molecular Modelling: Principles and Applications》Andrew R. Leach</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E3%80%8A%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%BE%85%E5%8A%A9%E8%8D%AF%E7%89%A9%E5%88%86%E5%AD%90%E8%AE%BE%E8%AE%A1%E3%80%8B%E4%BE%AF%E5%BB%B7%E5%86%9B-%E5%BE%90%E7%AD%B1%E6%9D%B0"><span class="nav-number"></span> <span class="nav-text">2. 《计算机辅助药物分子设计》侯廷军, 徐筱杰</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E3%80%8A%E5%88%86%E5%AD%90%E6%A8%A1%E6%8B%9F%E7%9A%84%E7%90%86%E8%AE%BA%E4%B8%8E%E5%AE%9E%E8%B7%B5%E3%80%8B%E9%99%88%E6%AD%A3%E9%9A%86"><span class="nav-number"></span> <span class="nav-text">3. 《分子模拟的理论与实践》陈正隆</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-%E3%80%8A%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%BE%85%E5%8A%A9%E8%8D%AF%E7%89%A9%E8%AE%BE%E8%AE%A1-%E5%8E%9F%E7%90%86%E3%80%81%E6%96%B9%E6%B3%95%E5%8F%8A%E5%BA%94%E7%94%A8%E3%80%8B%E9%99%88%E5%87%AF%E5%85%88"><span class="nav-number"></span> <span class="nav-text">4. 《计算机辅助药物设计:原理、方法及应用》陈凯先</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E8%BD%AF%E4%BB%B6%E6%89%8B%E5%86%8C"><span class="nav-number"></span> <span class="nav-text">其他软件手册</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E8%9B%8B%E7%99%BD%E7%BB%93%E6%9E%84%E9%A2%84%E6%B5%8B"><span class="nav-number"></span> <span class="nav-text">3. 蛋白结构预测</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%9B%8B%E7%99%BD%E8%B4%A8%E7%BB%93%E6%9E%84%E9%A2%84%E6%B5%8B%E7%9A%84%E8%BD%AF%E4%BB%B6"><span class="nav-number"></span> <span class="nav-text">蛋白质结构预测的软件</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-Modeller"><span class="nav-number"></span> <span class="nav-text">1. Modeller</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-HHpred"><span class="nav-number"></span> <span class="nav-text">2. HHpred</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-I-TASSER"><span class="nav-number"></span> <span class="nav-text">3. I-TASSER</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E5%88%86%E5%AD%90%E5%AF%B9%E6%8E%A5%EF%BC%88Docking%EF%BC%89"><span class="nav-number"></span> <span class="nav-text">4. 分子对接（Docking）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E5%AD%90%E5%AF%B9%E6%8E%A5%E8%BD%AF%E4%BB%B6"><span class="nav-number"></span> <span class="nav-text">分子对接软件</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-Autodock-Autodock-Vina"><span class="nav-number"></span> <span class="nav-text">1. Autodock &#x2F; Autodock Vina</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-UCSF-DOCK"><span class="nav-number"></span> <span class="nav-text">2. UCSF DOCK</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-Glide"><span class="nav-number"></span> <span class="nav-text">3. Glide</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-HADDOCK"><span class="nav-number"></span> <span class="nav-text">4. HADDOCK</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-%E5%88%86%E5%AD%90%E5%8A%A8%E5%8A%9B%E5%AD%A6%E6%A8%A1%E6%8B%9F%EF%BC%88Molecular-Dynamic%EF%BC%8CMD%EF%BC%89"><span class="nav-number"></span> <span class="nav-text">5. 分子动力学模拟（Molecular Dynamic，MD）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E5%AD%90%E7%AB%8B%E5%9C%BA"><span class="nav-number"></span> <span class="nav-text">分子立场</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E5%AD%90%E5%8A%A8%E5%8A%9B%E5%AD%A6%E6%A8%A1%E6%8B%9F%E8%BD%AF%E4%BB%B6"><span class="nav-number"></span> <span class="nav-text">分子动力学模拟软件</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-Gromacs"><span class="nav-number"></span> <span class="nav-text">1. Gromacs</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-Amber"><span class="nav-number"></span> <span class="nav-text">2. Amber</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-NAMD"><span class="nav-number"></span> <span class="nav-text">3. NAMD</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-%E5%85%B6%E4%BB%96"><span class="nav-number"></span> <span class="nav-text">6. 其他</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E5%AD%90%E5%B1%95%E7%A4%BA%E8%BD%AF%E4%BB%B6"><span class="nav-number"></span> <span class="nav-text">分子展示软件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%9F%E7%89%A9%E4%BF%A1%E6%81%AF%E5%AD%A6%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="nav-number"></span> <span class="nav-text">生物信息学数据库</span></a></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Birdlet</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/birdlet" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;birdlet" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:dk_dingkang@126.com" title="E-Mail → mailto:dk_dingkang@126.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://www.birdlet.github.io/2017/05/13/computainal_biology_intro/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Birdlet">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Life is Worth Living">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="计算生物学入门资料整理 | Life is Worth Living">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          计算生物学入门资料整理
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2017-05-13 00:35:02" itemprop="dateCreated datePublished" datetime="2017-05-13T00:35:02+08:00">2017-05-13</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-02-18 14:12:27" itemprop="dateModified" datetime="2024-02-18T14:12:27+08:00">2024-02-18</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+<h6 id="计算生物学的定义"><a href="#计算生物学的定义" class="headerlink" title="计算生物学的定义"></a>计算生物学的定义</h6><blockquote>
+<p>“Computational biology involves the development and application of data-analytical and theoretical methods, mathematical modeling and computational simulation techniques to the study of biological, behavioral, and social systems.”</p>
+<p>——From <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Computational_biology">Wikipedia, the free encyclopedia</a></p>
+</blockquote>
+<span id="more"></span>
+
+<h2 id="1-计算生物学的研究内容"><a href="#1-计算生物学的研究内容" class="headerlink" title="1. 计算生物学的研究内容"></a>1. 计算生物学的研究内容</h2><ul>
+<li>量子化学计算(略)</li>
+<li>蛋白结构预测</li>
+<li>分子对接</li>
+<li>分子动力学模拟</li>
+</ul>
+<h2 id="2-计算生物学的入门教材"><a href="#2-计算生物学的入门教材" class="headerlink" title="2. 计算生物学的入门教材"></a>2. 计算生物学的入门教材</h2><h4 id="1-《Molecular-Modelling-Principles-and-Applications》Andrew-R-Leach"><a href="#1-《Molecular-Modelling-Principles-and-Applications》Andrew-R-Leach" class="headerlink" title="1. 《Molecular Modelling: Principles and Applications》Andrew R. Leach"></a>1. 《Molecular Modelling: Principles and Applications》Andrew R. Leach</h4><p>Valverde J R. Molecular Modelling: Principles and Applications[M]. Longman, 2001.<br>分子模拟的圣经，主要的内容包括量子力学介绍，分子力学，分子模拟和少量的蛋白结构预测和分子对接。</p>
+<h4 id="2-《计算机辅助药物分子设计》侯廷军-徐筱杰"><a href="#2-《计算机辅助药物分子设计》侯廷军-徐筱杰" class="headerlink" title="2. 《计算机辅助药物分子设计》侯廷军, 徐筱杰"></a>2. 《计算机辅助药物分子设计》侯廷军, 徐筱杰</h4><p>侯廷军, 徐筱杰. 计算机辅助药物分子设计[M]. 化学工业出版社, 2004.<br>内容详细全面，主要基于分子力场、分子模拟、分子对接及定量构效关系等。附录中对分子对接软件的介绍十分实用，但需要注意时效。</p>
+<h4 id="3-《分子模拟的理论与实践》陈正隆"><a href="#3-《分子模拟的理论与实践》陈正隆" class="headerlink" title="3. 《分子模拟的理论与实践》陈正隆"></a>3. 《分子模拟的理论与实践》陈正隆</h4><p>陈正隆. 分子模拟的理论与实践[M]. 化学工业出版社, 2007.<br>国内著名的分子模拟方面的教材，侧重点在分子力场和分子模拟。有少量分子对接内容。数学公式较多。</p>
+<h4 id="4-《计算机辅助药物设计-原理、方法及应用》陈凯先"><a href="#4-《计算机辅助药物设计-原理、方法及应用》陈凯先" class="headerlink" title="4. 《计算机辅助药物设计:原理、方法及应用》陈凯先"></a>4. 《计算机辅助药物设计:原理、方法及应用》陈凯先</h4><p>陈凯先. 计算机辅助药物设计·计算机辅助药物设计:原理、方法及应用[M]. 上海科学技术出版社, 2000.<br>偏向药物设计的计算生物学教材，内容囊括了量化计算、定量构效关系及分子对接。</p>
+<h4 id="其他软件手册"><a href="#其他软件手册" class="headerlink" title="其他软件手册"></a>其他软件手册</h4><p>很多的计算生物学软件的手册都会介绍使用的算法和原理，因此在使用软件和研读手册过程中，能够更好地了解分子力学的相应背景。</p>
+<ul>
+<li>有机所王任小老师的物理有机课件，从有机结构开始，属于分子模拟的化学基础内容。特别是第五、六、七讲<br><a target="_blank" rel="noopener" href="http://bnpc.sioc.ac.cn/?p=3&a=view&c=21&r=28">http://bnpc.sioc.ac.cn/?p=3&a=view&c=21&r=28</a></li>
+<li>Jerkwin前辈的Gromacs网站，对分子模拟和分子立场学习有指导意义<br><a target="_blank" rel="noopener" href="http://jerkwin.github.io/">http://jerkwin.github.io/</a></li>
+<li>Gromacs的手册，介绍了分子模拟的背景和在Gromacs的应用<br><a href="ftp://ftp.gromacs.org/pub/manual/manual-5.0.7.pdf">英文</a>    <a target="_blank" rel="noopener" href="http://jerkwin.github.io/9999/12/31/GROMACS%E4%B8%AD%E6%96%87%E6%89%8B%E5%86%8C/">中文</a></li>
+<li>Modeller的手册，建模的一些背景、应用和流程<br><a target="_blank" rel="noopener" href="https://salilab.org/modeller/manual">https://salilab.org/modeller/manual</a></li>
+</ul>
+<h2 id="3-蛋白结构预测"><a href="#3-蛋白结构预测" class="headerlink" title="3. 蛋白结构预测"></a>3. 蛋白结构预测</h2><p>蛋白质建模是通过序列对未知蛋白或未知的蛋白构象进行预测的研究手段。蛋白预测的研究方法主要有从头预测（ab initio），同源建模（homology modelling）等。对于从头预测，我们可以根据物理、化学原理，通过计算来进行结构预测。但是在实际中，这种方法往往不适合，特别是较大的体系无法适用。因此目前在研究中主要使用的是同源建模。同源模型化方法通过同源序列分析或者模式匹配预测蛋白质的空间结构或者结构单元。一对自然进化的蛋白质，如果它们的序列具有25～30%的等同部分或者更多，则可以假设这两个蛋白质折叠成相似的空间结构，进而预测未知序列的结构模型。<br>相关的介绍可以参见wiki百科 <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Protein_structure_prediction">https://en.wikipedia.org/wiki/Protein_structure_prediction</a></p>
+<h3 id="蛋白质结构预测的软件"><a href="#蛋白质结构预测的软件" class="headerlink" title="蛋白质结构预测的软件"></a>蛋白质结构预测的软件</h3><p>蛋白结构预测的软件列表可以在wiki上查看 <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/List_of_protein_structure_prediction_software">List of protein structure prediction software</a></p>
+<h4 id="1-Modeller"><a href="#1-Modeller" class="headerlink" title="1. Modeller"></a>1. Modeller</h4><p>蛋白结构预测的软件有很多，这里推荐的首先是较为著名的Modeller软件，来源于UCSF的教授Andrj Sali。学术使用需要申请License。<br>官网地址<a target="_blank" rel="noopener" href="https://salilab.org/modeller/">https://salilab.org/modeller/</a></p>
+<h4 id="2-HHpred"><a href="#2-HHpred" class="headerlink" title="2. HHpred"></a>2. HHpred</h4><p>HHpred是一个在线蛋白预测的服务器，分为比对和建模。建模部分使用了Modeller作为服务器。优势在于寻找同源模板的序列的Profile-Profile比对，可以找到远源的同源结构。</p>
+<h4 id="3-I-TASSER"><a href="#3-I-TASSER" class="headerlink" title="3. I-TASSER"></a>3. I-TASSER</h4><p>目前最好的蛋白结构预测服务器，2006–2012 CASP的最佳server。由U Michigan的Yang Zhang教授开发维护。学术免费。<br><a target="_blank" rel="noopener" href="http://zhanglab.ccmb.med.umich.edu/I-TASSER/">http://zhanglab.ccmb.med.umich.edu/I-TASSER/</a></p>
+<h2 id="4-分子对接（Docking）"><a href="#4-分子对接（Docking）" class="headerlink" title="4. 分子对接（Docking）"></a>4. 分子对接（Docking）</h2><p>分子对接是通过受体的特征以及受体和药物分子之间的相互作用方式来进行药物设计的方法。主要研究分子间(如配体和受体)相互作用,并预测其结合模式和亲合力的一种理论模拟方法。在计算机辅助药物设计中可以研究小分子和蛋白结合的结构模式，也可以通过对接软件进行高通量筛选。<br>介绍见wiki：<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Docking_(molecular)">https://en.wikipedia.org/wiki/Docking_(molecular)</a></p>
+<h3 id="分子对接软件"><a href="#分子对接软件" class="headerlink" title="分子对接软件"></a>分子对接软件</h3><p>分子对接的软件和服务器wiki列表<br><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/List_of_protein-ligand_docking_software">https://en.wikipedia.org/wiki/List_of_protein-ligand_docking_software</a></p>
+<h4 id="1-Autodock-Autodock-Vina"><a href="#1-Autodock-Autodock-Vina" class="headerlink" title="1. Autodock &#x2F; Autodock Vina"></a>1. Autodock &#x2F; Autodock Vina</h4><p>Scripps开发的Autodock是使用最广泛的开源分子对接软件，也是发表论文对多的对接软件。Autodock vina是AutoDock团队较为新的对接软件，精度和速度均有了提升。学术免费。<br><a target="_blank" rel="noopener" href="http://autodock.scripps.edu/">http://autodock.scripps.edu/</a></p>
+<h4 id="2-UCSF-DOCK"><a href="#2-UCSF-DOCK" class="headerlink" title="2. UCSF DOCK"></a>2. UCSF DOCK</h4><p>UCSF DOCK是非常著名的对接软件，可以和UCSF Chimera视图软件联用，也可以与<a target="_blank" rel="noopener" href="http://zinc.docking.org/">ZINC</a>数据库进行联用。ZINC库是著名的小分子结构数据库，其中的分子已经针对DOCK进行参数化，非常适合对快速的虚拟筛选。学术免费。<br><a target="_blank" rel="noopener" href="http://dock.compbio.ucsf.edu/">http://dock.compbio.ucsf.edu/</a></p>
+<h4 id="3-Glide"><a href="#3-Glide" class="headerlink" title="3. Glide"></a>3. Glide</h4><p>Schrodinger开发的软件套装，目前最好的对接软件，精度和速度都很好。商业软件，需要付费使用。<br><a target="_blank" rel="noopener" href="https://www.schrodinger.com/Glide/">https://www.schrodinger.com/Glide/</a></p>
+<h4 id="4-HADDOCK"><a href="#4-HADDOCK" class="headerlink" title="4. HADDOCK"></a>4. HADDOCK</h4><p>最好的对接服务器之一，可以进行蛋白-蛋白对接和蛋白-小分子分子对接<br><a target="_blank" rel="noopener" href="http://www.bonvinlab.org/software/haddock2.2/">http://www.bonvinlab.org/software/haddock2.2/</a></p>
+<h2 id="5-分子动力学模拟（Molecular-Dynamic，MD）"><a href="#5-分子动力学模拟（Molecular-Dynamic，MD）" class="headerlink" title="5. 分子动力学模拟（Molecular Dynamic，MD）"></a>5. 分子动力学模拟（Molecular Dynamic，MD）</h2><p>分子动力学是基于经典物理学理论来使用计算机模拟原子的动态过程。<br><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Molecular_dynamics">https://en.wikipedia.org/wiki/Molecular_dynamics</a></p>
+<h3 id="分子立场"><a href="#分子立场" class="headerlink" title="分子立场"></a>分子立场</h3><ul>
+<li>分子立场的介绍见Jerkwin前辈的<a target="_blank" rel="noopener" href="http://jerkwin.github.io/2015/12/09/%E5%8A%9B%E5%9C%BA%E4%B8%8E%E6%8B%93%E6%89%91%E4%B9%8B%E4%B8%80-%E5%8A%9B%E5%9C%BA%E7%9A%84%E6%A6%82%E5%BF%B5%E5%88%86%E7%B1%BB%E5%8F%8A%E5%8F%91%E5%B1%95%E6%96%B9%E6%B3%95/">力场与拓扑之一：力场的概念分类及发展方法</a></li>
+<li>分子立场的分类及选择见Jerkwin前辈的文章<a target="_blank" rel="noopener" href="http://jerkwin.github.io/2015/12/10/%E5%8A%9B%E5%9C%BA%E4%B8%8E%E6%8B%93%E6%89%91%E4%B9%8B%E4%BA%8C-%E5%A6%82%E4%BD%95%E9%80%89%E6%8B%A9%E5%8A%9B%E5%9C%BA/">力场与拓扑之二：如何选择力场</a></li>
+</ul>
+<h3 id="分子动力学模拟软件"><a href="#分子动力学模拟软件" class="headerlink" title="分子动力学模拟软件"></a>分子动力学模拟软件</h3><h4 id="1-Gromacs"><a href="#1-Gromacs" class="headerlink" title="1. Gromacs"></a>1. Gromacs</h4><p>免费的分子动力学软件，可以使用GPU加速。支持包括Amber，Charmm，Gromos和OPLS在内的多种立场。<br>使用是可以通过<a target="_blank" rel="noopener" href="http://charmm-gui.org/">Charmm-Gui服务器</a>构建Charmm立场体系，用户友好。</p>
+<h4 id="2-Amber"><a href="#2-Amber" class="headerlink" title="2. Amber"></a>2. Amber</h4><p>AmberTools已经开始学术免费，除了GPU加速的Amber程序外，均可使用。</p>
+<h4 id="3-NAMD"><a href="#3-NAMD" class="headerlink" title="3. NAMD"></a>3. NAMD</h4><p>免费的分子动力学软件，可以使用GPU加速，可以与VMD联用，完成多种模拟。</p>
+<h2 id="6-其他"><a href="#6-其他" class="headerlink" title="6. 其他"></a>6. 其他</h2><h3 id="分子展示软件"><a href="#分子展示软件" class="headerlink" title="分子展示软件"></a>分子展示软件</h3><ul>
+<li><a target="_blank" rel="noopener" href="http://www.cgl.ucsf.edu/chimera/">UCSF Chimera</a></li>
+<li><a target="_blank" rel="noopener" href="http://pymol.org/">Pymol开源版</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.ks.uiuc.edu/Research/vmd/">VMD</a></li>
+</ul>
+<h3 id="生物信息学数据库"><a href="#生物信息学数据库" class="headerlink" title="生物信息学数据库"></a>生物信息学数据库</h3><ul>
+<li><a href="www.uniprot.org">Uniprot蛋白信息综合数据库</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.rcsb.org/pdb/home/home.do">RCSB PDB蛋白结构数据库</a></li>
+<li><a target="_blank" rel="noopener" href="http://pfam.xfam.org/">Pfam蛋白结构域数据库</a></li>
+<li><a target="_blank" rel="noopener" href="http://zinc.docking.org/">ZINC小分子结构数据库</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.ebi.ac.uk/chembl/">ChemBL小分子活性数据库</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.genome.jp/kegg/kegg3a.html">KEGG Pathway Map代谢图数据库</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/computational-biology/" rel="tag"># computational biology</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+            </div>
+            <div class="post-nav-item">
+                <a href="/2017/07/29/interaction_fp/" rel="next" title="Interaction coverage of Protein-Ligand system">
+                  Interaction coverage of Protein-Ligand system <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Birdlet</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+Visited <span id="busuanzi value site_pv"></span> Visitors <span id="busuanzi value site uv"></span>
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"birdlet","repo":"birdlet.github.io","client_id":"0f3d8d5b00e8b378ccd0","client_secret":"049507faf0c3169f86f9e6e2c9422a32c24393b7","admin_user":"birdlet","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"en","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"f5d355dc58258269157e7bfb6e1a9bce"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>

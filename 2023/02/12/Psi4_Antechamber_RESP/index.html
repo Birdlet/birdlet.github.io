@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.birdlet.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.19.1","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="RESP电荷用于分子模拟，也是Amber&#x2F;GAFF力场的御用电荷。Amber官方的的电荷教程以商业软件Gaussian和Jaguar为主，但目前使用开源的Psi4的Antechamber拟合教程并没有先例。除此以外，Multiwfn也是一种选择，Multiwfn支持多种量化格式的RESP和RESP2电荷的拟合。本文中，我们仅依靠python开发环境的Psi4和Antechamber进行有">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Psi4 + Antechamber进行Sigma Hole的RESP电荷拟合">
+<meta property="og:url" content="https://www.birdlet.github.io/2023/02/12/Psi4_Antechamber_RESP/index.html">
+<meta property="og:site_name" content="Life is Worth Living">
+<meta property="og:description" content="RESP电荷用于分子模拟，也是Amber&#x2F;GAFF力场的御用电荷。Amber官方的的电荷教程以商业软件Gaussian和Jaguar为主，但目前使用开源的Psi4的Antechamber拟合教程并没有先例。除此以外，Multiwfn也是一种选择，Multiwfn支持多种量化格式的RESP和RESP2电荷的拟合。本文中，我们仅依靠python开发环境的Psi4和Antechamber进行有">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://www.birdlet.github.io/picture/ESP.png">
+<meta property="article:published_time" content="2023-02-11T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-02-18T06:12:27.865Z">
+<meta property="article:author" content="Birdlet">
+<meta property="article:tag" content="CADD">
+<meta property="article:tag" content="MD">
+<meta property="article:tag" content="RESP">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.birdlet.github.io/picture/ESP.png">
+
+
+<link rel="canonical" href="https://www.birdlet.github.io/2023/02/12/Psi4_Antechamber_RESP/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://www.birdlet.github.io/2023/02/12/Psi4_Antechamber_RESP/","path":"2023/02/12/Psi4_Antechamber_RESP/","title":"Psi4 + Antechamber进行Sigma Hole的RESP电荷拟合"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Psi4 + Antechamber进行Sigma Hole的RESP电荷拟合 | Life is Worth Living</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Life is Worth Living</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="user fa-fw"></i>About</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Psi4%E5%92%8CAntechamber%E7%9A%84%E5%AE%89%E8%A3%85"><span class="nav-number">1.</span> <span class="nav-text">Psi4和Antechamber的安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Antechamber%E5%92%8CGaussian%E5%AE%98%E6%96%B9%E6%8B%9F%E5%90%88%E6%95%99%E7%A8%8B%E8%A7%A3%E9%87%8A"><span class="nav-number">2.</span> <span class="nav-text">Antechamber和Gaussian官方拟合教程解释</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Gaussian-ESP-GESP-%E6%96%87%E4%BB%B6%E8%A7%A3%E9%87%8A"><span class="nav-number">3.</span> <span class="nav-text">Gaussian ESP (GESP)文件解释</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Psi4%E7%9A%84%E7%BB%93%E6%9E%84%E4%BC%98%E5%8C%96"><span class="nav-number">4.</span> <span class="nav-text">Psi4的结构优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9D%99%E7%94%B5%E5%8A%BF%E6%A0%BC%E7%82%B9%E8%AE%A1%E7%AE%97"><span class="nav-number">5.</span> <span class="nav-text">静电势格点计算</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Psi4%E8%BE%93%E5%87%BA%E6%A0%BC%E5%BC%8F%E8%BD%ACGESP%E6%A0%BC%E5%BC%8F"><span class="nav-number">6.</span> <span class="nav-text">Psi4输出格式转GESP格式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Psi4-GESP%E7%9A%84Antechamber-RESP%E7%94%B5%E8%8D%B7%E8%AE%A1%E7%AE%97"><span class="nav-number">7.</span> <span class="nav-text">Psi4 GESP的Antechamber RESP电荷计算</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">8.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="nav-number">9.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Birdlet</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/birdlet" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;birdlet" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:dk_dingkang@126.com" title="E-Mail → mailto:dk_dingkang@126.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://www.birdlet.github.io/2023/02/12/Psi4_Antechamber_RESP/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Birdlet">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Life is Worth Living">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Psi4 + Antechamber进行Sigma Hole的RESP电荷拟合 | Life is Worth Living">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Psi4 + Antechamber进行Sigma Hole的RESP电荷拟合
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2023-02-12 00:00:00" itemprop="dateCreated datePublished" datetime="2023-02-12T00:00:00+08:00">2023-02-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-02-18 14:12:27" itemprop="dateModified" datetime="2024-02-18T14:12:27+08:00">2024-02-18</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>RESP电荷用于分子模拟，也是Amber&#x2F;GAFF力场的御用电荷。Amber官方的的电荷教程以商业软件Gaussian和Jaguar为主，但目前使用开源的Psi4的Antechamber拟合教程并没有先例。除此以外，Multiwfn也是一种选择，Multiwfn支持多种量化格式的RESP和RESP2电荷的拟合。本文中，我们仅依靠python开发环境的Psi4和Antechamber进行有机小分子的RESP电荷拟合，以避开昂贵商用的Gaussian和Jaguar等软件.</p>
+<span id="more"></span>
+
+<h2 id="Psi4和Antechamber的安装"><a href="#Psi4和Antechamber的安装" class="headerlink" title="Psi4和Antechamber的安装"></a>Psi4和Antechamber的安装</h2><p>Psi4作为基于python的开源量化软件，使用conda安装简单快捷。Ambertools开源后也通过anaconda进行分发，使用conda同样可以简单快速地安装。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">conda install psi4 ambertools</span><br></pre></td></tr></table></figure>
+
+<h2 id="Antechamber和Gaussian官方拟合教程解释"><a href="#Antechamber和Gaussian官方拟合教程解释" class="headerlink" title="Antechamber和Gaussian官方拟合教程解释"></a>Antechamber和Gaussian官方拟合教程解释</h2><p>使用高斯计算配体的表面静电势(Electro Potential Surface, ESP)的过程详见<a target="_blank" rel="noopener" href="http://gohom.win/2015/09/17/AutoCalcRESP/" title="自动计算ESP和RESP电荷(AMBER and G09)">此文</a>的解释。</p>
+<p>Antechamber可以使用高斯的两种输出格式进行RESP拟合。第一种方式是使用高斯的output文件进行拟合，第二种方式则是使用高斯输出的GESP文件进行拟合。我们需要关注的是Antechamber使用GESP格式进行RESP的拟合命令，因为GESP文件的格式清晰简单，而且我们可以使用Psi4输出的静电势格点进行“伪装”。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 使用高斯GESP进行RESP拟合，本教程主要接入的界面</span></span><br><span class="line">antechamber -i ligand.gesp -<span class="keyword">fi</span> gesp -o ligand_resp.mol2 -fo mol2 -c resp</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用高斯输出文件进行RESP拟合，本教程略过</span></span><br><span class="line"><span class="comment"># antechamber -i ligand.log -fi gout -o ligand_resp.mol2 -fo mol2 -c resp</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># parmchk -i ligand_resp.prep -f prepi -o ligand_resp.frcmod # 补全缺失成键参数，与本教程关系不大，略过</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="Gaussian-ESP-GESP-文件解释"><a href="#Gaussian-ESP-GESP-文件解释" class="headerlink" title="Gaussian ESP (GESP)文件解释"></a>Gaussian ESP (GESP)文件解释</h2><p>让我们以分子CF3Cl为例进行计算，首先打开一个GESP文件解读下它的格式。GESP文件的生成见前文<a target="_blank" rel="noopener" href="http://gohom.win/2015/09/17/AutoCalcRESP/" title="自动计算ESP和RESP电荷(AMBER and G09)">引用</a>。</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">ESP FILE - ATOMIC UNITS</span><br><span class="line">CHARGE =   0 - MULTIPLICITY =   1</span><br><span class="line">ATOMIC COORDINATES AND ESP CHARGES. #ATOMS =        5</span><br><span class="line"> C      -0.66076449D+00  0.36262007D-03  0.47985687D-16  0.36304379D+00</span><br><span class="line"> F      -0.15151018D+01 -0.11583839D+01 -0.20049910D+01 -0.10253982D+00</span><br><span class="line"> F      -0.15151019D+01 -0.11584051D+01  0.20049788D+01 -0.10253982D+00</span><br><span class="line"> F      -0.15165984D+01  0.23157629D+01  0.12246920D-04 -0.10187755D+00</span><br><span class="line"> Cl      0.26403415D+01  0.41522919D-03  0.13662726D-15 -0.56086592D-01</span><br><span class="line">DIPOLE MOMENT:</span><br><span class="line">X=  0.10644740D+00 Y=  0.46159385D-03 Z= -0.48794012D-08 Total=  0.10644840D+00</span><br><span class="line">TRACELESS QUADRUPOLE MOMENT:</span><br><span class="line">  XX=  0.77021461D+00   YY= -0.38540685D+00   ZZ= -0.38480776D+00</span><br><span class="line">  XY= -0.47956518D-03   XZ= -0.13940940D-06   YZ=  0.75005058D-08</span><br><span class="line">ESP VALUES AND GRID POINT COORDINATES. #POINTS =    3558</span><br><span class="line"> 0.18293171D-01 -0.45329677D+01  0.39412720D+00  0.77420129D+00</span><br><span class="line"> 0.20596410D-01 -0.46291894D+01  0.36262007D-03  0.29097360D-15</span><br><span class="line"> 0.18734720D-01 -0.45529372D+01 -0.77383867D+00  0.29097360D-15</span><br><span class="line"> 0.20696154D-01  0.11343680D+00 -0.38918101D+01  0.29097360D-15</span><br><span class="line"> 0.18293167D-01 -0.45329677D+01  0.39412720D+00 -0.77420129D+00</span><br><span class="line"> .... Another 3553 Lines, 3558 Lines in total</span><br></pre></td></tr></table></figure>
+<p>高斯的GESP文件格式还是比较清晰的，在不查询文档时也可以通过文件内的区块名称进行理解。第一部分，<code>ESP FILE</code>区块指明了接下文件中所有单位为原子单位 (<code>ATOMIC UNITS</code>)，即距离&#x2F;坐标单位为$Bohr$ (1 Bohr &#x3D; 0.529 Å)，静电势单位为${\displaystyle E_{\text{h}}&#x2F;e}$，偶极单位为${\displaystyle ea_{0}}$。</p>
+<p>第二部分则是电荷<code>CHARGE</code>和自旋多重度<code>MULTIPLICITY</code>，这两个参数Antechamber不会读入，所以可以固定不变。具体的分子电荷通过Antechamber的<code>-nc</code>参数进行指定即可覆盖文件中所有电荷信息，或第三部分的偏电荷加和确定。</p>
+<p>第三部分<code> ATOMIC COORDINATES AND ESP CHARGES</code>为重点部分，即元素类型、原子坐标和原子的偏电荷，一共1+3+1列，行数即原子数，由<code>#ATOMS</code>指出。数字格式为科学计数法(D为Fortran语言习惯，使用e或E不会影响Antechamber读入)，单位均为前文提到的AU。第5列的偏电荷可以留空，后续使用Antechamber的<code>-nc</code>参数进行指定即可覆盖。如果不留空，也不指定Antechamber的<code>-nc</code>参数时，Antechamber会将此列电荷加和作为Net Charge。</p>
+<p>第四部分<code>DIPOLE MOMENT</code>和第五部分<code>TRACELESS QUADRUPOLE MOMENT</code>，即偶极矩和四极矩，Antechamber不会使用这几行数据，留下对应数量空行即可。</p>
+<p>第五部分<code> ESP VALUES AND GRID POINT COORDINATES</code>为重点部分，即静电势，静电势坐标，共1+3列，行数为静电势表面格点数，由<code>#POINTS</code>指定。所有数值为科学计数法，原子单位。</p>
+<p>接下来的任务就很明确，首先使用Psi4计算表面静电势格点文件，然后将分子坐标，静电势格点坐标和静电势进行相应替换，即可以“伪装”高斯GESP文件，用于Antechamber的RESP拟合</p>
+<h2 id="Psi4的结构优化"><a href="#Psi4的结构优化" class="headerlink" title="Psi4的结构优化"></a>Psi4的结构优化</h2><p>Psi4单点优化过程与一般量化软件无异，设置坐标，提供量化方法和相应基组即可。这里我们参考sobereva<a target="_blank" rel="noopener" href="http://sobereva.com/441" title="RESP拟合静电势电荷的原理以及在Multiwfn中的计算">文章</a>和<a target="_blank" rel="noopener" href="http://sobereva.com/336" title="谈谈量子化学中基组的选择">这篇文章</a>，使用m06-2x-d3zero2b&#x2F;def2-svp进行构象优化。主要选择原因是添加D3校正后，M062X-D3在有机小分子中表现较好，def2系列基组则对超过第四周期的元素有更方便的支持。<br>特别注意的是，Psi4是支持使用Å和原子单位AU的，我们这里为了读写方便，<strong>Psi4下的坐标单位都是Å，静电势单位为AU</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"># psi4_opt.in</span><br><span class="line"># Any line starting with the # character is a comment line</span><br><span class="line"></span><br><span class="line">memory 2 GB</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">molecule CONF &#123;</span><br><span class="line"> 0 1</span><br><span class="line">C          0.17930        0.30890        0.22760</span><br><span class="line">F          0.55040        1.19750       -0.77480</span><br><span class="line">F         -0.47570       -0.77930       -0.33700</span><br><span class="line">F          1.31350       -0.13090        0.90010</span><br><span class="line">Cl        -0.88500        1.10940        1.34740</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">set &#123;</span><br><span class="line">    basis def2-svp</span><br><span class="line">    freeze_core True</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">optimize(&#x27;m06-2x-d3zero2b&#x27;)</span><br><span class="line">CONF.save_xyz_file(&quot;opt.xyz&quot;, 1)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>然后运行</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">psi4 psi4_opt.in opt.out -n 20</span><br></pre></td></tr></table></figure>
+
+<p>最后一行导出opt.xyz作为优化后结构，由于后续单点能和静电势计算。</p>
+<h2 id="静电势格点计算"><a href="#静电势格点计算" class="headerlink" title="静电势格点计算"></a>静电势格点计算</h2><p>高斯或其他量化软件的静电势可以通过GaussView或Mutiwfn进行可视化分析，导出.cube文件后，可以借助VMD进行定制化的显示。不过我们这里不使用.cube文件，而是通过<code>E, wfn = prop(&#39;m06-2x-d3zero2b&#39;, properties=[&quot;GRID_ESP&quot;, &quot;GRID_FIELD&quot;], return_wfn=True) </code>函数直接导出类似GESP文件的静电势格点。</p>
+<p>在进行计算前，我们先溯源Amber力场的RESP用的格点是如何指定的。RESP电荷使用的格点坐标是通过在分子的原子范德华表面壳层进行采样获得的，为了平衡精度和计算量，RESP<a target="_blank" rel="noopener" href="https://pubs.acs.org/doi/10.1021/j100142a004">原文</a>中使用了1.4, 1.6, 1.8, 2.0倍的VDW半径的壳层，并且要求每平方埃至少采样1个点。不同的程序和采样方法在这里会引入一些差异，比如在球面上的拟合的算法是否相同，在原子接缝的地方是否自动去除过密的拟合点，密度定义是体积还是面积等。不过此类差异在采样点数量接近时，对最后的电荷拟合产生的影响可以忽略不记。</p>
+<p>Github中Psi4的RESP已经有一些实现，因此我们可以直接借鉴CSDGroup的范德华表面采样<a target="_blank" rel="noopener" href="https://github.com/cdsgroup/resp/blob/master/resp/vdw_surface.py" title="vdw_surface.py">代码</a>。我们可以根据自身的需求对代码进行微调。</p>
+<p>比如源码中，原子VDW半径取自GAMESS，只有前3个周期。如果我们想拟合有机小分子中也有的Br和I元素的话，需要手动添加对应原子的VDW半径。一种简单方法是直接使用全周期的UFF力场中的原子半径除1.2进行近似。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Van der Waals radii (in angstrom) are taken from GAMESS.</span></span><br><span class="line">vdw_r = &#123;<span class="string">&#x27;H&#x27;</span>: <span class="number">1.20</span>, <span class="string">&#x27;HE&#x27;</span>: <span class="number">1.20</span>,</span><br><span class="line">         <span class="string">&#x27;LI&#x27;</span>: <span class="number">1.37</span>, <span class="string">&#x27;BE&#x27;</span>: <span class="number">1.45</span>, <span class="string">&#x27;B&#x27;</span>: <span class="number">1.45</span>, <span class="string">&#x27;C&#x27;</span>: <span class="number">1.50</span>,</span><br><span class="line">         <span class="string">&#x27;N&#x27;</span>: <span class="number">1.50</span>, <span class="string">&#x27;O&#x27;</span>: <span class="number">1.40</span>, <span class="string">&#x27;F&#x27;</span>: <span class="number">1.35</span>, <span class="string">&#x27;NE&#x27;</span>: <span class="number">1.30</span>,</span><br><span class="line">         <span class="string">&#x27;NA&#x27;</span>: <span class="number">1.57</span>, <span class="string">&#x27;MG&#x27;</span>: <span class="number">1.36</span>, <span class="string">&#x27;AL&#x27;</span>: <span class="number">1.24</span>, <span class="string">&#x27;SI&#x27;</span>: <span class="number">1.17</span>,</span><br><span class="line">         <span class="string">&#x27;P&#x27;</span>: <span class="number">1.80</span>, <span class="string">&#x27;S&#x27;</span>: <span class="number">1.75</span>, <span class="string">&#x27;CL&#x27;</span>: <span class="number">1.70</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<p>核心代码为</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">vdw_surface</span>(<span class="params">coordinates, elements, scale_factor, density, input_radii</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;Computes points outside the van der Waals surface of molecules.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Parameters</span></span><br><span class="line"><span class="string">    ----------</span></span><br><span class="line"><span class="string">    coordinates : ndarray</span></span><br><span class="line"><span class="string">        cartesian coordinates of the nuclei, in units of angstrom</span></span><br><span class="line"><span class="string">    elements : list</span></span><br><span class="line"><span class="string">        The symbols (e.g. C, H) for the atoms</span></span><br><span class="line"><span class="string">    scale_factor : float</span></span><br><span class="line"><span class="string">        The points on the molecular surface are set at a distance of</span></span><br><span class="line"><span class="string">        scale_factor * vdw_radius away from each of the atoms.</span></span><br><span class="line"><span class="string">    density : float</span></span><br><span class="line"><span class="string">        The (approximate) number of points to generate per square angstrom</span></span><br><span class="line"><span class="string">        of surface area. 1.0 is the default recommended by Kollman &amp; Singh.</span></span><br><span class="line"><span class="string">    input_radii : dict</span></span><br><span class="line"><span class="string">        dictionary of user&#x27;s defined VDW radii</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Returns</span></span><br><span class="line"><span class="string">    -------</span></span><br><span class="line"><span class="string">    radii : dict</span></span><br><span class="line"><span class="string">        A dictionary of scaled VDW radii</span></span><br><span class="line"><span class="string">    surface_points : ndarray</span></span><br><span class="line"><span class="string">        array of the coordinates of the points on the surface</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    ...</span><br><span class="line">    <span class="comment"># loop over atomic coordinates</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(coordinates)):</span><br><span class="line">        <span class="comment"># calculate approximate number of ESP grid points</span></span><br><span class="line">        n_points = <span class="built_in">int</span>(density * <span class="number">4.0</span> * np.pi* np.power(radii[elements[i]], <span class="number">2</span>))</span><br><span class="line">        <span class="comment"># generate an array of n_points in a unit sphere around the atom</span></span><br><span class="line">        dots = surface(n_points)</span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">return</span> np.array(surface_points), radii</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">surface</span>(<span class="params">n</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;Computes approximately n points on unit sphere. Code adapted from GAMESS.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Parameters</span></span><br><span class="line"><span class="string">    ----------</span></span><br><span class="line"><span class="string">    n : int</span></span><br><span class="line"><span class="string">        approximate number of requested surface points</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Returns</span></span><br><span class="line"><span class="string">    -------</span></span><br><span class="line"><span class="string">    ndarray</span></span><br><span class="line"><span class="string">        numpy array of xyz coordinates of surface points</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">return</span> np.array(u)</span><br></pre></td></tr></table></figure>
+<p>摘出的代码即对原子球表面进行格点采样的核心代码。计算格点时，我们使用与高斯相同的缩放半径(1.4，1.6，1.8，2.0)，密度设置5（此时格点数和高斯输出格点数相近）。</p>
+<p>最后我们将算出的分子VDW表面导出为<code>gird.dat</code>格点文件即可<code>np.savetxt(&#39;grid.dat&#39;, points, fmt=&#39;%15.10f&#39;)</code>。这个文件放置在接下来的Psi4单点能计算的同一目录下，Psi4会自动调用并计算<code>grid.dat</code>坐标对应的静电势。</p>
+<p>接下来计算交给Psi4</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"># psi4_gas.in</span><br><span class="line"># Any line starting with the # character is a comment line</span><br><span class="line"></span><br><span class="line">memory 2 GB</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">molecule CONF &#123;</span><br><span class="line"> 0 1</span><br><span class="line"> C    0.210029298380   -0.158090055990   -0.221115071776</span><br><span class="line"> F    0.570509626472    0.672705716575   -1.177444086426</span><br><span class="line"> F   -0.397910302325   -1.192163020236   -0.764308861674</span><br><span class="line"> F    1.290496394679   -0.580428741997    0.402797484019</span><br><span class="line">Cl   -0.866966788650    0.651813183796    0.911985231755</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">set &#123;</span><br><span class="line">    basis def2-tzvp</span><br><span class="line">    freeze_core True</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># set cubeprop_tasks [&#x27;esp&#x27;]  # 与cubreprop函数配合输出静电势的.cube文件，用于可视化，RESP计算不需要</span><br><span class="line"></span><br><span class="line"># psi4 会自动调用grid.dat文件计算properties=[&quot;GRID_ESP&quot;,]</span><br><span class="line">E, wfn = prop(&#x27;m06-2x-d3zero2b&#x27;, properties=[&quot;GRID_ESP&quot;,], return_wfn=True)</span><br><span class="line"></span><br><span class="line"># cubeprop(wfn)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">psi4 psi4_gas.in gas.out -n 20</span><br></pre></td></tr></table></figure>
+<p>运行顺利时，计算目录下会写出<code>grid_esp_gas.dat</code>文件，该文件仅有一列数据，即静电势，单位为AU。</p>
+<h2 id="Psi4输出格式转GESP格式"><a href="#Psi4输出格式转GESP格式" class="headerlink" title="Psi4输出格式转GESP格式"></a>Psi4输出格式转GESP格式</h2><p>这一步几乎不需要计算，只需要进行单位和格式转换即可。坐标值单位需要转换为Bohr，静电势单位无需转换，其余位置留空或修改即可。此步使用python脚本进行即可。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">ESP FILE - ATOMIC UNIT</span><br><span class="line">CHARGE =   0 - MULTIPLICITY =   1</span><br><span class="line">ATOMIC COORDINATES AND ESP CHARGES. #ATOMS =        5</span><br><span class="line"> C       3.96897854e-01 -2.98746910e-01 -4.17846930e-01  0.00000000e+00</span><br><span class="line"> F       1.07810695e+00  1.27122957e+00 -2.22504686e+00  0.00000000e+00</span><br><span class="line"> F      -7.51941497e-01 -2.25286161e+00 -1.44433443e+00  0.00000000e+00</span><br><span class="line"> F       2.43868476e+00 -1.09685136e+00  7.61176932e-01  0.00000000e+00</span><br><span class="line"> Cl     -1.63832980e+00  1.23174841e+00  1.72340233e+00  0.00000000e+00</span><br><span class="line">DIPOLE MOMENT:</span><br><span class="line"></span><br><span class="line">TRACELESS QUADRUPOLE MOMENT:</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">ESP VALUES AND GRID POINT COORDINATES. #POINTS =    2969</span><br><span class="line"> 1.78249666e-02 -4.46537858e-02 -3.36980602e+00  2.05642551e+00</span><br><span class="line"> 1.85040189e-02 -2.58006295e+00  5.75367651e-01 -2.89211937e+00</span><br><span class="line"> 1.86787356e-02  3.00700430e+00 -1.97616047e+00 -2.89211937e+00</span><br><span class="line"> 1.71942816e-02  2.29230051e+00 -1.88917858e+00 -3.52048644e+00</span><br><span class="line"> 1.52906452e-02  2.82837361e+00  2.86680845e+00  4.48320948e-01</span><br><span class="line">.... Another 2964 Lines, 2969 Lines in total</span><br></pre></td></tr></table></figure>
+
+<p>这里将两个GESP文件分别可视化，对静电势以-0.01~+0.01进行着色，可以看到CF3Cl分子的表面静电势在Psi4和高斯中计算结果基本一致，且Cl的Sigma Hole的正静电势也清晰可见。<br><img src="/picture/ESP.png" alt="ESP"></p>
+<h2 id="Psi4-GESP的Antechamber-RESP电荷计算"><a href="#Psi4-GESP的Antechamber-RESP电荷计算" class="headerlink" title="Psi4 GESP的Antechamber RESP电荷计算"></a>Psi4 GESP的Antechamber RESP电荷计算</h2><p>接下来的流程与官方文档一致，额外需要说明的时尽量使用<code>-nc</code>参数指定Net Charge，以覆盖“伪造”的GESP文件中的电荷。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 使用高斯GESP进行RESP拟合，本教程主要接入的界面</span></span><br><span class="line">antechamber -i gas.gesp -<span class="keyword">fi</span> gesp -o ligand_resp.mol2 -fo mol2 -c resp -nc 0</span><br><span class="line"><span class="comment"># parmchk -i ligand_resp.prep -f prepi -o ligand_resp.frcmod # 补全缺失成键参数，与本教程关系不大，略过</span></span><br></pre></td></tr></table></figure>
+
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>到此，Psi4+Antechamber的RESP电荷拟合完成。本教程尽量使用最少的依赖，只使用基于Conda分发的Psi4和AmberTools及一些辅助脚本，即可完成RESP电荷的拟合，告别对商业软件高斯的依赖。以上代码后续会发布在我的github中，供读者使用和调整。</p>
+<p><strong>思考题</strong>：CF3Cl由于F的拉电子作用和Cl本身的性质，在C-Cl键的反键轨道处产生Sigma Hole，即此区域的静电势为正。前文中RESP电荷拟合后Cl带-0.049的负电荷，是无法体现正电区域的。假如我们想引入一个带正电荷的哑原子进行RESP，该如何达成？</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><blockquote>
+<p>[1] <a target="_blank" rel="noopener" href="http://gohom.win/2015/09/17/AutoCalcRESP/">http://gohom.win/2015/09/17/AutoCalcRESP/</a> 自动计算ESP和RESP电荷(AMBER and G09)</p>
+<p>[2] <a target="_blank" rel="noopener" href="http://sobereva.com/441">http://sobereva.com/441</a> RESP拟合静电势电荷的原理以及在Multiwfn中的计算</p>
+<p>[3] <a target="_blank" rel="noopener" href="http://sobereva.com/336">http://sobereva.com/336</a> 谈谈量子化学中基组的选择</p>
+<p>[4] Bayly, C. I., Cieplak, P., Cornell, W. D. , &amp; Kollman, P. A.. (1993). <a target="_blank" rel="noopener" href="https://pubs.acs.org/doi/10.1021/j100142a004">A well-behaved electrostatic potential based method using charge restraints for deriving atomic charges: the resp model</a>. Journal of Physical Chemistry, 97(40), 10269-10280.</p>
+<p>[5] <a target="_blank" rel="noopener" href="https://github.com/cdsgroup/resp/blob/master/resp/vdw_surface.py">https://github.com/cdsgroup/resp/blob/master/resp/vdw_surface.py</a> vdw_surface.py</p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/CADD/" rel="tag"># CADD</a>
+              <a href="/tags/MD/" rel="tag"># MD</a>
+              <a href="/tags/RESP/" rel="tag"># RESP</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2019/10/03/rdkit_to_mol2/" rel="prev" title="Save MOL2 file from RDkit Mol">
+                  <i class="fa fa-angle-left"></i> Save MOL2 file from RDkit Mol
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/02/15/Psi4_Dummy_RESP/" rel="next" title="Psi4 + Antechamber进行Sigma Hole的RESP电荷拟合">
+                  Psi4 + Antechamber进行Sigma Hole的RESP电荷拟合 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Birdlet</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+Visited <span id="busuanzi value site_pv"></span> Visitors <span id="busuanzi value site uv"></span>
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"birdlet","repo":"birdlet.github.io","client_id":"0f3d8d5b00e8b378ccd0","client_secret":"049507faf0c3169f86f9e6e2c9422a32c24393b7","admin_user":"birdlet","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"en","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"99c29d7d2fb8ec3f44ecdb04854b70f9"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>

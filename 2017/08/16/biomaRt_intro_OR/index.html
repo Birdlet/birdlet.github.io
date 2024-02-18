@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.birdlet.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.19.1","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Why We Hate Cilantro I want to analysis SNP in coding region of olfactory receptor. In 2012, researchers studied SNP correlated with cilantro preference, and they found an SNP rs72921001 influence peo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Access Ensemble Genome Database to BiomaRt of R">
+<meta property="og:url" content="https://www.birdlet.github.io/2017/08/16/biomaRt_intro_OR/index.html">
+<meta property="og:site_name" content="Life is Worth Living">
+<meta property="og:description" content="Why We Hate Cilantro I want to analysis SNP in coding region of olfactory receptor. In 2012, researchers studied SNP correlated with cilantro preference, and they found an SNP rs72921001 influence peo">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2017-08-15T16:35:02.000Z">
+<meta property="article:modified_time" content="2024-02-18T06:12:27.617Z">
+<meta property="article:author" content="Birdlet">
+<meta property="article:tag" content="Bioinformatics">
+<meta property="article:tag" content="R">
+<meta property="article:tag" content="Ensembl">
+<meta property="article:tag" content="biomaRt">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://www.birdlet.github.io/2017/08/16/biomaRt_intro_OR/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://www.birdlet.github.io/2017/08/16/biomaRt_intro_OR/","path":"2017/08/16/biomaRt_intro_OR/","title":"Access Ensemble Genome Database to BiomaRt of R"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Access Ensemble Genome Database to BiomaRt of R | Life is Worth Living</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Life is Worth Living</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="user fa-fw"></i>About</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Ensembl-Database"><span class="nav-number">1.</span> <span class="nav-text">Ensembl Database</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Access-Ensembl-Database-by-biomaRt"><span class="nav-number">2.</span> <span class="nav-text">Access Ensembl Database by biomaRt</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Access-each-SNP-record-from-Ensembl"><span class="nav-number">3.</span> <span class="nav-text">Access each SNP record from Ensembl</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Update-Later%E2%80%A6-Updated"><span class="nav-number">4.</span> <span class="nav-text">Update Later… Updated!</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Birdlet</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/birdlet" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;birdlet" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:dk_dingkang@126.com" title="E-Mail → mailto:dk_dingkang@126.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://www.birdlet.github.io/2017/08/16/biomaRt_intro_OR/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Birdlet">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Life is Worth Living">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Access Ensemble Genome Database to BiomaRt of R | Life is Worth Living">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Access Ensemble Genome Database to BiomaRt of R
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2017-08-16 00:35:02" itemprop="dateCreated datePublished" datetime="2017-08-16T00:35:02+08:00">2017-08-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-02-18 14:12:27" itemprop="dateModified" datetime="2024-02-18T14:12:27+08:00">2024-02-18</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p><strong>Why We Hate Cilantro</strong></p>
+<p>I want to analysis SNP in coding region of olfactory receptor. In 2012, researchers studied SNP correlated with cilantro preference, and they found an SNP <strong>rs72921001</strong> influence people’s feeling of cilantro. They said rs72921001 is a frequently accured SNP (an A -&gt; C in DNA sequence) in <strong>OR6A2</strong>, an olfactory receptor.</p>
+<p>Resonable, right? I immediately think this could cause an amino acid missense mutation. However, when I searched this SNP in <a target="_blank" rel="noopener" href="http://www.ensembl.org/index.html"><strong>Ensembl</strong></a>, I found it is located at upstream flanking region of OR10A2, and OR6A2 is another gene… Now I think maybe the name is changed during this time, and rs72921001 might influence the expression of OR10A2 in gene level… Umm.</p>
+<p>Can I get more imformation of SNP in olfactory receptor? Let’s try by R!</p>
+<span id="more"></span>
+
+<h2 id="Ensembl-Database"><a href="#Ensembl-Database" class="headerlink" title="Ensembl Database"></a>Ensembl Database</h2><p>Talking about genome database, <a target="_blank" rel="noopener" href="http://www.ensembl.org/index.html"><strong>Ensembl</strong></a> is the one I prefered and used. I’ll copy the introdution in their main page…</p>
+<blockquote>
+<p>Ensembl is a genome browser for vertebrate genomes that supports research in comparative genomics, evolution, sequence variation and transcriptional regulation. Ensembl annotate genes, computes multiple alignments, predicts regulatory function and collects disease data. Ensembl tools include BLAST, BLAT, BioMart and the Variant Effect Predictor (VEP) for all supported species.</p>
+</blockquote>
+<p>How can I access large dataset form Ensembl? Officialy they provide ready-made tools <a target="_blank" rel="noopener" href="http://www.ensembl.org/info/docs/tools/index.html"><strong>here</strong></a>. BioMart here is the most strong tool here. Acctually, what I really want to use here are scripts, so I found this: <a target="_blank" rel="noopener" href="https://bioconductor.org/packages/release/bioc/html/biomaRt.html"><strong>biomaRt</strong></a>. It can access large dataset in BioMart database, including Ensembl, COSMIC, Uniprot, HGNC, Gramene, Wormbase and dbSNP mapped to Ensembl.</p>
+<h2 id="Access-Ensembl-Database-by-biomaRt"><a href="#Access-Ensembl-Database-by-biomaRt" class="headerlink" title="Access Ensembl Database by biomaRt"></a>Access Ensembl Database by biomaRt</h2><p>Firstly, install it by <strong>Bioconductor</strong>:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">## try http:// if https:// URLs are not supported</span></span><br><span class="line">source<span class="punctuation">(</span><span class="string">&quot;https://bioconductor.org/biocLite.R&quot;</span><span class="punctuation">)</span></span><br><span class="line">biocLite<span class="punctuation">(</span><span class="string">&quot;biomaRt&quot;</span><span class="punctuation">)</span></span><br></pre></td></tr></table></figure>
+<p>Then import <em><strong>biomaRt</strong></em> and <em><strong>Biostrings</strong></em> (for sequence processing)</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">library<span class="punctuation">(</span>biomaRt<span class="punctuation">)</span></span><br><span class="line">library<span class="punctuation">(</span>Biostrings<span class="punctuation">)</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">setwd<span class="punctuation">(</span><span class="string">&quot;C:\\Users\\Birdlet\\Desktop\\OR\\OR-Ensembl&quot;</span><span class="punctuation">)</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Set Ensembl Server</span></span><br><span class="line">ensembl <span class="operator">=</span> useEnsembl<span class="punctuation">(</span>biomart <span class="operator">=</span> <span class="string">&quot;snp&quot;</span><span class="punctuation">,</span> dataset <span class="operator">=</span> <span class="string">&quot;hsapiens_snp&quot;</span><span class="punctuation">,</span> mirror <span class="operator">=</span> <span class="string">&#x27;asia&#x27;</span><span class="punctuation">)</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># FUN: Fetch OR SNP data</span></span><br><span class="line">fetch_OR <span class="operator">&lt;-</span> <span class="keyword">function</span><span class="punctuation">(</span>OR<span class="punctuation">,</span> OR_name<span class="punctuation">)</span><span class="punctuation">&#123;</span></span><br><span class="line">    filename <span class="operator">=</span> paste<span class="punctuation">(</span><span class="string">&#x27;data\\&#x27;</span><span class="punctuation">,</span> OR_name<span class="punctuation">,</span> <span class="string">&#x27;.csv&#x27;</span><span class="punctuation">,</span> sep <span class="operator">=</span> <span class="string">&#x27;&#x27;</span><span class="punctuation">)</span></span><br><span class="line">    fetched <span class="operator">=</span> getBM<span class="punctuation">(</span><span class="built_in">attributes</span> <span class="operator">=</span> <span class="built_in">c</span><span class="punctuation">(</span><span class="string">&#x27;ensembl_gene_stable_id&#x27;</span><span class="punctuation">,</span> <span class="string">&#x27;allele&#x27;</span><span class="punctuation">,</span> <span class="string">&#x27;refsnp_id&#x27;</span><span class="punctuation">,</span></span><br><span class="line">                                   <span class="string">&#x27;refsnp_source&#x27;</span><span class="punctuation">,</span> <span class="string">&#x27;consequence_type_tv&#x27;</span><span class="punctuation">,</span> <span class="string">&#x27;minor_allele_freq&#x27;</span><span class="punctuation">,</span></span><br><span class="line">                                   <span class="string">&#x27;sift_score&#x27;</span><span class="punctuation">,</span> <span class="string">&#x27;polyphen_score&#x27;</span><span class="punctuation">,</span></span><br><span class="line">                                   <span class="string">&#x27;ensembl_peptide_allele&#x27;</span><span class="punctuation">,</span> <span class="string">&#x27;translation_start&#x27;</span><span class="punctuation">)</span><span class="punctuation">,</span></span><br><span class="line">                    filters <span class="operator">=</span> <span class="built_in">c</span><span class="punctuation">(</span><span class="string">&#x27;ensembl_gene&#x27;</span><span class="punctuation">,</span> <span class="string">&#x27;minor_allele_freq_second&#x27;</span><span class="punctuation">,</span> <span class="string">&#x27;so_mini_parent_name&#x27;</span><span class="punctuation">)</span><span class="punctuation">,</span></span><br><span class="line">                    values <span class="operator">=</span> <span class="built_in">list</span><span class="punctuation">(</span>ensembl_gene <span class="operator">=</span> OR<span class="punctuation">,</span> freq <span class="operator">=</span> <span class="string">&#x27;0.001&#x27;</span><span class="punctuation">,</span> </span><br><span class="line">                                  parent_name <span class="operator">=</span> <span class="string">&#x27;missense_variant&#x27;</span><span class="punctuation">)</span><span class="punctuation">,</span></span><br><span class="line">                    mart <span class="operator">=</span> ensembl<span class="punctuation">)</span></span><br><span class="line">    write.table<span class="punctuation">(</span>fetched<span class="punctuation">,</span> file <span class="operator">=</span> filename<span class="punctuation">,</span> <span class="built_in">quote</span> <span class="operator">=</span> <span class="literal">FALSE</span><span class="punctuation">,</span> row.names <span class="operator">=</span> <span class="literal">FALSE</span><span class="punctuation">,</span> </span><br><span class="line">              col.names <span class="operator">=</span> <span class="literal">FALSE</span><span class="punctuation">,</span> sep <span class="operator">=</span> <span class="string">&#x27;,&#x27;</span><span class="punctuation">,</span> fileEncoding <span class="operator">=</span> <span class="string">&#x27;utf-8&#x27;</span><span class="punctuation">)</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>Firstly, I use <code>useEnsembl</code> function to initialize the web server, and I give paprameters to choose “SNP” of “Homo Sapiens”. For accelerating connection, I also use mirror in Asia rater than default.</p>
+<p>Next, I defined a funtion for later. <code>getBM</code> funtion fetchs data from <strong>Ensembl</strong>, I want data including attributes of <em>‘ensembl_gene_stable_id’, ‘allele’, ‘minor_allele_freq’</em>, and set <em>‘minor_allele_freq_second’</em> larger than <em>‘0.001’</em>. Then I can get genes’ SNP data with MAF larger than 0.1  %.</p>
+<p>More details please see manual for <strong>biomRt</strong>. ;P</p>
+<h2 id="Access-each-SNP-record-from-Ensembl"><a href="#Access-each-SNP-record-from-Ensembl" class="headerlink" title="Access each SNP record from Ensembl"></a>Access each SNP record from Ensembl</h2><p>After preperation, I can input a file of protein id, and wait for downloading data!</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">ENSG00000221858<span class="punctuation">,</span>G<span class="operator">/</span>A<span class="punctuation">,</span>rs9655672<span class="punctuation">,</span>dbSNP<span class="punctuation">,</span>missense_variant<span class="punctuation">,</span><span class="number">0.00858626</span><span class="punctuation">,</span><span class="number">0.13</span><span class="punctuation">,</span><span class="number">0.361</span><span class="punctuation">,</span>A<span class="operator">/</span><span class="built_in">T</span><span class="punctuation">,</span><span class="number">223</span></span><br><span class="line">ENSG00000221858<span class="punctuation">,</span>C<span class="operator">/</span>A<span class="operator">/</span><span class="built_in">T</span><span class="punctuation">,</span>rs80128486<span class="punctuation">,</span>dbSNP<span class="punctuation">,</span>missense_variant<span class="punctuation">,</span><span class="number">0.0081869</span><span class="punctuation">,</span><span class="number">0.07</span><span class="punctuation">,</span><span class="number">0.1</span><span class="punctuation">,</span>L<span class="operator">/</span>I<span class="punctuation">,</span><span class="number">279</span></span><br><span class="line">ENSG00000221858<span class="punctuation">,</span>C<span class="operator">/</span>A<span class="operator">/</span><span class="built_in">T</span><span class="punctuation">,</span>rs80128486<span class="punctuation">,</span>dbSNP<span class="punctuation">,</span>missense_variant<span class="punctuation">,</span><span class="number">0.0081869</span><span class="punctuation">,</span><span class="number">0.21</span><span class="punctuation">,</span><span class="number">0.06</span><span class="punctuation">,</span>L<span class="operator">/</span><span class="built_in">F</span><span class="punctuation">,</span><span class="number">279</span></span><br><span class="line">ENSG00000221858<span class="punctuation">,</span>G<span class="operator">/</span>A<span class="punctuation">,</span>rs142231743<span class="punctuation">,</span>dbSNP<span class="punctuation">,</span>missense_variant<span class="punctuation">,</span><span class="number">0.00419329</span><span class="punctuation">,</span><span class="number">0.08</span><span class="punctuation">,</span><span class="number">0.376</span><span class="punctuation">,</span>V<span class="operator">/</span>I<span class="punctuation">,</span><span class="number">183</span></span><br><span class="line">ENSG00000221858<span class="punctuation">,</span><span class="built_in">T</span><span class="operator">/</span>A<span class="punctuation">,</span>rs143394460<span class="punctuation">,</span>dbSNP<span class="punctuation">,</span>missense_variant<span class="punctuation">,</span><span class="number">0.00159744</span><span class="punctuation">,</span><span class="number">0</span><span class="punctuation">,</span><span class="number">0.986</span><span class="punctuation">,</span>I<span class="operator">/</span>N<span class="punctuation">,</span><span class="number">91</span></span><br><span class="line">ENSG00000221858<span class="punctuation">,</span>G<span class="operator">/</span>A<span class="punctuation">,</span>rs34947817<span class="punctuation">,</span>dbSNP<span class="punctuation">,</span>missense_variant<span class="punctuation">,</span><span class="number">0.114217</span><span class="punctuation">,</span><span class="number">0.3</span><span class="punctuation">,</span><span class="number">0.007</span><span class="punctuation">,</span>S<span class="operator">/</span>N<span class="punctuation">,</span><span class="number">26</span></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="Update-Later…-Updated"><a href="#Update-Later…-Updated" class="headerlink" title="Update Later… Updated!"></a>Update Later… Updated!</h2><p>You can found more detail about how to use it in <a target="_blank" rel="noopener" href="https://bioconductor.org/packages/release/bioc/vignettes/biomaRt/inst/doc/biomaRt.html">https://bioconductor.org/packages/release/bioc/vignettes/biomaRt/inst/doc/biomaRt.html</a>. Also, you can simply use help in R, it’s really convinient in RStdio.</p>
+<p>BTW, I dislike cilantro but now I can accept it… Genes and environments together determine what we are!</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Bioinformatics/" rel="tag"># Bioinformatics</a>
+              <a href="/tags/R/" rel="tag"># R</a>
+              <a href="/tags/Ensembl/" rel="tag"># Ensembl</a>
+              <a href="/tags/biomaRt/" rel="tag"># biomaRt</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2017/08/08/trj_contact_map/" rel="prev" title="Use Python to Generate Protein Contact Map of Molecular Dynamics">
+                  <i class="fa fa-angle-left"></i> Use Python to Generate Protein Contact Map of Molecular Dynamics
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2017/09/06/molecular_denovo_design/" rel="next" title="论文笔记：药物de novo设计与深度增强学习">
+                  论文笔记：药物de novo设计与深度增强学习 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Birdlet</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+Visited <span id="busuanzi value site_pv"></span> Visitors <span id="busuanzi value site uv"></span>
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"birdlet","repo":"birdlet.github.io","client_id":"0f3d8d5b00e8b378ccd0","client_secret":"049507faf0c3169f86f9e6e2c9422a32c24393b7","admin_user":"birdlet","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"en","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"e4fd7032c86b364af048b0ba68812753"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>
