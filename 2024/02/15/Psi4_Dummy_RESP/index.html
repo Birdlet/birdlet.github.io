@@ -26,14 +26,18 @@
 <meta property="og:site_name" content="Life is Worth Living">
 <meta property="og:description" content="分子力场中，为描述复杂分子体系的电荷分布，常常会引入带有电荷的哑原子进行描述。最经典的哑原子分子比如TIP4P和TIP5P的水分子力场，4点水模型TIP4P将O的负电荷在H-O-H的夹角内的哑原子上，O的质量则留在O原子处；5点水模型TIP5P则将O的负电荷拆分在O原子的Lone Pair处，模拟O的孤电子对。 除去水分子外，AmberTools的MDGX模块提供了添加哑原子，或虚位点（Virtu">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://www.birdlet.github.io/picture/SH_fig1.png">
+<meta property="og:image" content="https://www.birdlet.github.io/picture/SH_table1.jpg">
+<meta property="og:image" content="https://www.birdlet.github.io/picture/SH_fig3.jpg">
 <meta property="article:published_time" content="2024-02-14T16:00:00.000Z">
-<meta property="article:modified_time" content="2024-02-18T07:14:57.528Z">
+<meta property="article:modified_time" content="2024-02-19T08:41:31.480Z">
 <meta property="article:author" content="Birdlet">
 <meta property="article:tag" content="CADD">
 <meta property="article:tag" content="MD">
 <meta property="article:tag" content="RESP">
 <meta property="article:tag" content="Sigma Hole">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.birdlet.github.io/picture/SH_fig1.png">
 
 
 <link rel="canonical" href="https://www.birdlet.github.io/2024/02/15/Psi4_Dummy_RESP/">
@@ -115,7 +119,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E5%AD%90%E5%8A%9B%E5%9C%BA%E4%B8%AD%E7%9A%84Sigma-Hole"><span class="nav-number">1.</span> <span class="nav-text">分子力场中的Sigma Hole</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Antechamber%E5%81%9A%E4%BA%86%E4%BB%80%E4%B9%88"><span class="nav-number">2.</span> <span class="nav-text">Antechamber做了什么</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%80%E5%8D%95%E6%89%8B%E5%8A%A8%E6%B7%BB%E5%8A%A0%E5%93%91%E5%8E%9F%E5%AD%90%E7%9A%84%E8%BF%87%E7%A8%8B"><span class="nav-number">3.</span> <span class="nav-text">简单手动添加哑原子的过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%93%E8%AE%BA"><span class="nav-number">4.</span> <span class="nav-text">结论</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="nav-number">5.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E5%AD%90%E5%8A%9B%E5%9C%BA%E4%B8%AD%E7%9A%84Sigma-Hole"><span class="nav-number">1.</span> <span class="nav-text">分子力场中的Sigma Hole</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Antechamber%E5%81%9A%E4%BA%86%E4%BB%80%E4%B9%88"><span class="nav-number">2.</span> <span class="nav-text">Antechamber做了什么</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%80%E5%8D%95%E6%89%8B%E5%8A%A8%E6%B7%BB%E5%8A%A0%E5%93%91%E5%8E%9F%E5%AD%90%E7%9A%84%E8%BF%87%E7%A8%8B"><span class="nav-number">3.</span> <span class="nav-text">简单手动添加哑原子的过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%93%E8%AE%BA"><span class="nav-number">4.</span> <span class="nav-text">结论</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A1%A5%E5%85%85-20240219"><span class="nav-number">5.</span> <span class="nav-text">补充 20240219</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B7%E4%BE%8B1-%E8%8A%B3%E9%A6%99%E5%8C%96%E5%90%88%E7%89%A9%E7%9A%84Sigma-Hole"><span class="nav-number">5.1.</span> <span class="nav-text">样例1. 芳香化合物的Sigma Hole</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B7%E4%BE%8B2-2-%E4%B9%99%E9%85%B0%E5%9F%BA%E5%99%BB%E5%90%A9%E7%9A%84%E6%9C%80%E4%BD%8E%E8%83%BD%E9%87%8F%E6%9E%84%E8%B1%A1"><span class="nav-number">5.2.</span> <span class="nav-text">样例2. 2-乙酰基噻吩的最低能量构象</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="nav-number">6.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -205,7 +209,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-02-18 15:14:57" itemprop="dateModified" datetime="2024-02-18T15:14:57+08:00">2024-02-18</time>
+      <time title="Modified: 2024-02-19 16:41:31" itemprop="dateModified" datetime="2024-02-19T16:41:31+08:00">2024-02-19</time>
     </span>
 
   
@@ -221,14 +225,14 @@
 <p>除去水分子外，AmberTools的MDGX模块提供了添加哑原子，或虚位点（Virtual Site）的方法，如<a target="_blank" rel="noopener" href="https://ambermd.org/tutorials/advanced/tutorial35/index.php" title="Tutorial 35">教程35</a>中对氯苯的苯环上哑原子，及Sigma Hole哑原子添加的方法。不过MDGX使用较为复杂，MDGX的电荷拟合<a target="_blank" rel="noopener" href="https://ambermd.org/tutorials/advanced/tutorial28/index.php" title="Tutorial 28">教程</a>也较复杂。本文将从Antechamber的RESP电荷拟合讲起，讨论添加哑原子后直接使用Antechamber进行哑原子电荷拟合的方法。</p>
 <span id="more"></span>
 
-<h2 id="分子力场中的Sigma-Hole"><a href="#分子力场中的Sigma-Hole" class="headerlink" title="分子力场中的Sigma Hole"></a>分子力场中的Sigma Hole</h2><p>生物体系模拟中的常用力场大部分不带有Sigma Hole的哑原子电荷，需要专业技术人员的手动添加和拟合。在CHARMM general force field (CGenFF) 于2016年发表的<a target="_blank" rel="noopener" href="https://pubmed.ncbi.nlm.nih.gov/27353885/">文章</a>中，提出了一个非常简单的策略，即在Cl，Br，I的反键方向的固定距离上，添加+0.05的正电荷，从而在宏观模拟中的液体性质和分子间相互作用获得较大的提升。从原理上看，这一策略理应可以直接移植到GAFF力场中，也会有一个从无到有的提升。</p>
+<h2 id="分子力场中的Sigma-Hole"><a href="#分子力场中的Sigma-Hole" class="headerlink" title="分子力场中的Sigma Hole"></a>分子力场中的Sigma Hole</h2><p>生物体系模拟中的常用力场大部分不带有Sigma Hole的哑原子电荷，需要专业技术人员的手动添加和拟合。在CHARMM general force field (CGenFF) 于2016年发表的<a target="_blank" rel="noopener" href="https://pubmed.ncbi.nlm.nih.gov/27353885/">文章</a>中，提出了一个非常简单的策略，即在Cl，Br，I的反键方向的固定距离上，添加+0.05的正电荷，从而在宏观模拟中的液体性质和分子间相互作用获得较大的提升。OPLS力场则有一<a href="(https://pubmed.ncbi.nlm.nih.gov/28627890)">系列文章</a>讨论不同原子Sigma Hole的描述和影响。从原理上看，这一策略理应可以直接移植到GAFF力场中，也会有一个从无到有的提升。</p>
 <p>但是固定电荷固定距离的方法从原理上是有瑕疵的，Br,I的原子半径更大，原子核对外层电子的吸引力更弱，因此成键后形成的Sigma Hole应该更大。卤素连接不同强弱的吸电子基团时，Sigma Hole的大小和位置也会发生变化。另外，噻唑或噻吩的S原子的S-C键的反键轨道上也存在Sigma Hole，而CGenFF中并没有添加此类Sigma Hole的拟合。因此本文提供一种操作简单且通用的Sigma Hole或Lone Pair的RESP电荷拟合流程。对此我们首先需要了解Antechamber中RESP电荷拟合的流程，并在这一流程中添加哑原子的坐标进行电荷拟合。</p>
 <h2 id="Antechamber做了什么"><a href="#Antechamber做了什么" class="headerlink" title="Antechamber做了什么"></a>Antechamber做了什么</h2><p>查阅AmberTools的官方文档，可以发现Antechamber本质是一个流程软件，会调用<code>atomtype</code>，<code>bondtype</code>，<code>sqm</code>，<code>am1bcc</code>，<code>espgen</code>，<code>respgen</code>，<code>resp</code>等等。其中atomtype指认GAFF力场的原子类型，bondtype指认GAFF的键类型，sqm和am1bcc进行AM1-BCC电荷计算，espgen读入量化软件输出转化为Antechamber ESP文件，respgen生成resp输入参数文件，resp则进行两步RESP电荷拟合。<code>resp</code>程序就是直接分发的RESP电荷提出者开发的软件。</p>
 <p>衔接上篇文章中RESP计算，运行以下命令：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">antechamber -i gas.gesp -<span class="keyword">fi</span> gesp -o gas.mol2 -fo mol2 -c resp -nc 0</span><br></pre></td></tr></table></figure>
 <p>我们可以看到一些中间文件，其中3个文件比较重要，<code>ANTECHAMBER.ESP</code>，<code>ANTECHAMBER_RESP1.IN</code>，<code>ANTECHAMBER_RESP2.IN</code>，分别是Antechamber的ESP文件，和RESP的Stage 1和Stage 2的RESP拟合输入参数文件。这三个文件都是<code>resp</code>程序进行拟合时的输入文件，关于三类文件的文档见<a target="_blank" rel="noopener" href="https://upjv.q4md-forcefieldtools.org/RED/resp/" title="RESP version 2.2">RESP文档</a></p>
 <p>首先是<code>ANTECHAMBER.ESP</code>：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"> 5 2969    0</span><br><span class="line">                3.9689785E-01  -2.9874691E-01  -4.1784693E-01</span><br><span class="line">                1.0781070E+00   1.2712296E+00  -2.2250469E+00</span><br><span class="line">               -7.5194150E-01  -2.2528616E+00  -1.4443344E+00</span><br><span class="line">                2.4386848E+00  -1.0968514E+00   7.6117693E-01</span><br><span class="line">               -1.6383298E+00   1.2317484E+00   1.7234023E+00</span><br><span class="line">1.7824967E-02  -4.4653786E-02  -3.3698060E+00   2.0564255E+00</span><br><span class="line">1.8504019E-02  -2.5800629E+00   5.7536765E-01  -2.8921194E+00</span><br><span class="line">1.8678736E-02   3.0070043E+00  -1.9761605E+00  -2.8921194E+00</span><br><span class="line">1.7194282E-02   2.2923005E+00  -1.8891786E+00  -3.5204864E+00</span><br><span class="line">1.5290645E-02   2.8283736E+00   2.8668085E+00   4.4832095E-01</span><br><span class="line">.... Another 2964 Lines, 2969 Lines in total</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"> 5 2969    0</span><br><span class="line">                3.9180400E-01  -2.9493350E-01  -4.1242982E-01</span><br><span class="line">                1.0778168E+00   1.2750690E+00  -2.2276858E+00</span><br><span class="line">               -7.5427347E-01  -2.2568430E+00  -1.4459914E+00</span><br><span class="line">                2.4412971E+00  -1.0985077E+00   7.6446693E-01</span><br><span class="line">               -1.6365765E+00   1.2314168E+00   1.7220899E+00</span><br><span class="line">1.7824967E-02  -4.4653786E-02  -3.3698060E+00   2.0564255E+00</span><br><span class="line">1.8504019E-02  -2.5800629E+00   5.7536765E-01  -2.8921194E+00</span><br><span class="line">1.8678736E-02   3.0070043E+00  -1.9761605E+00  -2.8921194E+00</span><br><span class="line">1.7194282E-02   2.2923005E+00  -1.8891786E+00  -3.5204864E+00</span><br><span class="line">1.5290645E-02   2.8283736E+00   2.8668085E+00   4.4832095E-01</span><br><span class="line">.... Another 2964 Lines, 2969 Lines in total</span><br></pre></td></tr></table></figure>
 <p><code>ANTECHAMBER.ESP</code>文件格式就是精简版的GESP文件，单位均为原子单位AU。该文件中第一行共3列，第一列为原子数，第二列为ESP格点数，第三列为电荷值；第二行开始为原子坐标，每行3列；最后一部分为ESP格点，为4列，第1列为静电势，其余三列为格点坐标。</p>
 <p>然后是<code>ANTECHAMBER_RESP1.IN</code>，即Stage 1的非烷烃H原子对称限制下的RESP拟合步：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">Resp charges for organic molecule</span><br><span class="line"></span><br><span class="line"> &amp;cntrl</span><br><span class="line"></span><br><span class="line"> nmol = 1,</span><br><span class="line"> ihfree = 1,</span><br><span class="line"> ioutopt = 1,</span><br><span class="line"> qwt = 0.00050,</span><br><span class="line"></span><br><span class="line"> &amp;end</span><br><span class="line">    1.0</span><br><span class="line">Resp charges for organic molecule</span><br><span class="line">    0    5</span><br><span class="line">    6    0</span><br><span class="line">    9    0</span><br><span class="line">    9    2</span><br><span class="line">    9    2</span><br><span class="line">   17    0</span><br></pre></td></tr></table></figure>
@@ -240,27 +244,301 @@
 <p><strong>注意事项</strong>：RESP电荷拟合原文中明确指出第一步是非对称限制的，第二步才是对称限制，但是上文中提及的<strong>Antechamber中的运行步骤是第一步直接使用对称限制，第二步大部分原子电荷直接固定，少量原子再进行对称或非对称拟合</strong>，其中原理阅读<code>respgen.c</code>源码可以得出大致结论：<strong>RESP1对非与C相连的H其余对称原子添加对称限制，RESP2对与C相连的对称H原子添加对称性质的同时固定其他电荷</strong>。目前我们仍然以Antechamber的中间文件作为参考进行后续修改以保持与官方的拟合一致性。</p>
 <h2 id="简单手动添加哑原子的过程"><a href="#简单手动添加哑原子的过程" class="headerlink" title="简单手动添加哑原子的过程"></a>简单手动添加哑原子的过程</h2><p>仍然使用上篇文章中Psi4 RESP计算样例CF3Cl，运行以下命令：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">antechamber -i gas.gesp -<span class="keyword">fi</span> gesp -o gas.mol2 -fo mol2 -c resp -nc 0</span><br></pre></td></tr></table></figure>
-<p>获得<code>ANTECHAMBER.ESP</code>，<code>ANTECHAMBER_RESP1.IN</code>，<code>ANTECHAMBER_RESP2.IN</code>三个文件，然后在ESP中添加一行哑原子坐标，坐标位置我们使用CGenFF中的Cl元素Sigma Hole的位置，即Cl-C键反键方向1.64 Å，这里使用原子单位，转换为Bohr为3.157 Bohr，笛卡尔坐标系下为&#96;&#96;</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">```</span><br><span class="line"></span><br><span class="line">然后在`ANTECHAMBER_RESP1.IN`和`ANTECHAMBER_RESP2.IN`添加原子的元素和组编码信息</span><br><span class="line">```in</span><br><span class="line">Resp charges for organic molecule</span><br><span class="line"></span><br><span class="line"> &amp;cntrl</span><br><span class="line"></span><br><span class="line"> nmol = 1,</span><br><span class="line"> ihfree = 1,</span><br><span class="line"> ioutopt = 1,</span><br><span class="line"> qwt = 0.00050,</span><br><span class="line"></span><br><span class="line"> &amp;end</span><br><span class="line">    1.0</span><br><span class="line">Resp charges for organic molecule</span><br><span class="line">    0    5</span><br><span class="line">    6    0</span><br><span class="line">    9    0</span><br><span class="line">    9    2</span><br><span class="line">    9    2</span><br><span class="line">   17    0</span><br><span class="line">    0    0</span><br></pre></td></tr></table></figure>
+<p>获得<code>ANTECHAMBER.ESP</code>，<code>ANTECHAMBER_RESP1.IN</code>，<code>ANTECHAMBER_RESP2.IN</code>三个文件，然后在ESP中添加一行哑原子坐标，坐标位置我们使用CGenFF中的Cl元素Sigma Hole的位置，即Cl-C键反键方向1.64 Å，这里使用原子单位，转换为Bohr为3.157 Bohr，笛卡尔坐标系下为<code>-1.6365765E+00   1.2314168E+00   1.7220899E+00</code>。修改后<code>ANTECHAMBER.ESP</code>变为下边的样子。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"> 6 2969    0</span><br><span class="line">                3.9180400E-01  -2.9493350E-01  -4.1242982E-01</span><br><span class="line">                1.0778168E+00   1.2750690E+00  -2.2276858E+00</span><br><span class="line">               -7.5427347E-01  -2.2568430E+00  -1.4459914E+00</span><br><span class="line">                2.4412971E+00  -1.0985077E+00   7.6446693E-01</span><br><span class="line">               -1.6365765E+00   1.2314168E+00   1.7220899E+00</span><br><span class="line">               -3.5318981E+00   2.6569549E+00   3.7170913E+00</span><br><span class="line">1.7824967E-02  -4.4653786E-02  -3.3698060E+00   2.0564255E+00</span><br><span class="line">1.8504019E-02  -2.5800629E+00   5.7536765E-01  -2.8921194E+00</span><br><span class="line">1.8678736E-02   3.0070043E+00  -1.9761605E+00  -2.8921194E+00</span><br><span class="line">1.7194282E-02   2.2923005E+00  -1.8891786E+00  -3.5204864E+00</span><br><span class="line">1.5290645E-02   2.8283736E+00   2.8668085E+00   4.4832095E-01</span><br><span class="line">.... Another 2964 Lines, 2969 Lines in total</span><br></pre></td></tr></table></figure>
+
+<p>然后在<code>ANTECHAMBER_RESP1.IN</code>和<code>ANTECHAMBER_RESP2.IN</code>也添加哑原子的元素ID(0)和组编码信息</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">Resp charges for organic molecule</span><br><span class="line"></span><br><span class="line"> &amp;cntrl</span><br><span class="line"></span><br><span class="line"> nmol = 1,</span><br><span class="line"> ihfree = 1,</span><br><span class="line"> ioutopt = 1,</span><br><span class="line"> qwt = 0.00050,</span><br><span class="line"></span><br><span class="line"> &amp;end</span><br><span class="line">    1.0</span><br><span class="line">Resp charges for organic molecule</span><br><span class="line">    0    5</span><br><span class="line">    6    0</span><br><span class="line">    9    0</span><br><span class="line">    9    2</span><br><span class="line">    9    2</span><br><span class="line">   17    0</span><br><span class="line">    0    0</span><br></pre></td></tr></table></figure>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">Resp charges for organic molecule</span><br><span class="line"></span><br><span class="line"> &amp;cntrl</span><br><span class="line"></span><br><span class="line"> nmol = 1,</span><br><span class="line"> ihfree = 1,</span><br><span class="line"> ioutopt = 1,</span><br><span class="line"> iqopt = 2,</span><br><span class="line"> qwt =  0.00100,</span><br><span class="line"></span><br><span class="line"> &amp;end</span><br><span class="line">    1.0</span><br><span class="line">Resp charges for organic molecule</span><br><span class="line">    0    5</span><br><span class="line">    6  -99</span><br><span class="line">    9  -99</span><br><span class="line">    9  -99</span><br><span class="line">    9  -99</span><br><span class="line">   17  -99</span><br><span class="line">    0  -99</span><br></pre></td></tr></table></figure>
 
-<p>然后调用两次resp命令</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># RESP 1 in MOD1</span><br><span class="line">resp -i ANTECHAMBER_RESP1_MOD.IN -o output -p punch -q qin -t qout -e ANTECHAMBER_MOD.ESP -s esout</span><br><span class="line"></span><br><span class="line"># RESP 2 in MOD2</span><br><span class="line">resp -i ANTECHAMBER_RESP2_MOD.IN -o output -p punch -q ../MOD1/qout -t qout -e ANTECHAMBER_MOD.ESP -s esout</span><br><span class="line"></span><br><span class="line">cat qout</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>最后调用两次resp命令，即可获得</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">mkdir MOD1; mkdir MOD2</span><br><span class="line"></span><br><span class="line"># RESP 1 in MOD1</span><br><span class="line">cd MOD1/</span><br><span class="line">resp -i ../ANTECHAMBER_RESP1_MOD.IN -o output -p punch -t qout -e ../ANTECHAMBER_MOD.ESP -s esout</span><br><span class="line"></span><br><span class="line"># RESP 2 in MOD2</span><br><span class="line">cd ../MOD2/</span><br><span class="line">resp -i ../ANTECHAMBER_RESP2_MOD.IN -o output -p punch -q ../MOD1/qout -t qout -e ../ANTECHAMBER_MOD.ESP -s esout</span><br><span class="line"></span><br><span class="line">cat qout</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 <p>qout文件中的电荷</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0.540036 -0.141469 -0.141469 -0.141469 -0.176623  0.060993</span><br></pre></td></tr></table></figure>
-<p>最后一个电荷为虚原子电荷，为+0.0609，比CGenFF中的+0.05略大，也符合CF3Cl中F原子的强拉电子作用的预期影响。</p>
+<p>最后一个电荷为虚原子电荷，为+0.0609，比CGenFF中的+0.05略大，也比后文氯苯中的+0.0550略大，符合CF3Cl中F原子的强拉电子作用的预期影响。</p>
 <h2 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h2><p>本文介绍了一种简单修改Antechamber中间文件进行Sigma Hole电荷拟合的方法，该方法也可以扩展到其他哑原子电荷拟合中。除本文例子中的CF3Cl分子外，我还测试了其他分子，如噻吩的S原子Sigma Hole电荷为0.026，碘苯的I原子Sigma Hole电荷为0.065，与化学经验和量化计算结果吻合。但是邻位酰胺取代的噻吩的S原子Sigma Hole电荷为0.016，这显然是因为S与酰胺的O形成氢键后，一侧的Sigma Hole不明显，强行对称化S的一对Sigma Hol导致的低估。尽管如此，这一做法仍然比没有Sigma Hole时更好地描述了邻位酰胺取代的噻吩的最低能量构象。这一问题单一构象RESP一定无法解决，需要多构象RESP拟合，但是此例低能量构象占权重较大时，这一问题仍然存在，希望读者提供一些建议。</p>
 <p>本文中并没有讨论合理的Sigma Hole的反键距离多少合适，这是一个多参数的优化问题。考虑到计算成本的问题，使用CGenFF的距离是一种简便方法。另外，本文也没有写明如何将虚原子添加在Amber力场文件中，我这里提供一份CF3Cl分子的Gromacs ITP文件的哑原子描述方法，即使用Gromacs的<code>[ virtual_sites2 ]</code>模式添加反键方向的哑原子，供参考。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">; opt_GMX.itp created by acpype (v: 2023.10.27) on Wed Feb 14 23:50:46 2024</span><br><span class="line"></span><br><span class="line">[ atomtypes ]</span><br><span class="line">    DLP    DLP     0.0000      0.050     A    0.00000000000e+00    0.000000e+00</span><br><span class="line">;name   bond_type     mass     charge   ptype   sigma         epsilon       Amb</span><br><span class="line"> c3       c3          0.00000  0.00000   A     3.39771e-01   4.51035e-01 ; 1.91  0.1078</span><br><span class="line"> f        f           0.00000  0.00000   A     3.03422e-01   3.48109e-01 ; 1.70  0.0832</span><br><span class="line"> cl       cl          0.00000  0.00000   A     3.46595e-01   1.10374e+00 ; 1.95  0.2638</span><br><span class="line"></span><br><span class="line">[ moleculetype ]</span><br><span class="line">;name            nrexcl</span><br><span class="line"> opt              3</span><br><span class="line"></span><br><span class="line">[ atoms ]</span><br><span class="line">     1         c3      1      UNL      C      1     0.540036   12.01000</span><br><span class="line">     2          f      1      UNL      F      2    -0.141469   19.00000</span><br><span class="line">     3          f      1      UNL     F1      3    -0.141469   19.00000</span><br><span class="line">     4          f      1      UNL     F2      4    -0.141469   19.00000</span><br><span class="line">     5         cl      1      UNL     CL      5    -0.176623   35.45000</span><br><span class="line">     6        DLP      1      UNL   DLP1      6     0.060994     0.0000</span><br><span class="line"></span><br><span class="line">[ virtual_sites2 ]</span><br><span class="line">; Site  from        funct  d</span><br><span class="line">   6     1     5     2      0.164</span><br><span class="line"></span><br><span class="line">[ bonds ]</span><br><span class="line">;   ai     aj funct   r             k</span><br><span class="line">     1      2   1    1.3500e-01    2.9506e+05 ;      C - F</span><br><span class="line">     1      3   1    1.3500e-01    2.9506e+05 ;      C - F1</span><br><span class="line">     1      4   1    1.3500e-01    2.9506e+05 ;      C - F2</span><br><span class="line">     1      5   1    1.8040e-01    1.3012e+05 ;      C - CL</span><br><span class="line"></span><br><span class="line">[ angles ]</span><br><span class="line">;   ai     aj     ak    funct   theta         cth</span><br><span class="line">     2      1      3      1    1.0736e+02    1.0175e+03 ;      F - C      - F1</span><br><span class="line">     2      1      4      1    1.0736e+02    1.0175e+03 ;      F - C      - F2</span><br><span class="line">     2      1      5      1    1.0911e+02    7.8743e+02 ;      F - C      - CL</span><br><span class="line">     3      1      4      1    1.0736e+02    1.0175e+03 ;     F1 - C      - F2</span><br><span class="line">     3      1      5      1    1.0911e+02    7.8743e+02 ;     F1 - C      - CL</span><br><span class="line">     4      1      5      1    1.0911e+02    7.8743e+02 ;     F2 - C      - CL</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
+<h2 id="补充-20240219"><a href="#补充-20240219" class="headerlink" title="补充 20240219"></a>补充 20240219</h2><p>补充几个化合物的计算样例。</p>
+<h3 id="样例1-芳香化合物的Sigma-Hole"><a href="#样例1-芳香化合物的Sigma-Hole" class="headerlink" title="样例1. 芳香化合物的Sigma Hole"></a>样例1. 芳香化合物的Sigma Hole</h3><p>对氯苯，溴苯和碘苯以及噻吩和噻唑的Sigma Hole进行RESP拟合。</p>
+<p><img src="/picture/SH_fig1.png" alt="Figure. 1"></p>
+<p><strong>Figure 1. RESP Model Systems for Sigma Hole</strong></p>
+<p>不同方法计算后的RESP(m06-2x-d3zero2b&#x2F;def2-tzvp)电荷和CGenFF电荷对比。</p>
+<p><img src="/picture/SH_table1.jpg" alt="Table. 1"></p>
+<p><strong>Table 1. RESP Model Systems for Sigma Hole</strong></p>
+<p>根据表1，Cl, Br, I的Sigma Hole所带的正电荷依次增加。噻唑对比噻吩，S的两侧化学环境是非对称的，左侧的Sigma Hole由于间位N的吸电子效应，从0.0264增加到0.0315，绝对值变大；右侧的Sigma Hole从0.0264减小到0.0140，变小。以上计算结果与化学家的化学直觉和实验观测是较为一致的。</p>
+<h3 id="样例2-2-乙酰基噻吩的最低能量构象"><a href="#样例2-2-乙酰基噻吩的最低能量构象" class="headerlink" title="样例2. 2-乙酰基噻吩的最低能量构象"></a>样例2. 2-乙酰基噻吩的最低能量构象</h3><p>2-乙酰基噻吩有一个可旋转键，因为羰基与噻吩环共轭，所以理论上会有两个能量较低的构象，即羰基和S同侧或异侧。</p>
+<div><svg version='1.1' baseProfile='full'
+              xmlns='http://www.w3.org/2000/svg'
+                      xmlns:rdkit='http://www.rdkit.org/xml'
+                      xmlns:xlink='http://www.w3.org/1999/xlink'
+                  xml:space='preserve'
+width='450px' height='150px' viewBox='0 0 450 150'>
+<!-- END OF HEADER -->
+<rect style='opacity:1.0;fill:#FFFFFF;stroke:none' width='450.0' height='150.0' x='0.0' y='0.0'> </rect>
+<path class='bond-0 atom-0 atom-1' d='M 302.5,119.0 L 283.1,85.4' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<path class='bond-1 atom-1 atom-2' d='M 277.2,58.5 L 286.9,41.7' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<path class='bond-1 atom-1 atom-2' d='M 286.9,41.7 L 296.6,24.9' style='fill:none;fill-rule:evenodd;stroke:#FF0000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<path class='bond-1 atom-1 atom-2' d='M 288.7,65.1 L 298.4,48.3' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<path class='bond-1 atom-1 atom-2' d='M 298.4,48.3 L 308.1,31.5' style='fill:none;fill-rule:evenodd;stroke:#FF0000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<path class='bond-2 atom-1 atom-3' d='M 257.7,73.5 L 237.8,73.5' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<path class='bond-3 atom-3 atom-4' d='M 201.7,61.8 L 190.7,46.7' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<path class='bond-3 atom-3 atom-4' d='M 190.7,46.7 L 179.8,31.6' style='fill:none;fill-rule:evenodd;stroke:#CCCC00;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<path class='bond-4 atom-4 atom-5' d='M 154.6,25.5 L 131.5,33.0' style='fill:none;fill-rule:evenodd;stroke:#CCCC00;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<path class='bond-4 atom-4 atom-5' d='M 131.5,33.0 L 108.5,40.5' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<path class='bond-5 atom-5 atom-6' d='M 108.5,40.5 L 108.5,106.5' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<path class='bond-5 atom-5 atom-6' d='M 121.7,50.4 L 121.7,96.6' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<path class='bond-6 atom-6 atom-7' d='M 108.5,106.5 L 171.3,126.9' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<path class='bond-7 atom-7 atom-3' d='M 171.3,126.9 L 201.5,85.4' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<path class='bond-7 atom-7 atom-3' d='M 165.2,112.9 L 186.3,83.8' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<path class='atom-0' d='M 302.0 130.8
+Q 302.0 126.1, 304.2 123.7
+Q 306.4 121.2, 310.5 121.2
+Q 314.4 121.2, 316.5 123.9
+L 314.7 125.4
+Q 313.2 123.4, 310.5 123.4
+Q 307.7 123.4, 306.2 125.3
+Q 304.7 127.2, 304.7 130.8
+Q 304.7 134.5, 306.3 136.4
+Q 307.8 138.3, 310.8 138.3
+Q 312.9 138.3, 315.3 137.0
+L 316.0 139.0
+Q 315.1 139.6, 313.6 140.0
+Q 312.1 140.4, 310.5 140.4
+Q 306.4 140.4, 304.2 137.9
+Q 302.0 135.4, 302.0 130.8
+' fill='#000000'/>
+<path class='atom-0' d='M 317.5 137.1
+L 320.2 137.1
+L 320.2 139.7
+L 317.5 139.7
+L 317.5 137.1
+M 317.5 128.0
+L 320.2 128.0
+L 320.2 130.6
+L 317.5 130.6
+L 317.5 128.0
+' fill='#000000'/>
+<path class='atom-0' d='M 334.3 133.7
+L 336.5 133.7
+L 336.5 135.8
+L 334.3 135.8
+L 334.3 140.1
+L 331.8 140.1
+L 331.8 135.8
+L 322.1 135.8
+L 322.1 134.2
+L 330.3 121.4
+L 334.3 121.4
+L 334.3 133.7
+M 325.2 133.7
+L 331.8 133.7
+L 331.8 123.1
+L 325.2 133.7
+' fill='#000000'/>
+<path class='atom-1' d='M 259.9 73.6
+Q 259.9 68.9, 262.0 66.5
+Q 264.2 64.0, 268.4 64.0
+Q 272.2 64.0, 274.3 66.7
+L 272.6 68.2
+Q 271.0 66.2, 268.4 66.2
+Q 265.6 66.2, 264.0 68.1
+Q 262.6 70.0, 262.6 73.6
+Q 262.6 77.3, 264.1 79.2
+Q 265.7 81.1, 268.7 81.1
+Q 270.7 81.1, 273.1 79.8
+L 273.9 81.8
+Q 272.9 82.4, 271.4 82.8
+Q 269.9 83.2, 268.3 83.2
+Q 264.2 83.2, 262.0 80.7
+Q 259.9 78.2, 259.9 73.6
+' fill='#000000'/>
+<path class='atom-1' d='M 275.4 79.8
+L 278.0 79.8
+L 278.0 82.5
+L 275.4 82.5
+L 275.4 79.8
+M 275.4 70.8
+L 278.0 70.8
+L 278.0 73.4
+L 275.4 73.4
+L 275.4 70.8
+' fill='#000000'/>
+<path class='atom-1' d='M 289.0 73.1
+Q 290.8 73.6, 291.7 74.8
+Q 292.6 76.0, 292.6 77.8
+Q 292.6 79.4, 291.8 80.6
+Q 291.0 81.9, 289.5 82.5
+Q 288.1 83.2, 286.2 83.2
+Q 284.2 83.2, 282.6 82.5
+Q 281.2 81.8, 280.0 80.4
+L 281.5 78.8
+Q 282.6 80.1, 283.6 80.6
+Q 284.6 81.1, 286.2 81.1
+Q 287.9 81.1, 288.9 80.2
+Q 289.9 79.3, 289.9 77.8
+Q 289.9 75.9, 288.8 75.0
+Q 287.8 74.2, 285.5 74.2
+L 284.1 74.2
+L 284.1 72.3
+L 285.3 72.3
+Q 287.3 72.2, 288.4 71.4
+Q 289.5 70.5, 289.5 68.8
+Q 289.5 67.6, 288.6 66.9
+Q 287.7 66.1, 286.2 66.1
+Q 284.6 66.1, 283.7 66.7
+Q 282.7 67.2, 282.0 68.6
+L 280.1 67.7
+Q 280.8 66.1, 282.4 65.1
+Q 284.0 64.0, 286.2 64.0
+Q 288.9 64.0, 290.5 65.3
+Q 292.2 66.6, 292.2 68.8
+Q 292.2 70.3, 291.3 71.4
+Q 290.5 72.5, 289.0 73.1
+' fill='#000000'/>
+<path class='atom-2' d='M 300.7 16.3
+Q 300.7 11.8, 302.9 9.3
+Q 305.1 6.8, 309.2 6.8
+Q 313.4 6.8, 315.6 9.3
+Q 317.8 11.8, 317.8 16.3
+Q 317.8 20.9, 315.6 23.5
+Q 313.3 26.0, 309.2 26.0
+Q 305.1 26.0, 302.9 23.5
+Q 300.7 20.9, 300.7 16.3
+M 309.2 23.9
+Q 312.1 23.9, 313.6 22.0
+Q 315.2 20.1, 315.2 16.3
+Q 315.2 12.7, 313.6 10.8
+Q 312.1 8.9, 309.2 8.9
+Q 306.4 8.9, 304.8 10.8
+Q 303.3 12.6, 303.3 16.3
+Q 303.3 20.1, 304.8 22.0
+Q 306.4 23.9, 309.2 23.9
+' fill='#FF0000'/>
+<path class='atom-3' d='M 202.9 73.6
+Q 202.9 68.9, 205.1 66.5
+Q 207.3 64.0, 211.5 64.0
+Q 215.3 64.0, 217.4 66.7
+L 215.6 68.2
+Q 214.1 66.2, 211.5 66.2
+Q 208.6 66.2, 207.1 68.1
+Q 205.6 70.0, 205.6 73.6
+Q 205.6 77.3, 207.2 79.2
+Q 208.7 81.1, 211.7 81.1
+Q 213.8 81.1, 216.2 79.8
+L 216.9 81.8
+Q 216.0 82.4, 214.5 82.8
+Q 213.0 83.2, 211.4 83.2
+Q 207.3 83.2, 205.1 80.7
+Q 202.9 78.2, 202.9 73.6
+' fill='#000000'/>
+<path class='atom-3' d='M 218.4 79.8
+L 221.1 79.8
+L 221.1 82.5
+L 218.4 82.5
+L 218.4 79.8
+M 218.4 70.8
+L 221.1 70.8
+L 221.1 73.4
+L 218.4 73.4
+L 218.4 70.8
+' fill='#000000'/>
+<path class='atom-3' d='M 223.1 67.8
+Q 223.8 66.0, 225.4 65.0
+Q 227.1 64.0, 229.3 64.0
+Q 232.2 64.0, 233.8 65.6
+Q 235.3 67.1, 235.3 69.8
+Q 235.3 72.6, 233.3 75.2
+Q 231.2 77.8, 227.0 80.8
+L 235.7 80.8
+L 235.7 82.9
+L 223.1 82.9
+L 223.1 81.2
+Q 226.5 78.7, 228.6 76.8
+Q 230.7 75.0, 231.7 73.3
+Q 232.7 71.7, 232.7 69.9
+Q 232.7 68.1, 231.8 67.1
+Q 230.9 66.1, 229.3 66.1
+Q 227.8 66.1, 226.8 66.7
+Q 225.8 67.4, 225.1 68.7
+L 223.1 67.8
+' fill='#000000'/>
+<path class='atom-4' d='M 157.5 26.5
+Q 157.7 26.6, 158.6 27.0
+Q 159.4 27.4, 160.4 27.6
+Q 161.4 27.8, 162.3 27.8
+Q 164.1 27.8, 165.1 27.0
+Q 166.1 26.1, 166.1 24.6
+Q 166.1 23.6, 165.6 22.9
+Q 165.1 22.3, 164.3 21.9
+Q 163.5 21.6, 162.2 21.2
+Q 160.5 20.7, 159.5 20.2
+Q 158.6 19.8, 157.8 18.7
+Q 157.2 17.7, 157.2 16.1
+Q 157.2 13.7, 158.7 12.2
+Q 160.4 10.8, 163.5 10.8
+Q 165.7 10.8, 168.2 11.8
+L 167.5 13.9
+Q 165.3 12.9, 163.6 12.9
+Q 161.8 12.9, 160.8 13.7
+Q 159.8 14.4, 159.8 15.7
+Q 159.8 16.7, 160.3 17.3
+Q 160.8 18.0, 161.6 18.3
+Q 162.3 18.6, 163.6 19.0
+Q 165.3 19.6, 166.3 20.1
+Q 167.3 20.6, 168.0 21.7
+Q 168.8 22.8, 168.8 24.6
+Q 168.8 27.2, 167.0 28.6
+Q 165.3 30.0, 162.4 30.0
+Q 160.8 30.0, 159.5 29.6
+Q 158.2 29.2, 156.8 28.6
+L 157.5 26.5
+' fill='#CCCC00'/>
+<path class='atom-4' d='M 170.0 26.4
+L 172.6 26.4
+L 172.6 29.0
+L 170.0 29.0
+L 170.0 26.4
+M 170.0 17.3
+L 172.6 17.3
+L 172.6 19.9
+L 170.0 19.9
+L 170.0 17.3
+' fill='#CCCC00'/>
+<path class='atom-4' d='M 175.7 27.3
+L 179.7 27.3
+L 179.7 13.4
+L 175.2 14.8
+L 174.6 13.2
+L 180.4 10.6
+L 182.2 11.0
+L 182.2 27.3
+L 185.9 27.3
+L 185.9 29.4
+L 175.7 29.4
+L 175.7 27.3
+' fill='#CCCC00'/>
+<path class='atom-0' d='M 341.8,124.1 L 341.8,124.2 L 341.8,124.3 L 341.8,124.4 L 341.7,124.5 L 341.7,124.6 L 341.6,124.7 L 341.6,124.8 L 341.5,124.9 L 341.4,125.0 L 341.4,125.1 L 341.3,125.2 L 341.2,125.2 L 341.1,125.3 L 341.0,125.3 L 340.9,125.3 L 340.7,125.4 L 340.6,125.4 L 340.5,125.4 L 340.4,125.4 L 340.3,125.4 L 340.2,125.4 L 340.1,125.3 L 340.0,125.3 L 339.9,125.2 L 339.8,125.2 L 339.7,125.1 L 339.6,125.0 L 339.5,125.0 L 339.4,124.9 L 339.4,124.8 L 339.3,124.7 L 339.3,124.6 L 339.2,124.5 L 339.2,124.4 L 339.2,124.2 L 339.2,124.1 L 339.2,124.0 L 339.2,123.9 L 339.2,123.8 L 339.2,123.7 L 339.3,123.6 L 339.3,123.5 L 339.4,123.4 L 339.4,123.3 L 339.5,123.2 L 339.6,123.1 L 339.7,123.0 L 339.8,123.0 L 339.9,122.9 L 340.0,122.9 L 340.1,122.8 L 340.2,122.8 L 340.3,122.8 L 340.4,122.8 L 340.5,122.8 L 340.6,122.8 L 340.7,122.8 L 340.9,122.8 L 341.0,122.8 L 341.1,122.9 L 341.2,122.9 L 341.3,123.0 L 341.4,123.1 L 341.4,123.2 L 341.5,123.2 L 341.6,123.3 L 341.6,123.4 L 341.7,123.5 L 341.7,123.6 L 341.8,123.7 L 341.8,123.9 L 341.8,124.0 L 341.8,124.1 L 340.5,124.1 Z' style='fill:#000000;fill-rule:evenodd;fill-opacity:1;stroke:#000000;stroke-width:0.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;' />
+<path class='atom-0' d='M 341.8,137.3 L 341.8,137.4 L 341.8,137.5 L 341.8,137.6 L 341.7,137.7 L 341.7,137.8 L 341.6,137.9 L 341.6,138.0 L 341.5,138.1 L 341.4,138.2 L 341.4,138.3 L 341.3,138.4 L 341.2,138.4 L 341.1,138.5 L 341.0,138.5 L 340.9,138.6 L 340.7,138.6 L 340.6,138.6 L 340.5,138.6 L 340.4,138.6 L 340.3,138.6 L 340.2,138.6 L 340.1,138.5 L 340.0,138.5 L 339.9,138.5 L 339.8,138.4 L 339.7,138.3 L 339.6,138.3 L 339.5,138.2 L 339.4,138.1 L 339.4,138.0 L 339.3,137.9 L 339.3,137.8 L 339.2,137.7 L 339.2,137.6 L 339.2,137.5 L 339.2,137.3 L 339.2,137.2 L 339.2,137.1 L 339.2,137.0 L 339.2,136.9 L 339.3,136.8 L 339.3,136.7 L 339.4,136.6 L 339.4,136.5 L 339.5,136.4 L 339.6,136.3 L 339.7,136.3 L 339.8,136.2 L 339.9,136.1 L 340.0,136.1 L 340.1,136.0 L 340.2,136.0 L 340.3,136.0 L 340.4,136.0 L 340.5,136.0 L 340.6,136.0 L 340.7,136.0 L 340.9,136.0 L 341.0,136.1 L 341.1,136.1 L 341.2,136.2 L 341.3,136.2 L 341.4,136.3 L 341.4,136.4 L 341.5,136.5 L 341.6,136.5 L 341.6,136.6 L 341.7,136.7 L 341.7,136.8 L 341.8,137.0 L 341.8,137.1 L 341.8,137.2 L 341.8,137.3 L 340.5,137.3 Z' style='fill:#000000;fill-rule:evenodd;fill-opacity:1;stroke:#000000;stroke-width:0.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;' />
+<path class='atom-0' d='M 341.8,130.7 L 341.8,130.8 L 341.8,130.9 L 341.8,131.0 L 341.7,131.1 L 341.7,131.2 L 341.6,131.3 L 341.6,131.4 L 341.5,131.5 L 341.4,131.6 L 341.4,131.7 L 341.3,131.8 L 341.2,131.8 L 341.1,131.9 L 341.0,131.9 L 340.9,132.0 L 340.7,132.0 L 340.6,132.0 L 340.5,132.0 L 340.4,132.0 L 340.3,132.0 L 340.2,132.0 L 340.1,131.9 L 340.0,131.9 L 339.9,131.8 L 339.8,131.8 L 339.7,131.7 L 339.6,131.6 L 339.5,131.6 L 339.4,131.5 L 339.4,131.4 L 339.3,131.3 L 339.3,131.2 L 339.2,131.1 L 339.2,131.0 L 339.2,130.9 L 339.2,130.7 L 339.2,130.6 L 339.2,130.5 L 339.2,130.4 L 339.2,130.3 L 339.3,130.2 L 339.3,130.1 L 339.4,130.0 L 339.4,129.9 L 339.5,129.8 L 339.6,129.7 L 339.7,129.6 L 339.8,129.6 L 339.9,129.5 L 340.0,129.5 L 340.1,129.4 L 340.2,129.4 L 340.3,129.4 L 340.4,129.4 L 340.5,129.4 L 340.6,129.4 L 340.7,129.4 L 340.9,129.4 L 341.0,129.5 L 341.1,129.5 L 341.2,129.6 L 341.3,129.6 L 341.4,129.7 L 341.4,129.8 L 341.5,129.8 L 341.6,129.9 L 341.6,130.0 L 341.7,130.1 L 341.7,130.2 L 341.8,130.3 L 341.8,130.5 L 341.8,130.6 L 341.8,130.7 L 340.5,130.7 Z' style='fill:#000000;fill-rule:evenodd;fill-opacity:1;stroke:#000000;stroke-width:0.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;' />
+</svg>
+</div>
 
+<p><strong>Figure 2. 2-乙酰基噻吩</strong></p>
+<p>根据量化(B3LYPD3&#x2F;6-311G*)对2-乙酰基噻吩的二面角进行势能面扫描，如Figure 3所示，两个局部能量极小点中，S和羰基同侧的构象为全局能量极小点，相比S和羰基对侧能量低1.8 kcal&#x2F;mol。可以从静电势角度进行解释，即噻唑S的Sigma Hole带有正电，与羰基氧同侧时能够形成静电吸引，从而降低了同侧构象的自由能。因此，含有Sigma Hole的力场模型才有可能正确描述这一构象分布情况。</p>
+<p><img src="/picture/SH_fig3.jpg" alt="Figure. 3"></p>
+<p><strong>Figure 3. 2-乙酰基噻吩不同力场或电荷模型下二面角势能面扫描</strong></p>
+<p>对此我们也通过对GAFF, GAFF+Sigma Hole (GAFF_SH)及OPLS3e力场分别进行2-乙酰基噻吩的二面角势能面扫描。没有Sigma Hole的GAFF力场给出了完全相反的能量排序，认为S和羰基氧同侧时能量更高，这显然是不合理的。添加Sigam Hole电荷描述后，GAFF_SH给出了最接近量化计算的能量差，~1.8 kcal&#x2F;mol；但是与GAFF类似，势能面整体表现较差。OPLS3e也很好的描述了S和羰基氧同侧时能量最低，同时它的自由能面整体上比GAFF更接近量化计算结果，不会出现阻转异构现象。后续进一步分析认为是GAFF的二面角参数过大导致势能面能垒过高，产生了阻转异构，这会导致长时间模拟下分子无法发生翻转。因此，单纯修改电荷模型仍然不足，需要同时修改GAFF的二面角参数，来提高分子模拟的准确性。</p>
 <h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><blockquote>
 <p>[1] <a target="_blank" rel="noopener" href="https://ambermd.org/tutorials/advanced/tutorial35/index.php">https://ambermd.org/tutorials/advanced/tutorial35/index.php</a> Tutorial 35</p>
 <p>[2] <a target="_blank" rel="noopener" href="https://ambermd.org/tutorials/advanced/tutorial28/index.php">https://ambermd.org/tutorials/advanced/tutorial28/index.php</a> Tutorial 28</p>
-<p>[3] Ignacio Soteras Gutiérrez b, et al. (2016). <a target="_blank" rel="noopener" href="https://pubmed.ncbi.nlm.nih.gov/27353885/">Parametrization of halogen bonds in the charmm general force field: improved treatment of ligand–protein interactions</a>. Bioorganic &amp; Medicinal Chemistry, 24( 20), 4812-4825.</p>
-<p>[4] <a target="_blank" rel="noopener" href="https://ambermd.org/Manuals.php">https://ambermd.org/Manuals.php</a> Amber Reference Manuals</p>
-<p>[5] <a target="_blank" rel="noopener" href="https://upjv.q4md-forcefieldtools.org/RED/resp/">https://upjv.q4md-forcefieldtools.org/RED/resp/</a> RESP version 2.2</p>
+<p>[3] Ignacio Soteras Gutiérrez b, et al.. <a target="_blank" rel="noopener" href="https://pubmed.ncbi.nlm.nih.gov/27353885/">Parametrization of halogen bonds in the charmm general force field: improved treatment of ligand–protein interactions</a>. Bioorganic &amp; Medicinal Chemistry (2016), 24( 20), 4812-4825.</p>
+<p>[4] Jorgensen, et al. <a target="_blank" rel="noopener" href="https://pubmed.ncbi.nlm.nih.gov/28627890">Improved Description of Sulfur Charge Anisotropy in OPLS Force Fields: Model Development and Parameterization.</a> Journal of Physical Chemistry B Condensed Matter Materials Surfaces Interfaces &amp; Biophysical (2017).</p>
+<p>[5] Jorgensen, W. L., &amp; Schyman, P. (2012). [Treatment of Halogen Bonding in the OPLS-AA Force Field; Application to Potent Anti-HIV Agents].(<a target="_blank" rel="noopener" href="https://pubmed.ncbi.nlm.nih.gov/23329896">https://pubmed.ncbi.nlm.nih.gov/23329896</a>) Journal of chemical theory and computation, 8(10), 3895–3801.</p>
+<p>[6] <a target="_blank" rel="noopener" href="https://ambermd.org/Manuals.php">https://ambermd.org/Manuals.php</a> Amber Reference Manuals</p>
+<p>[7] <a target="_blank" rel="noopener" href="https://upjv.q4md-forcefieldtools.org/RED/resp/">https://upjv.q4md-forcefieldtools.org/RED/resp/</a> RESP version 2.2</p>
 </blockquote>
 
     </div>
