@@ -119,13 +119,13 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-count">14</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-count">30</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -150,6 +150,85 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://www.birdlet.github.io/2024/03/19/19/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Birdlet">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Life is Worth Living">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Life is Worth Living">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2024/03/19/19/" class="post-title-link" itemprop="url">定制小分子力场(一)：分子力场基础</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2024-03-19 12:00:00 / Modified: 13:09:50" itemprop="dateCreated datePublished" datetime="2024-03-19T12:00:00+08:00">2024-03-19</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="引言"><a class="markdownIt-Anchor" href="#引言"></a> 引言</h2>
+<p>分子力场描述分子之间相互作用的势能与力。分子动力学模拟则通过分子力场逐步更新分子体系中所有原子的势能、速度和坐标，描述特定条件下的分子运动，从而获取我们关注的模拟体系微观或宏观信息。本博客将通过一系列文章以General Amber Force Field(GAFF)小分子通用力场为例，详细讲述小分子力场的的组成与拟合，对认识分子力场与分子力场优化提供一份基础教程。本篇内容作为开篇，将介绍分子力场的基础信息。</p>
+<p>本文将以AMBER力场和Gromacs ITP文件格式为例，进行力场的介绍。之所以使用这样的组合，是因为AMBER力场几乎所有的力场搭建工具都打包在开源软件AmberTools中，因此配套的GAFF不需要借助在线工具即可离线构建小分子力场；选择Gromacs的力场格式ITP则是因为ITP文件比Amber的力场格式文件prmtop更加可读。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2024/03/19/19/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -292,7 +371,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <p>RESP电荷用于分子模拟，也是Amber&#x2F;GAFF力场的御用电荷。Amber官方的的电荷教程以商业软件Gaussian和Jaguar为主，但目前使用开源的Psi4的Antechamber拟合教程并没有先例。除此以外，Multiwfn也是一种选择，Multiwfn支持多种量化格式的RESP和RESP2电荷的拟合。本文中，我们仅依靠python开发环境的Psi4和Antechamber进行有机小分子的RESP电荷拟合，以避开昂贵商用的Gaussian和Jaguar等软件.</p>
+          <p>RESP电荷用于分子模拟，也是Amber/GAFF力场的御用电荷。Amber官方的的电荷教程以商业软件Gaussian和Jaguar为主，但目前使用开源的Psi4的Antechamber拟合教程并没有先例。除此以外，Multiwfn也是一种选择，Multiwfn支持多种量化格式的RESP和RESP2电荷的拟合。本文中，我们仅依靠python开发环境的Psi4和Antechamber进行有机小分子的RESP电荷拟合，以避开昂贵商用的Gaussian和Jaguar等软件.</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2024/02/12/Psi4_Antechamber_RESP/#more" rel="contents">
@@ -376,9 +455,8 @@
     
     <div class="post-body" itemprop="articleBody">
           <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-
-<p>My company are now using a docking engine which requires MOL2 as input. Since I use rdkit alot, I want to use rdkit to save mol2 file, while rdkit doesn’t support Tripos MOL2 format in current release. I don’t want to move to OpenBabel or other packages because I’m lazy ;P. So how about write one MOL2 writer? </p>
-<p>I have found many email or issue of rdkit, and I found a pull request <a target="_blank" rel="noopener" href="https://github.com/rdkit/rdkit/pull/415">https://github.com/rdkit/rdkit/pull/415</a> after I write this script (Sad!). When I wrote these script, I haven’t notict this pull request, but I have read MOL2 scripts of UCSF Chimera and an introduction for MOL2 format. Chimera has many internal atom types which is perfectly matching MOL2 supported atom types, while rdkit don’t. For example, the amide bond. If I directly write bond type of amide bond, most MOL2 reader take this a rotatable single bond… Thus the only solution is use SMARTS pattern matching to assign MOL2 atom types. </p>
+<p>My company are now using a docking engine which requires MOL2 as input. Since I use rdkit alot, I want to use rdkit to save mol2 file, while rdkit doesn’t support Tripos MOL2 format in current release. I don’t want to move to OpenBabel or other packages because I’m lazy ;P. So how about write one MOL2 writer?</p>
+<p>I have found many email or issue of rdkit, and I found a pull request <a target="_blank" rel="noopener" href="https://github.com/rdkit/rdkit/pull/415">https://github.com/rdkit/rdkit/pull/415</a> after I write this script (Sad!). When I wrote these script, I haven’t notict this pull request, but I have read MOL2 scripts of UCSF Chimera and an introduction for MOL2 format. Chimera has many internal atom types which is perfectly matching MOL2 supported atom types, while rdkit don’t. For example, the amide bond. If I directly write bond type of amide bond, most MOL2 reader take this a rotatable single bond… Thus the only solution is use SMARTS pattern matching to assign MOL2 atom types.</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2019/10/03/rdkit_to_mol2/#more" rel="contents">
@@ -462,7 +540,6 @@
     
     <div class="post-body" itemprop="articleBody">
           <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-
 <p>Sometimes you want to see the 3D structure of molecule you are manipulating in jupyter, but you have to save it as a file with coordinates and open it in PyMol. This is very inconvenient. Although you can use PyMol to render image and show it in jupyter, but it is only a static image. Here I recommand a python package <code>py3Dmol</code>, which is a simple jupyter widget based on a JavaScript library <a target="_blank" rel="noopener" href="http://3dmol.csb.pitt.edu/">3Dmol.js</a>. JavaScript can run in almost any browser, so you can use it in jupyter notebooks and in web pages.</p>
           <!--noindex-->
             <div class="post-button">
@@ -547,10 +624,9 @@
     
     <div class="post-body" itemprop="articleBody">
           <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-
-<p>Water solubility of compounds significantly affect its druggability, absorption and distribution property, such as oral bioavailability, intestinal absorption and BBB penetration. Typically, a low solubility goes along with a bad absorption and therefore the general aim is to avoid poorly soluble compounds. For convenient, water solubility (mol&#x2F;Liter) are converted to logarithm value as LogS.</p>
+<p>Water solubility of compounds significantly affect its druggability, absorption and distribution property, such as oral bioavailability, intestinal absorption and BBB penetration. Typically, a low solubility goes along with a bad absorption and therefore the general aim is to avoid poorly soluble compounds. For convenient, water solubility (mol/Liter) are converted to logarithm value as LogS.</p>
 <p>There are two major methods to predict LogS, atom contribution method and machine learning based method. The atom contribution method predict solubility via an increment system by adding atom contributions depending on their atom types. The machine learning method uses 2D or 3D features generated from molecular structures to fit a regression model for prediction.</p>
-<p>The atom contribution method requires solid domain knowledge of cheminformatics, while machine learning method can use out-of-box cheminformatic toolkit to generate features for fitting models. Sounds easy, right? ;)</p>
+<p>The atom contribution method requires solid domain knowledge of cheminformatics, while machine learning method can use out-of-box cheminformatic toolkit to generate features for fitting models. Sounds easy, right? 😉</p>
 <p>Here, we use python with <code>rdkit</code> and <code>sklearn</code> to predict LogS trained from a public <a target="_blank" rel="noopener" href="http://www.vcclab.org/lab/alogps/">dataset</a> of water solubility</p>
           <!--noindex-->
             <div class="post-button">
@@ -635,7 +711,6 @@
     
     <div class="post-body" itemprop="articleBody">
           <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-
 <p>There are two kinds of images: bitmap and vectorgram in the computer. The vectorgram is very suitable for illustrating chemical structures which can be easily drawled by edge and text.</p>
 <p>The RDKit package can draw chemical structures in bitmap or vactorgram with only several codes. Sometime we want to dynamically render high quality figures of molecules in web, and the SVG format is the best choice to do this.</p>
           <!--noindex-->
@@ -721,7 +796,6 @@
     
     <div class="post-body" itemprop="articleBody">
           <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-
 <p>I have searched online for converting FASTA file into CSV format for sequence visualization like the output from <a target="_blank" rel="noopener" href="http://gpcrdb.org/">GPCRdb.org</a>, but I didn’t find what I want. So I wrote this simple and dirty script to convert FASTA to CSV.</p>
           <!--noindex-->
             <div class="post-button">
@@ -806,7 +880,6 @@
     
     <div class="post-body" itemprop="articleBody">
           <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
-
 <p>最近拜读了一篇来自AstraZeneca R&amp;D的深度学习结合化学信息学的文章，<a target="_blank" rel="noopener" href="https://jcheminf.springeropen.com/articles/10.1186/s13321-017-0235-x">Molecular De-Novo Design through Deep Reinforcement Learning</a>。在这篇文章中，作者Marcus Olivecrona使用了RNN的方法进行了inverse QSAR，从而达到设计新的活性药物分子。而且作者的方法中可以通过inforcement learning增加各种限制，从而达到精准的调控。作者的Github项目地址在<a target="_blank" rel="noopener" href="https://github.com/MarcusOlivecrona/REINVENT">这里</a>。由于文章比较复杂，因此在这里稍作笔记以深入学习。</p>
           <!--noindex-->
             <div class="post-button">
@@ -919,92 +992,6 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://www.birdlet.github.io/2017/08/08/trj_contact_map/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Birdlet">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Life is Worth Living">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Life is Worth Living">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2017/08/08/trj_contact_map/" class="post-title-link" itemprop="url">Use Python to Generate Protein Contact Map of Molecular Dynamics</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2017-08-08 12:12:00" itemprop="dateCreated datePublished" datetime="2017-08-08T12:12:00+08:00">2017-08-08</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-02-18 14:12:27" itemprop="dateModified" datetime="2024-02-18T14:12:27+08:00">2024-02-18</time>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-
-<p>Protein contact map is a very helpfull tool to represent 3D protein structure in a 2D matrix format. More detail about contact map can be found <a target="_blank" rel="noopener" href="http://what-when-how.com/molecular-biology/contact-maps-molecular-biology/">here</a>. Contact maps can not only be used as illustrations of protein, but also as tools to predict homology protein structure, especially for low homolog in evolution. Some scientists have already applied deep learning on this project and developed programs for structure prediction, such as <a target="_blank" rel="noopener" href="http://raptorx.uchicago.edu/ContactMap/">RaptorX</a> of TTIC.</p>
-<p>There are several tools or program for calculate and display contact map on internet, <a target="_blank" rel="noopener" href="https://omictools.com/protein-contact-map-prediction-category">here</a> is an collection of them. I had a project several month ago, and I wanted to use a script to generate contact maps for a molecular dynamic trajectory, so that I use python to write a script to do it. I love python because I could always find usefull packages from internet. Here I found a package named <a target="_blank" rel="noopener" href="http://mdtraj.org/latest/">MDtraj</a>, And a package from <a target="_blank" rel="noopener" href="https://nanohub.org/resources/contactmaps">Benjamin Rafferty (doi:10.4231&#x2F;D35M62761)</a>! Thanks to them, I can simply achieve my idea.</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2017/08/08/trj_contact_map/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
     <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" title="Next page" aria-label="Next page" href="/page/2/"><i class="fa fa-angle-right"></i></a>
   </nav>
@@ -1056,6 +1043,11 @@
   
 
 
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css" integrity="sha256-UF1fgpAiu3tPJN/uCqEUHNe7pnr+QR0SQDNfgglgtcM=" crossorigin="anonymous">
 
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
