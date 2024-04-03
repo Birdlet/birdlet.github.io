@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.birdlet.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.19.1","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="本文将以乙酰基噻唑分子为例，简单讲解GAFF力场小分子转换为Gromacs拓扑格式ITP&#x2F;TOP应当包含的内容。 OSNcccdcoc3sscdndGAFF2">
+<meta property="og:type" content="article">
+<meta property="og:title" content="定制小分子力场(三)：Gromacs的GAFF小分子拓扑文件">
+<meta property="og:url" content="https://www.birdlet.github.io/2024/04/03/21/index.html">
+<meta property="og:site_name" content="Life is Worth Living">
+<meta property="og:description" content="本文将以乙酰基噻唑分子为例，简单讲解GAFF力场小分子转换为Gromacs拓扑格式ITP&#x2F;TOP应当包含的内容。 OSNcccdcoc3sscdndGAFF2">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2024-04-03T04:00:00.000Z">
+<meta property="article:modified_time" content="2024-04-03T03:55:15.009Z">
+<meta property="article:author" content="Birdlet">
+<meta property="article:tag" content="CADD">
+<meta property="article:tag" content="MD">
+<meta property="article:tag" content="Force Field">
+<meta property="article:tag" content="GAFF">
+<meta property="article:tag" content="Amber">
+<meta property="article:tag" content="Gromacs">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://www.birdlet.github.io/2024/04/03/21/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://www.birdlet.github.io/2024/04/03/21/","path":"2024/04/03/21/","title":"定制小分子力场(三)：Gromacs的GAFF小分子拓扑文件"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>定制小分子力场(三)：Gromacs的GAFF小分子拓扑文件 | Life is Worth Living</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Life is Worth Living</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="user fa-fw"></i>About</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9E%84%E5%BB%BAgromacs%E6%A0%BC%E5%BC%8F%E5%B0%8F%E5%88%86%E5%AD%90%E5%8A%9B%E5%9C%BA%E6%96%87%E4%BB%B6"><span class="nav-number">1.</span> <span class="nav-text"> 构建Gromacs格式小分子力场文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gromacs%E6%8B%93%E6%89%91%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F"><span class="nav-number">2.</span> <span class="nav-text"> Gromacs拓扑文件格式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#top%E6%96%87%E4%BB%B6"><span class="nav-number">2.1.</span> <span class="nav-text"> TOP文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#itp%E6%96%87%E4%BB%B6"><span class="nav-number">2.2.</span> <span class="nav-text"> ITP文件</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#itp%E6%96%87%E4%BB%B6-atomtypes"><span class="nav-number">2.2.1.</span> <span class="nav-text"> ITP文件 [ atomtypes ]</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#itp%E6%96%87%E4%BB%B6-moleculetype"><span class="nav-number">2.2.2.</span> <span class="nav-text"> ITP文件 [ moleculetype ]</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#itp%E6%96%87%E4%BB%B6-atoms-bonds-angles"><span class="nav-number">2.2.3.</span> <span class="nav-text"> ITP文件 [ atoms ]  [ bonds ]  [ angles ]</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#itp%E6%96%87%E4%BB%B6-dihedrals-pairs"><span class="nav-number">2.2.4.</span> <span class="nav-text"> ITP文件 [ dihedrals ]  [ pairs ]</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#farmod%E6%96%87%E4%BB%B6"><span class="nav-number">2.3.</span> <span class="nav-text"> FARMOD文件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-number">3.</span> <span class="nav-text"> 小结</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Birdlet</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">16</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/birdlet" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;birdlet" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:dk_dingkang@126.com" title="E-Mail → mailto:dk_dingkang@126.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://www.birdlet.github.io/2024/04/03/21/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Birdlet">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Life is Worth Living">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="定制小分子力场(三)：Gromacs的GAFF小分子拓扑文件 | Life is Worth Living">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          定制小分子力场(三)：Gromacs的GAFF小分子拓扑文件
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2024-04-03 12:00:00 / Modified: 11:55:15" itemprop="dateCreated datePublished" datetime="2024-04-03T12:00:00+08:00">2024-04-03</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>本文将以乙酰基噻唑分子为例，简单讲解GAFF力场小分子转换为Gromacs拓扑格式ITP/TOP应当包含的内容。</p>
+<?xml version="1.0"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="116.4 213.94 222.6 100.91" preserveAspectRatio="xMidYMid" width="100%" height="100%"><clipPath id="49"><rect x="0.5" y="0.5" width="522.2" height="768.68" /></clipPath><g id="drawing"><rect x="116.4" y="213.94" width="100%" height="100%" fill="rgb(255, 255, 255)" /><g id="page" clip-path="url(#49)"><g><text xml:space="preserve" text-anchor="start" text-rendering="geometricPrecision"><tspan x="116.4" y="221.82" font-family="Arial" font-size="10" fill="rgb(0, 0, 0)">O</tspan></text></g><g><text xml:space="preserve" text-anchor="start" text-rendering="geometricPrecision"><tspan x="117.79" y="284.45" font-family="Arial" font-size="10" fill="rgb(0, 0, 0)">S</tspan></text></g><g><text xml:space="preserve" text-anchor="start" text-rendering="geometricPrecision"><tspan x="156.37" y="313.53" font-family="Arial" font-size="10" fill="rgb(0, 0, 0)">N</tspan></text></g><g id="Solid"><path d="M170.73 280.9 L170.73 280.9 L169.64 281.24 L168.55 281.58 L145.61 264.41 L145.63 263.27 L146.56 262.81 Z" stroke="rgb(0, 0, 0)" stroke-width="0" fill-rule="evenodd" stroke-linejoin="miter" fill="rgb(0, 0, 0)" shape-rendering="geometricPrecision" /></g><g id="Solid"><path d="M146.56 262.81 L146.56 262.81 L145.63 263.27 L144.72 262.79 L145.14 232.74 L146.05 233.28 L146.96 233.82 Z" stroke="rgb(0, 0, 0)" stroke-width="0" fill-rule="evenodd" stroke-linejoin="miter" fill="rgb(0, 0, 0)" shape-rendering="geometricPrecision" /></g><g id="Solid"><line x1="144.87" y1="235.26" x2="124.35" y2="223.01" stroke="rgb(0, 0, 0)" stroke-width="1.84" shape-rendering="auto" /><path d="M146.53 231.96 L146.53 231.96 L148.38 230.92 L127.18 218.27 L126.23 219.85 Z" stroke="rgb(0, 0, 0)" stroke-width="0" fill-rule="evenodd" stroke-linejoin="miter" fill="rgb(0, 0, 0)" shape-rendering="geometricPrecision" /><path d="M145.09 236.45 L145.09 236.45 L145.12 234.33 L124.82 222.22 L123.88 223.8 Z" stroke="rgb(0, 0, 0)" stroke-width="0" fill-rule="evenodd" stroke-linejoin="miter" fill="rgb(0, 0, 0)" shape-rendering="geometricPrecision" /></g><g id="Solid"><path d="M146.96 233.82 L146.96 233.82 L146.05 233.28 L145.14 232.74 L171.79 217.85 L172.24 218.65 L172.69 219.45 Z" stroke="rgb(0, 0, 0)" stroke-width="0" fill-rule="evenodd" stroke-linejoin="miter" fill="rgb(0, 0, 0)" shape-rendering="geometricPrecision" /></g><g id="Solid"><path d="M144.72 262.79 L144.72 262.79 L145.63 263.27 L145.61 264.41 L126.17 278.11 L125.64 277.36 L125.11 276.61 Z" stroke="rgb(0, 0, 0)" stroke-width="0" fill-rule="evenodd" stroke-linejoin="miter" fill="rgb(0, 0, 0)" shape-rendering="geometricPrecision" /></g><g id="Solid"><path d="M122.09 286.79 L122.09 286.79 L122.97 286.52 L123.85 286.25 L130.66 308.29 L129.98 309.2 L129.3 310.11 Z" stroke="rgb(0, 0, 0)" stroke-width="0" fill-rule="evenodd" stroke-linejoin="miter" fill="rgb(0, 0, 0)" shape-rendering="geometricPrecision" /></g><g id="Solid"><path d="M129.3 310.11 L129.3 310.11 L129.98 309.2 L130.66 308.29 L155.2 308.64 L155.19 309.56 L155.18 310.48 Z" stroke="rgb(0, 0, 0)" stroke-width="0" fill-rule="evenodd" stroke-linejoin="miter" fill="rgb(0, 0, 0)" shape-rendering="geometricPrecision" /></g><g id="Solid"><path d="M168.55 281.58 L168.55 281.58 L169.64 281.24 L170.73 280.9 L162.59 304.79 L161.72 304.5 L160.85 304.2 Z" stroke="rgb(0, 0, 0)" stroke-width="0" fill-rule="evenodd" stroke-linejoin="miter" fill="rgb(0, 0, 0)" shape-rendering="geometricPrecision" /></g><g id="Oval"><circle cx="145.27" cy="288.78" r="14.923112068025" stroke="rgb(0, 0, 0)" stroke-width="1.84" fill="none" /></g><g><text xml:space="preserve" text-anchor="start" text-rendering="geometricPrecision"><tspan x="326.69" y="286.34" font-family="Arial" font-size="10" fill="rgb(0, 0, 0)">cc</tspan></text></g><g><text xml:space="preserve" text-anchor="middle" text-rendering="geometricPrecision"><tspan x="305.18" y="268.37" font-family="Arial" font-size="10" fill="rgb(0, 0, 0)">cd</tspan></text></g><g><text xml:space="preserve" text-anchor="start" text-rendering="geometricPrecision"><tspan x="303.1" y="238.38" font-family="Arial" font-size="10" fill="rgb(0, 0, 0)">c</tspan></text></g><g><text xml:space="preserve" text-anchor="start" text-rendering="geometricPrecision"><tspan x="277.07" y="223.02" font-family="Arial" font-size="10" fill="rgb(0, 0, 0)">o</tspan></text></g><g><text xml:space="preserve" text-anchor="start" text-rendering="geometricPrecision"><tspan x="329.29" y="223.75" font-family="Arial" font-size="10" fill="rgb(0, 0, 0)">c</tspan><tspan font-family="Arial" font-size="8" fill="rgb(0, 0, 0)">3</tspan></text></g><g><text xml:space="preserve" text-anchor="end" text-rendering="geometricPrecision"><tspan x="283.17" y="285.65" font-family="Arial" font-size="10" fill="rgb(0, 0, 0)">ss</tspan></text></g><g><text xml:space="preserve" text-anchor="end" text-rendering="geometricPrecision"><tspan x="292.03" y="314.3" font-family="Arial" font-size="10" fill="rgb(0, 0, 0)">cd</tspan></text></g><g><text xml:space="preserve" text-anchor="start" text-rendering="geometricPrecision"><tspan x="316.74" y="314.73" font-family="Arial" font-size="10" fill="rgb(0, 0, 0)">nd</tspan></text></g><g id="Solid"><path d="M326.34 279.16 L326.34 279.16 L325.79 279.9 L325.24 280.63 L310.86 269.87 L311.41 269.13 L311.96 268.4 Z" stroke="rgb(0, 0, 0)" stroke-width="0" fill-rule="evenodd" stroke-linejoin="miter" fill="rgb(0, 0, 0)" shape-rendering="geometricPrecision" /></g><g id="Solid"><path d="M306.17 259.3 L306.17 259.3 L305.25 259.29 L304.33 259.28 L304.6 240.5 L305.52 240.51 L306.44 240.52 Z" stroke="rgb(0, 0, 0)" stroke-width="0" fill-rule="evenodd" stroke-linejoin="miter" fill="rgb(0, 0, 0)" shape-rendering="geometricPrecision" /></g><g id="Solid"><line x1="300.6" y1="234.17" x2="282.85" y2="223.59" stroke="rgb(0, 0, 0)" stroke-width="1.84" shape-rendering="auto" /><path d="M302.48 231.01 L302.48 231.01 L303.42 229.43 L285.68 218.85 L284.73 220.43 Z" stroke="rgb(0, 0, 0)" stroke-width="0" fill-rule="evenodd" stroke-linejoin="miter" fill="rgb(0, 0, 0)" shape-rendering="geometricPrecision" /><path d="M300.12 234.96 L300.12 234.96 L301.07 233.38 L283.32 222.8 L282.38 224.38 Z" stroke="rgb(0, 0, 0)" stroke-width="0" fill-rule="evenodd" stroke-linejoin="miter" fill="rgb(0, 0, 0)" shape-rendering="geometricPrecision" /></g><g id="Solid"><path d="M310.09 233.02 L310.09 233.02 L309.65 232.22 L309.2 231.42 L327.5 221.19 L327.95 222 L328.39 222.8 Z" stroke="rgb(0, 0, 0)" stroke-width="0" fill-rule="evenodd" stroke-linejoin="miter" fill="rgb(0, 0, 0)" shape-rendering="geometricPrecision" /></g><g id="Solid"><path d="M298.13 268.32 L298.13 268.32 L298.66 269.07 L299.19 269.82 L284.76 279.99 L284.23 279.24 L283.7 278.49 Z" stroke="rgb(0, 0, 0)" stroke-width="0" fill-rule="evenodd" stroke-linejoin="miter" fill="rgb(0, 0, 0)" shape-rendering="geometricPrecision" /></g><g id="Solid"><path d="M281.64 287.99 L281.64 287.99 L282.52 287.72 L283.4 287.45 L288.83 305.01 L287.95 305.28 L287.07 305.55 Z" stroke="rgb(0, 0, 0)" stroke-width="0" fill-rule="evenodd" stroke-linejoin="miter" fill="rgb(0, 0, 0)" shape-rendering="geometricPrecision" /></g><g id="Solid"><path d="M293.4 311.38 L293.4 311.38 L293.41 310.46 L293.42 309.54 L315.4 309.85 L315.39 310.77 L315.38 311.69 Z" stroke="rgb(0, 0, 0)" stroke-width="0" fill-rule="evenodd" stroke-linejoin="miter" fill="rgb(0, 0, 0)" shape-rendering="geometricPrecision" /></g><g id="Solid"><path d="M326.29 288.11 L326.29 288.11 L327.16 288.4 L328.03 288.7 L322.14 305.99 L321.27 305.7 L320.4 305.4 Z" stroke="rgb(0, 0, 0)" stroke-width="0" fill-rule="evenodd" stroke-linejoin="miter" fill="rgb(0, 0, 0)" shape-rendering="geometricPrecision" /></g><g id="Oval"><circle cx="304.82" cy="289.98" r="14.923112068025" stroke="rgb(0, 0, 0)" stroke-width="1.84" fill="none" /></g><g id="Hollow"><path d="M193.4 265.65 L239.62 265.65 L239.62 259.71 L251.5 271.59 L239.62 283.47 L239.62 277.53 L193.4 277.53 Z" stroke="rgb(0, 0, 0)" stroke-width="0.99" fill-rule="evenodd" stroke-linejoin="miter" fill="none" shape-rendering="geometricPrecision" /></g><g><text xml:space="preserve" text-anchor="start" text-rendering="geometricPrecision"><tspan x="201" y="250" font-family="Times New Roman" font-size="12" fill="rgb(0, 0, 0)">GAFF2</tspan></text></g></g></g></svg>
+<span id="more"></span>
+<h2 id="构建gromacs格式小分子力场文件"><a class="markdownIt-Anchor" href="#构建gromacs格式小分子力场文件"></a> 构建Gromacs格式小分子力场文件</h2>
+<p>首先我们使用以下命令，构建GAFF力场的Gromacs拓扑文件。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 使用openbabel生成含有氢原子的乙酰基噻唑分子3D结构</span></span><br><span class="line">obabel -:<span class="string">&quot;c1c(C(=O)C)scn1&quot;</span> --gen3d -addH -omol2 -O MOL.mol2</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用ACPYPE生成GAFF2力场文件</span></span><br><span class="line">acpype -i MOL.mol2 -n 0 -a gaff2 -k <span class="string">&quot;maxcyc=10&quot;</span></span><br><span class="line"><span class="comment"># -n 净电荷，Net Charge，分子不带电为0</span></span><br><span class="line"><span class="comment"># -a 力场类型，小分子可以选择GAFF或GAFF2，大分子可选择AMBER</span></span><br><span class="line"><span class="comment"># -k 向半经验量化软件SQM传参，&quot;maxcyc=10&quot;代表SQM进行AM1计算时构象优化最大循环次数为100，用于加速演示</span></span><br></pre></td></tr></table></figure>
+<p>然后在目录中会显示包括如下文件在内的力场文件：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"># 重要的Amber中间文件</span><br><span class="line">MOL_AC.frcmod  # AmberTools的pharmchk产生文件，主要关注成键参数的penalty score</span><br><span class="line">MOL_AC.prmtop  # Amber格式的小分子力场文件</span><br><span class="line">MOL_AC.inpcrd  # Amber格式的小分子坐标文件</span><br><span class="line">MOL_bcc_gaff2.mol2  # Amber原子类型和AM1-BCC电荷的MOL2格式</span><br><span class="line"></span><br><span class="line"># 其他力场或软件格式</span><br><span class="line">MOL_GMX.itp  # Gromacs ITP拓扑文件</span><br><span class="line">MOL_GMX.top  # Gromacs TOP拓扑文件</span><br><span class="line">posre_MOL.itp  # Gromacs 的位置限制ITP拓扑文件</span><br><span class="line">MOL_GMX.gro  # Gromacs GRO坐标文件</span><br><span class="line"></span><br><span class="line">MOL_GMX_OPLS.itp  # Gromacs ITP拓扑文件，仅改用OPLS力场的原子类型和范德华参数</span><br><span class="line"></span><br><span class="line">MOL_CNS.par   # CNS 拓扑文件</span><br><span class="line">MOL_CNS.top   # CNS 拓扑文件</span><br><span class="line"></span><br><span class="line">MOL_CNS.prm   # CHARMM 拓扑文件</span><br><span class="line">MOL_CNS.rtf   # CHARMM 拓扑文件</span><br></pre></td></tr></table></figure>
+<p>其中MOL_GMX.itp和MOL_GMX.top就是我们需要的Gromacs格式的GAFF力场小分子拓扑。</p>
+<h2 id="gromacs拓扑文件格式"><a class="markdownIt-Anchor" href="#gromacs拓扑文件格式"></a> Gromacs拓扑文件格式</h2>
+<p>Gromacs拓扑文件格式<a target="_blank" rel="noopener" href="https://manual.gromacs.org/current/reference-manual/topologies/topology-file-formats.html">官方文档</a>对拓扑文件有着非常详尽的释义，我们将结合官方文档对MOL_GMX.itp和MOL_GMX.top进行解释。</p>
+<h3 id="top文件"><a class="markdownIt-Anchor" href="#top文件"></a> TOP文件</h3>
+<p>首先是TOP文件全文：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">; MOL_GMX.itp created by acpype (v: 2022.6.6) on Fri Feb  2 12:27:46 2024</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">[ defaults ]</span><br><span class="line">; nbfunc        comb-rule       gen-pairs       fudgeLJ fudgeQQ</span><br><span class="line">1               2               yes             0.5     0.8333</span><br><span class="line"></span><br><span class="line">#include MOL_GMX.itp</span><br><span class="line"></span><br><span class="line">[ system ]</span><br><span class="line"> MOL</span><br><span class="line"></span><br><span class="line">[ molecules ]</span><br><span class="line">; Compound        nmols</span><br><span class="line"> MOL              1     </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>TOP文件包含体系中所有原子的子拓扑参数，由力场参数，子拓扑，和体系分子数三个主要部分组成。第一部分为力场参数，首先是<code>[ defaults ]</code>词条，词条下有5列参数，第一列为<code>nbfunc</code>，范德华势能函数类型，<code>1</code>代表Lennard-Jones势，<code>2</code>代表Buckingham势或EXP势，AMBER力场使用表Lennard-Jones势；第二列是范德华势的参数组合规则，AMBER使用的组合规则见第二章中GAFF力场参数说明；第三列<code>gen-pairs</code>为1,4相互作用对的参数来源，<code>gen-pairs</code>为<code>yes</code>时会开启Fudge LJ，为<code>no</code>时关闭Fudge LJ，Fudge QQ总是开启，不受次参数调整，第五和第六列为范德华和库仑势的具体缩放参数。如果TOP文件中含有大分子力场，<code>[ defaults ]</code>参数后会<code>#include amber99sb-ildn/ffnonbonded.itp</code>引入AMBER力场中大分子非键参数。</p>
+<p>第二部分是各体系分子子拓扑文件，即ITP文件，使用<code>#include</code>方法引入，具体解析见下文。第三部分为体系分子数。首先是系统名<code>[ system ]</code>，命名可由用户自定义，然后是<code>[ molecules ]</code>的具体分子组成，每行代表一类分子的数量，如本体系中<code>UNK</code>分子数为1。对于复杂体系，可能会有多个蛋白或配体，排列顺序务必和坐标文件中的分子顺序保持一致。</p>
+<h3 id="itp文件"><a class="markdownIt-Anchor" href="#itp文件"></a> ITP文件</h3>
+<p>GAFF力场小分子参数文件(<code>MOL_GMX.itp</code>)全文如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br></pre></td><td class="code"><pre><span class="line">[ atomtypes ]</span><br><span class="line">;name   bond_type     mass     charge   ptype   sigma         epsilon       Amb</span><br><span class="line"> ss       ss          0.00000  0.00000   A     3.53241e-01   1.18156e+00 ; 1.98  0.2824</span><br><span class="line"> cc       cc          0.00000  0.00000   A     3.31521e-01   4.13379e-01 ; 1.86  0.0988</span><br><span class="line"> nd       nd          0.00000  0.00000   A     3.38417e-01   3.93714e-01 ; 1.90  0.0941</span><br><span class="line"> cd       cd          0.00000  0.00000   A     3.31521e-01   4.13379e-01 ; 1.86  0.0988</span><br><span class="line"> c        c           0.00000  0.00000   A     3.31521e-01   4.13379e-01 ; 1.86  0.0988</span><br><span class="line"> o        o           0.00000  0.00000   A     3.04812e-01   6.12119e-01 ; 1.71  0.1463</span><br><span class="line"> c3       c3          0.00000  0.00000   A     3.39771e-01   4.51035e-01 ; 1.91  0.1078</span><br><span class="line"> h4       h4          0.00000  0.00000   A     2.53639e-01   6.73624e-02 ; 1.42  0.0161</span><br><span class="line"> hc       hc          0.00000  0.00000   A     2.60018e-01   8.70272e-02 ; 1.46  0.0208</span><br><span class="line"></span><br><span class="line">[ moleculetype ]</span><br><span class="line">;name            nrexcl</span><br><span class="line"> MOL              3</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">[ atoms ]</span><br><span class="line">;   nr  type  resi  res  atom  cgnr     charge      mass       ; qtot   bond_type</span><br><span class="line">     1   ss     1   UNL    S1    1     0.048700     32.06000 ; qtot 0.049</span><br><span class="line">     2   cc     1   UNL    C2    2     0.267900     12.01000 ; qtot 0.317</span><br><span class="line">     3   nd     1   UNL    N3    3    -0.605000     14.01000 ; qtot -0.288</span><br><span class="line">     4   cd     1   UNL    C4    4     0.323200     12.01000 ; qtot 0.035</span><br><span class="line">     5   cc     1   UNL    C5    5    -0.275400     12.01000 ; qtot -0.241</span><br><span class="line">     6    c     1   UNL    C6    6     0.503600     12.01000 ; qtot 0.263</span><br><span class="line">     7    o     1   UNL    O7    7    -0.534100     16.00000 ; qtot -0.271</span><br><span class="line">     8   c3     1   UNL    C8    8    -0.181100     12.01000 ; qtot -0.452</span><br><span class="line">     9   h4     1   UNL    H9    9     0.048100      1.00800 ; qtot -0.404</span><br><span class="line">    10   h4     1   UNL   H10   10     0.186000      1.00800 ; qtot -0.218</span><br><span class="line">    11   hc     1   UNL   H11   11     0.072700      1.00800 ; qtot -0.145</span><br><span class="line">    12   hc     1   UNL   H12   12     0.072700      1.00800 ; qtot -0.073</span><br><span class="line">    13   hc     1   UNL   H13   13     0.072700      1.00800 ; qtot 0.000</span><br><span class="line"></span><br><span class="line">[ bonds ]</span><br><span class="line">;   ai     aj funct   r             k</span><br><span class="line">     1      2   1    1.7560e-01    1.9414e+05 ;     S1 - C2    </span><br><span class="line">     1      5   1    1.7560e-01    1.9414e+05 ;     S1 - C5    </span><br><span class="line">     2      3   1    1.3170e-01    3.7715e+05 ;     C2 - N3    </span><br><span class="line">     2      6   1    1.4680e-01    2.4719e+05 ;     C2 - C6    </span><br><span class="line">     3      4   1    1.3690e-01    3.0886e+05 ;     N3 - C4    </span><br><span class="line">     4      5   1    1.3730e-01    3.4819e+05 ;     C4 - C5    </span><br><span class="line">     4      9   1    1.0820e-01    3.3798e+05 ;     C4 - H9    </span><br><span class="line">     5     10   1    1.0820e-01    3.3798e+05 ;     C5 - H10   </span><br><span class="line">     6      7   1    1.2180e-01    5.4610e+05 ;     C6 - O7    </span><br><span class="line">     6      8   1    1.5240e-01    2.0351e+05 ;     C6 - C8    </span><br><span class="line">     8     11   1    1.0970e-01    3.1455e+05 ;     C8 - H11   </span><br><span class="line">     8     12   1    1.0970e-01    3.1455e+05 ;     C8 - H12   </span><br><span class="line">     8     13   1    1.0970e-01    3.1455e+05 ;     C8 - H13   </span><br><span class="line"></span><br><span class="line">[ pairs ]</span><br><span class="line">;   ai     aj    funct</span><br><span class="line">     1      7      1 ;     S1 - O7    </span><br><span class="line">     1      8      1 ;     S1 - C8    </span><br><span class="line">     1      9      1 ;     S1 - H9    </span><br><span class="line">     2      9      1 ;     C2 - H9    </span><br><span class="line">     2     10      1 ;     C2 - H10   </span><br><span class="line">     2     11      1 ;     C2 - H11   </span><br><span class="line">     2     12      1 ;     C2 - H12   </span><br><span class="line">     2     13      1 ;     C2 - H13   </span><br><span class="line">     3      7      1 ;     N3 - O7    </span><br><span class="line">     3      8      1 ;     N3 - C8    </span><br><span class="line">     3     10      1 ;     N3 - H10   </span><br><span class="line">     4      6      1 ;     C4 - C6    </span><br><span class="line">     5      6      1 ;     C5 - C6    </span><br><span class="line">     7     11      1 ;     O7 - H11   </span><br><span class="line">     7     12      1 ;     O7 - H12   </span><br><span class="line">     7     13      1 ;     O7 - H13   </span><br><span class="line">     9     10      1 ;     H9 - H10   </span><br><span class="line"></span><br><span class="line">[ angles ]</span><br><span class="line">;   ai     aj     ak    funct   theta         cth</span><br><span class="line">     1      2      3      1    1.1451e+02    6.9705e+02 ;     S1 - C2     - N3    </span><br><span class="line">     1      2      6      1    1.2197e+02    5.2718e+02 ;     S1 - C2     - C6    </span><br><span class="line">     1      5      4      1    1.1155e+02    5.5982e+02 ;     S1 - C5     - C4    </span><br><span class="line">     1      5     10      1    1.1997e+02    3.5564e+02 ;     S1 - C5     - H10   </span><br><span class="line">     2      1      5      1    9.0240e+01    6.5270e+02 ;     C2 - S1     - C5    </span><br><span class="line">     2      3      4      1    1.0549e+02    6.1840e+02 ;     C2 - N3     - C4    </span><br><span class="line">     2      6      7      1    1.2393e+02    7.2551e+02 ;     C2 - C6     - O7    </span><br><span class="line">     2      6      8      1    1.1729e+02    5.4392e+02 ;     C2 - C6     - C8    </span><br><span class="line">     3      2      6      1    1.2188e+02    7.1379e+02 ;     N3 - C2     - C6    </span><br><span class="line">     3      4      5      1    1.1165e+02    7.6232e+02 ;     N3 - C4     - C5    </span><br><span class="line">     3      4      9      1    1.2114e+02    5.1631e+02 ;     N3 - C4     - H9    </span><br><span class="line">     4      5     10      1    1.2848e+02    3.9999e+02 ;     C4 - C5     - H10   </span><br><span class="line">     5      4      9      1    1.2848e+02    3.9999e+02 ;     C5 - C4     - H9    </span><br><span class="line">     6      8     11      1    1.0877e+02    3.9664e+02 ;     C6 - C8     - H11   </span><br><span class="line">     6      8     12      1    1.0877e+02    3.9664e+02 ;     C6 - C8     - H12   </span><br><span class="line">     6      8     13      1    1.0877e+02    3.9664e+02 ;     C6 - C8     - H13   </span><br><span class="line">     7      6      8      1    1.2320e+02    7.0793e+02 ;     O7 - C6     - C8    </span><br><span class="line">    11      8     12      1    1.0758e+02    3.2635e+02 ;    H11 - C8     - H12   </span><br><span class="line">    11      8     13      1    1.0758e+02    3.2635e+02 ;    H11 - C8     - H13   </span><br><span class="line">    12      8     13      1    1.0758e+02    3.2635e+02 ;    H12 - C8     - H13   </span><br><span class="line"></span><br><span class="line">[ dihedrals ] ; propers</span><br><span class="line">; for gromacs 4.5 or higher, using funct 9</span><br><span class="line">;    i      j      k      l   func   phase     kd      pn</span><br><span class="line">     1      2      3      4      9   180.00  19.87400   2 ;     S1-    C2-    N3-    C4</span><br><span class="line">     1      2      6      7      9   180.00  12.02900   2 ;     S1-    C2-    C6-    O7</span><br><span class="line">     1      2      6      8      9   180.00  12.02900   2 ;     S1-    C2-    C6-    C8</span><br><span class="line">     1      5      4      3      9   180.00  16.73600   2 ;     S1-    C5-    C4-    N3</span><br><span class="line">     1      5      4      9      9   180.00  16.73600   2 ;     S1-    C5-    C4-    H9</span><br><span class="line">     2      1      5      4      9   180.00   4.60240   2 ;     C2-    S1-    C5-    C4</span><br><span class="line">     2      1      5     10      9   180.00   4.60240   2 ;     C2-    S1-    C5-   H10</span><br><span class="line">     2      3      4      5      9   180.00  19.87400   2 ;     C2-    N3-    C4-    C5</span><br><span class="line">     2      3      4      9      9   180.00  19.87400   2 ;     C2-    N3-    C4-    H9</span><br><span class="line">     2      6      8     11      9   180.00   0.00000   2 ;     C2-    C6-    C8-   H11</span><br><span class="line">     2      6      8     12      9   180.00   0.00000   2 ;     C2-    C6-    C8-   H12</span><br><span class="line">     2      6      8     13      9   180.00   0.00000   2 ;     C2-    C6-    C8-   H13</span><br><span class="line">     3      2      6      7      9   180.00  12.02900   2 ;     N3-    C2-    C6-    O7</span><br><span class="line">     3      2      6      8      9   180.00  12.02900   2 ;     N3-    C2-    C6-    C8</span><br><span class="line">     3      4      5     10      9   180.00  16.73600   2 ;     N3-    C4-    C5-   H10</span><br><span class="line">     4      3      2      6      9   180.00  19.87400   2 ;     C4-    N3-    C2-    C6</span><br><span class="line">     5      1      2      3      9   180.00   4.60240   2 ;     C5-    S1-    C2-    N3</span><br><span class="line">     5      1      2      6      9   180.00   4.60240   2 ;     C5-    S1-    C2-    C6</span><br><span class="line">     7      6      8     11      9     0.00   3.47272   1 ;     O7-    C6-    C8-   H11</span><br><span class="line">     7      6      8     11      9   180.00   0.16736   3 ;     O7-    C6-    C8-   H11</span><br><span class="line">     7      6      8     12      9     0.00   3.47272   1 ;     O7-    C6-    C8-   H12</span><br><span class="line">     7      6      8     12      9   180.00   0.16736   3 ;     O7-    C6-    C8-   H12</span><br><span class="line">     7      6      8     13      9     0.00   3.47272   1 ;     O7-    C6-    C8-   H13</span><br><span class="line">     7      6      8     13      9   180.00   0.16736   3 ;     O7-    C6-    C8-   H13</span><br><span class="line">     9      4      5     10      9   180.00  16.73600   2 ;     H9-    C4-    C5-   H10</span><br><span class="line"></span><br><span class="line">[ dihedrals ] ; impropers</span><br><span class="line">; treated as propers in GROMACS to use correct AMBER analytical function</span><br><span class="line">;    i      j      k      l   func   phase     kd      pn</span><br><span class="line">     1      2      3      6      4   180.00   4.60240   2 ;     S1-    C2-    N3-    C6</span><br><span class="line">     1      5     10      4      4   180.00   4.60240   2 ;     S1-    C5-   H10-    C4</span><br><span class="line">     5      9      4      3      4   180.00   4.60240   2 ;     C5-    H9-    C4-    N3</span><br><span class="line">     8      2      6      7      4   180.00  43.93200   2 ;     C8-    C2-    C6-    O7</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>该ITP文件可分为两段，第一段为基础力场参数<code>[ atomtypes ]</code>，第二段为分子力场参数<code>[ moleculetype ]</code>及后续所有参数块。</p>
+<h4 id="itp文件-atomtypes"><a class="markdownIt-Anchor" href="#itp文件-atomtypes"></a> ITP文件 <code>[ atomtypes ]</code></h4>
+<p>第一段是基础力场参数<code>[ atomtypes ]</code>，即原子定义和对应的范德华参数。每行代表一种原子类型，Gromacs标准格式中，第一列为原子类型，第二列为原子序号，第三列为原子质量（单位a.m.u），第四列为原子电荷（单位e），第五列为原子类型，第六列为<code>$\sigma$</code>（单位nm），第七列为<code>$\epsilon$</code>（单位kJ/mol）。从GAFF生成的力场文件中，第一列与GAFF.prm原子类型一致，第二列可忽略，原子质量和原子电荷为0.0，因为分子中的具体原子的质量和电荷会覆盖这两个参数，第五列和第六列则由GAFF.dat文件中的范德华参数<code>$r_0$</code>和<code>$\epsilon$</code>转化而来。这一部分的原子类型只有小分子用到的原子类型，事实上读者也可以做一份完全版的GAFF力场基础参数的ITP文件来替换这段，对于有多种不同小分子的体系减少去除重复原子类型的工作。</p>
+<h4 id="itp文件-moleculetype"><a class="markdownIt-Anchor" href="#itp文件-moleculetype"></a> ITP文件 <code>[ moleculetype ]</code></h4>
+<p>第二段则是具体的分子类型，本段由<code>[ moleculetype ]</code>开始直到结束，严格地讲，<code>[ moleculetype ]</code>的内容直到读到下一个<code>[ moleculetype ]</code>或<code>[ system ]</code>为止。ITP文件中没有<code>[ system ]</code>内容块，所以实际上Gromacs程序是在读取TOP文件时<code>#include MOL.itp</code>后读到<code>[ system ]</code>或另一个<code>[ moleculetype ]</code>才停止。</p>
+<p><code>[ moleculetype ]</code>下的分子属性包括原子<code>[ atoms ]</code>，键长<code>[ bonds ]</code>，键角<code>[ angles ]</code>，二面角和异二面角<code>[ dihedrals ]</code>，1,4作用对<code>[ pairs ]</code>。</p>
+<p>分子类型<code>[ moleculetype ]</code>只有一行，两列，第一列为分子名，用于区分不同分子，TOP文件的<code>[ ystem ]</code>参数块会使用这个名字；第二列为<code>nrexcl</code>，非键作用排除原子数，这里是<code>3</code>，代表连接再3个原子以内的弱相互作用全部排除，即不考虑1,2相互作用和1,3相互作用，考虑1,4相互作用。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[ moleculetype ]</span><br><span class="line">;name            nrexcl</span><br><span class="line"> MOL              3</span><br></pre></td></tr></table></figure>
+<h4 id="itp文件-atoms-bonds-angles"><a class="markdownIt-Anchor" href="#itp文件-atoms-bonds-angles"></a> ITP文件 <code>[ atoms ]</code>  <code>[ bonds ]</code>  <code>[ angles ]</code></h4>
+<p>原子类型<code>[ atoms ]</code>行数与坐标中的原子数一致，原子类型也与坐标中的原子一一对应。每一行有8列，第一列为原子序号，严格从1开始，第二列为GAFF原子类型，第三列为残基编号，严格从1开始，第四列残基名，可与分子名不同，第五列<code>cgnr</code>为电荷组，对大分子的重复单元如残基或碱基有意义，对小分子无意义，第六列偏电荷，单位<code>$e$</code>，第七列为质量，单位<code>$a.m.u$</code>，<code>;</code>后都是注释，本文件注释主要计算各个原子累加电荷是否为分子静电荷，仅作提示用。Gromacs的grompp程序会优先读取此处的电荷和质量，而忽略<code>[ atomtypes ]</code>中的电荷和质量。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[ atoms ]</span><br><span class="line">;   nr  type  resi  res  atom  cgnr     charge      mass       ; qtot   bond_type</span><br><span class="line">     1   ss     1   UNL    S1    1     0.048700     32.06000 ; qtot 0.049</span><br></pre></td></tr></table></figure>
+<p>键参数<code>[ bonds ]</code>为分子内的所有键连关系，共5列，第一列和第二列为键连接的原子序号，第三列<code>funct</code>为键长力场函数类型，此处是<code>1</code>代表简谐势，第四列平衡键长，单位<code>nm</code>，第五列为力常数<code>$k_l$</code>，单位<code>$kJ/(mol\cdot\text&#123;\AA&#125;^2)$</code>，分号<code>;</code>后为ACPYPE提供的键连原子名注释，用于人工检查，程序不会读取。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[ bonds ]</span><br><span class="line">;   ai     aj funct   r             k</span><br><span class="line">     1      2   1    1.7560e-01    1.9414e+05 ;     S1 - C2  </span><br></pre></td></tr></table></figure>
+<p>键角参数<code>[ angles ]</code>为分子内所有的键角关系，共6列，第一列，第二列和第三列为键角连接的三个原子序号，第四列<code>funct</code>为键角力场函数类型，此处是<code>1</code>代表简谐势，第五列平衡键角，单位<code>°</code>，第六列为力常数<code>$k_\Theta$</code>，单位<code>$kJ/(mol\cdot Degree^2)$</code>，分号<code>;</code>后为ACPYPE提供的键角原子名注释，用于人工检查，程序不会读取。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[ angles ]</span><br><span class="line">;   ai     aj     ak    funct   theta         cth</span><br><span class="line">     1      2      3      1    1.1451e+02    6.9705e+02 ;     S1 - C2     - N3 </span><br></pre></td></tr></table></figure>
+<h4 id="itp文件-dihedrals-pairs"><a class="markdownIt-Anchor" href="#itp文件-dihedrals-pairs"></a> ITP文件 <code>[ dihedrals ]</code>  <code>[ pairs ]</code></h4>
+<p>二面角和异二面角参数<code>[ dihedrals ]</code>为分子内的二面角关系，共8列，前四列为二面角连接的三个原子序号，第五列<code>funct</code>为二面角力场函数类型，此处是<code>4</code>代表周期函数，第六列为相位，单位<code>°</code>，第七列为势垒高度，单位<code>$kJ$</code>，第八列为周期，分号<code>;</code>后为ACPYPE提供的二面角原子名注释，用于人工检查，程序不会读取。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[ dihedrals ] ; propers</span><br><span class="line">; for gromacs 4.5 or higher, using funct 9</span><br><span class="line">;    i      j      k      l   func   phase     kd      pn</span><br><span class="line">     1      2      3      4      9   180.00  19.87400   2 ;     S1-    C2-    N3-    C4</span><br><span class="line">     ...</span><br><span class="line">     </span><br><span class="line">[ dihedrals ] ; impropers</span><br><span class="line">; treated as propers in GROMACS to use correct AMBER analytical function</span><br><span class="line">;    i      j      k      l   func   phase     kd      pn</span><br><span class="line">     1      2      3      6      4   180.00   4.60240   2 ;     S1-    C2-    N3-    C6</span><br><span class="line">     ...</span><br></pre></td></tr></table></figure>
+<p>1,4相互作用<code>[ pairs ]</code>，共3列，第一列和第二列为成对的两个1,4原子序号，第三列<code>funct</code>为函数类型，此处是<code>1</code>代表使用缩放的非键相互作用，分号<code>;</code>后为ACPYPE提供的1,4作用对原子名注释，用于人工检查，程序不会读取。</p>
+<p>根据以往经验，1,4相互作用关系数量应该和二面角参数数量相等，但实际上该分子二面角参数有25个，1,4相互作用关系却只有20个。原因在于AMBER/GAFF力场不计算某些1,4作用，如芳环内的1,4作用，因为对于这样的体系成键项几乎不变，所以可忽略1,4相互作用。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[ pairs ]</span><br><span class="line">;   ai     aj    funct</span><br><span class="line">     1      7      1 ;     S1 - O7    </span><br></pre></td></tr></table></figure>
+<p>除此以外还有样例中没提到的平衡过程中常用的位置限制<code>[ position_restraints ]</code>，构象或距离约束<code>[ constraints ]</code>，水模型特有的限制方法<code>[ settles ]</code>，以及用作哑原子的多种<code>[ virtual_sites ]</code>等，可以查阅<a target="_blank" rel="noopener" href="https://manual.gromacs.org/current/reference-manual/topologies/topology-file-formats.html">官方文档</a>进一步学习。</p>
+<h3 id="farmod文件"><a class="markdownIt-Anchor" href="#farmod文件"></a> FARMOD文件</h3>
+<p>对Amber程序熟悉的读者可能知道，AmberTools在使用<code>tleap</code>导入小分子力场文件时是可以使用<code>.mol2</code>和<code>.frcmod</code>文件的。其中<code>.frcmod</code>文件是由AmberTools中的<code>parmchk</code>或<code>parmchk2</code>程序生成的力场检查文件。例如在<code>tleap</code>中使用如下命令导入GAFF2小分子力场参数：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">## Load Force Fields</span><br><span class="line">source leaprc.gaff2</span><br><span class="line"></span><br><span class="line">loadAmberParams  MOL_AC.frcmod</span><br><span class="line">MOL = loadmol2   MOL_bcc_gaff2.mol2</span><br><span class="line"></span><br><span class="line">saveamberparm MOL MOL.prmtop MOL.inpcrd</span><br><span class="line"></span><br><span class="line">quit</span><br></pre></td></tr></table></figure>
+<p>就可以获取<code>.prmtop</code>和<code>.inpcrd</code>文件。<code>mol2</code>文件读者可能比较熟悉，SYBYL的<code>.mol2</code>只存储原子类型，原子坐标，原子电荷，以及键连关系，缺少的键长，键角，二面角参数则在<code>leaprc.gaff2</code>和<code>.frcmod</code>文件中。</p>
+<p>我们打开文章第一部分生成的<code>MOL_AC.frcmod</code>文件：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">Remark line goes here</span><br><span class="line">MASS</span><br><span class="line"></span><br><span class="line">BOND</span><br><span class="line"></span><br><span class="line">ANGLE</span><br><span class="line"></span><br><span class="line">DIHE</span><br><span class="line">cc-cd-ss-cd   2    2.200       180.000           2.000      same as X -c2-ss-X , penalty score=232.0</span><br><span class="line">nc-cd-ss-cd   2    2.200       180.000           2.000      same as X -c2-ss-X , penalty score=232.0</span><br><span class="line">h5-cd-ss-cd   2    2.200       180.000           2.000      same as X -c2-ss-X , penalty score=232.0</span><br><span class="line">c -cd-ss-cd   2    2.200       180.000           2.000      same as X -c2-ss-X , penalty score=232.0</span><br><span class="line"></span><br><span class="line">IMPROPER</span><br><span class="line">cd-h4-cc-nc         1.1          180.0         2.0          Same as X -X -ca-ha, penalty score= 67.2 (use general term))</span><br><span class="line">c -cc-cd-ss         1.1          180.0         2.0          Using the default value</span><br><span class="line">c3-cd-c -o         10.5          180.0         2.0          Using general improper torsional angle  X- X- c- o, penalty score=  6.0)</span><br><span class="line">h5-nc-cd-ss         1.1          180.0         2.0          Same as X -X -ca-ha, penalty score= 67.5 (use general term))</span><br><span class="line"></span><br><span class="line">NONBON</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>文件中只列出了4个二面角和4个异二面角参数。原因是除这8个成键项，其余的成键项和非键项在前一章描述的<code>GAFF2.dat</code>文件中存在，因此AmberTools的<code>tleap</code>程序使用<code>source leaprc.gaff2</code>命令引入GAFF2参数，即可补完小分子力场参数。</p>
+<p>对于我们使用Gromacs格式的ITP文件来说，<code>.frcmod</code>文件还有意义么？答案是有意义的，这里单开一节描述<code>.frcmod</code>文件仍是有意义的，因为<code>.frcmod</code>会告诉软件或读者，这里的8个力场参数是缺失的，是<code>parmchk</code>通过规则<span style=”color:red;”>猜测</span>的。比如说：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nc-cd-ss-cd   2    2.200       180.000           2.000      same as X -c2-ss-X , penalty score=232.0</span><br></pre></td></tr></table></figure>
+<p>二面角<code>nc-cd-ss-cd</code>在GAFF力场参数中是缺失的，因此<code>parmchk</code>查找到<code>X -c2-ss-X</code>这个二面角（S-烯烃C），并给出罚分<code>[enalty score]=232.0</code>。这个罚分相当高，原则上是要人工拟合调整的，不过读者可以基于常识进行判断，我们的噻唑环上的二面角和烯烃的二面角一样不可翻转，因此直接借用烯烃二面角参数不影响噻唑环的稳定性，因此这一组二面角参数是可以直接借鉴使用的。</p>
+<p>异二面角同理，比如<code>cd-h4-cc-nc</code>噻唑的H的平面性问题使用了芳环的<code>X -X -ca-ha</code>通用异二面角参数，罚分中等，为67.5；<code>c3-cd-c -o</code>羰基平面性使用了通用羰基异二面角<code>X- X- c- o</code>，罚分最低，只有6.0。</p>
+<p>不论是使用Amber格式还是Gromacs格式，<code>.frcmod</code>文件中的补全参数都需要小心判断，特别是高罚分的力场参数。比如本例中的4个二面角参数<code> X-cd-ss- X</code>，罚分高达232，尽管我们根据化学经验判断对分子构象影响不大，但仍要注意。</p>
+<h2 id="小结"><a class="markdownIt-Anchor" href="#小结"></a> 小结</h2>
+<p>本次教程介绍了Gromacs ITP文件格式下的小分子力场的描写方式，读者可根据第一章<a href="/2024/03/19/19/#more">定制小分子力场(一)：分子力场基础</a>的AMBER力场形式对应学习。从下一章开始，我们将正式讨论定制化力场参数的拟合原理和拟合过程。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/CADD/" rel="tag"># CADD</a>
+              <a href="/tags/MD/" rel="tag"># MD</a>
+              <a href="/tags/Force-Field/" rel="tag"># Force Field</a>
+              <a href="/tags/GAFF/" rel="tag"># GAFF</a>
+              <a href="/tags/Amber/" rel="tag"># Amber</a>
+              <a href="/tags/Gromacs/" rel="tag"># Gromacs</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/03/25/20/" rel="prev" title="定制小分子力场(二)：从通用力场到GAFF">
+                  <i class="fa fa-angle-left"></i> 定制小分子力场(二)：从通用力场到GAFF
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2017-2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Birdlet</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+<div> Visited <span id="busuanzi_value_site_pv"></span> | Visitors <span id="busuanzi_value_site_uv"></span>  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css" integrity="sha256-UF1fgpAiu3tPJN/uCqEUHNe7pnr+QR0SQDNfgglgtcM=" crossorigin="anonymous">
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"birdlet","repo":"birdlet.github.io","client_id":"0f3d8d5b00e8b378ccd0","client_secret":"049507faf0c3169f86f9e6e2c9422a32c24393b7","admin_user":"birdlet","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"en","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"95d0baf6159d5572db2d4df5fd27f97c"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>

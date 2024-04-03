@@ -119,7 +119,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-count">16</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -150,6 +150,84 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://www.birdlet.github.io/2024/04/03/21/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Birdlet">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Life is Worth Living">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Life is Worth Living">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2024/04/03/21/" class="post-title-link" itemprop="url">定制小分子力场(三)：Gromacs的GAFF小分子拓扑文件</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2024-04-03 12:00:00 / Modified: 11:55:15" itemprop="dateCreated datePublished" datetime="2024-04-03T12:00:00+08:00">2024-04-03</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>本文将以乙酰基噻唑分子为例，简单讲解GAFF力场小分子转换为Gromacs拓扑格式ITP/TOP应当包含的内容。</p>
+<?xml version="1.0"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="116.4 213.94 222.6 100.91" preserveAspectRatio="xMidYMid" width="100%" height="100%"><clipPath id="49"><rect x="0.5" y="0.5" width="522.2" height="768.68" /></clipPath><g id="drawing"><rect x="116.4" y="213.94" width="100%" height="100%" fill="rgb(255, 255, 255)" /><g id="page" clip-path="url(#49)"><g><text xml:space="preserve" text-anchor="start" text-rendering="geometricPrecision"><tspan x="116.4" y="221.82" font-family="Arial" font-size="10" fill="rgb(0, 0, 0)">O</tspan></text></g><g><text xml:space="preserve" text-anchor="start" text-rendering="geometricPrecision"><tspan x="117.79" y="284.45" font-family="Arial" font-size="10" fill="rgb(0, 0, 0)">S</tspan></text></g><g><text xml:space="preserve" text-anchor="start" text-rendering="geometricPrecision"><tspan x="156.37" y="313.53" font-family="Arial" font-size="10" fill="rgb(0, 0, 0)">N</tspan></text></g><g id="Solid"><path d="M170.73 280.9 L170.73 280.9 L169.64 281.24 L168.55 281.58 L145.61 264.41 L145.63 263.27 L146.56 262.81 Z" stroke="rgb(0, 0, 0)" stroke-width="0" fill-rule="evenodd" stroke-linejoin="miter" fill="rgb(0, 0, 0)" shape-rendering="geometricPrecision" /></g><g id="Solid"><path d="M146.56 262.81 L146.56 262.81 L145.63 263.27 L144.72 262.79 L145.14 232.74 L146.05 233.28 L146.96 233.82 Z" stroke="rgb(0, 0, 0)" stroke-width="0" fill-rule="evenodd" stroke-linejoin="miter" fill="rgb(0, 0, 0)" shape-rendering="geometricPrecision" /></g><g id="Solid"><line x1="144.87" y1="235.26" x2="124.35" y2="223.01" stroke="rgb(0, 0, 0)" stroke-width="1.84" shape-rendering="auto" /><path d="M146.53 231.96 L146.53 231.96 L148.38 230.92 L127.18 218.27 L126.23 219.85 Z" stroke="rgb(0, 0, 0)" stroke-width="0" fill-rule="evenodd" stroke-linejoin="miter" fill="rgb(0, 0, 0)" shape-rendering="geometricPrecision" /><path d="M145.09 236.45 L145.09 236.45 L145.12 234.33 L124.82 222.22 L123.88 223.8 Z" stroke="rgb(0, 0, 0)" stroke-width="0" fill-rule="evenodd" stroke-linejoin="miter" fill="rgb(0, 0, 0)" shape-rendering="geometricPrecision" /></g><g id="Solid"><path d="M146.96 233.82 L146.96 233.82 L146.05 233.28 L145.14 232.74 L171.79 217.85 L172.24 218.65 L172.69 219.45 Z" stroke="rgb(0, 0, 0)" stroke-width="0" fill-rule="evenodd" stroke-linejoin="miter" fill="rgb(0, 0, 0)" shape-rendering="geometricPrecision" /></g><g id="Solid"><path d="M144.72 262.79 L144.72 262.79 L145.63 263.27 L145.61 264.41 L126.17 278.11 L125.64 277.36 L125.11 276.61 Z" stroke="rgb(0, 0, 0)" stroke-width="0" fill-rule="evenodd" stroke-linejoin="miter" fill="rgb(0, 0, 0)" shape-rendering="geometricPrecision" /></g><g id="Solid"><path d="M122.09 286.79 L122.09 286.79 L122.97 286.52 L123.85 286.25 L130.66 308.29 L129.98 309.2 L129.3 310.11 Z" stroke="rgb(0, 0, 0)" stroke-width="0" fill-rule="evenodd" stroke-linejoin="miter" fill="rgb(0, 0, 0)" shape-rendering="geometricPrecision" /></g><g id="Solid"><path d="M129.3 310.11 L129.3 310.11 L129.98 309.2 L130.66 308.29 L155.2 308.64 L155.19 309.56 L155.18 310.48 Z" stroke="rgb(0, 0, 0)" stroke-width="0" fill-rule="evenodd" stroke-linejoin="miter" fill="rgb(0, 0, 0)" shape-rendering="geometricPrecision" /></g><g id="Solid"><path d="M168.55 281.58 L168.55 281.58 L169.64 281.24 L170.73 280.9 L162.59 304.79 L161.72 304.5 L160.85 304.2 Z" stroke="rgb(0, 0, 0)" stroke-width="0" fill-rule="evenodd" stroke-linejoin="miter" fill="rgb(0, 0, 0)" shape-rendering="geometricPrecision" /></g><g id="Oval"><circle cx="145.27" cy="288.78" r="14.923112068025" stroke="rgb(0, 0, 0)" stroke-width="1.84" fill="none" /></g><g><text xml:space="preserve" text-anchor="start" text-rendering="geometricPrecision"><tspan x="326.69" y="286.34" font-family="Arial" font-size="10" fill="rgb(0, 0, 0)">cc</tspan></text></g><g><text xml:space="preserve" text-anchor="middle" text-rendering="geometricPrecision"><tspan x="305.18" y="268.37" font-family="Arial" font-size="10" fill="rgb(0, 0, 0)">cd</tspan></text></g><g><text xml:space="preserve" text-anchor="start" text-rendering="geometricPrecision"><tspan x="303.1" y="238.38" font-family="Arial" font-size="10" fill="rgb(0, 0, 0)">c</tspan></text></g><g><text xml:space="preserve" text-anchor="start" text-rendering="geometricPrecision"><tspan x="277.07" y="223.02" font-family="Arial" font-size="10" fill="rgb(0, 0, 0)">o</tspan></text></g><g><text xml:space="preserve" text-anchor="start" text-rendering="geometricPrecision"><tspan x="329.29" y="223.75" font-family="Arial" font-size="10" fill="rgb(0, 0, 0)">c</tspan><tspan font-family="Arial" font-size="8" fill="rgb(0, 0, 0)">3</tspan></text></g><g><text xml:space="preserve" text-anchor="end" text-rendering="geometricPrecision"><tspan x="283.17" y="285.65" font-family="Arial" font-size="10" fill="rgb(0, 0, 0)">ss</tspan></text></g><g><text xml:space="preserve" text-anchor="end" text-rendering="geometricPrecision"><tspan x="292.03" y="314.3" font-family="Arial" font-size="10" fill="rgb(0, 0, 0)">cd</tspan></text></g><g><text xml:space="preserve" text-anchor="start" text-rendering="geometricPrecision"><tspan x="316.74" y="314.73" font-family="Arial" font-size="10" fill="rgb(0, 0, 0)">nd</tspan></text></g><g id="Solid"><path d="M326.34 279.16 L326.34 279.16 L325.79 279.9 L325.24 280.63 L310.86 269.87 L311.41 269.13 L311.96 268.4 Z" stroke="rgb(0, 0, 0)" stroke-width="0" fill-rule="evenodd" stroke-linejoin="miter" fill="rgb(0, 0, 0)" shape-rendering="geometricPrecision" /></g><g id="Solid"><path d="M306.17 259.3 L306.17 259.3 L305.25 259.29 L304.33 259.28 L304.6 240.5 L305.52 240.51 L306.44 240.52 Z" stroke="rgb(0, 0, 0)" stroke-width="0" fill-rule="evenodd" stroke-linejoin="miter" fill="rgb(0, 0, 0)" shape-rendering="geometricPrecision" /></g><g id="Solid"><line x1="300.6" y1="234.17" x2="282.85" y2="223.59" stroke="rgb(0, 0, 0)" stroke-width="1.84" shape-rendering="auto" /><path d="M302.48 231.01 L302.48 231.01 L303.42 229.43 L285.68 218.85 L284.73 220.43 Z" stroke="rgb(0, 0, 0)" stroke-width="0" fill-rule="evenodd" stroke-linejoin="miter" fill="rgb(0, 0, 0)" shape-rendering="geometricPrecision" /><path d="M300.12 234.96 L300.12 234.96 L301.07 233.38 L283.32 222.8 L282.38 224.38 Z" stroke="rgb(0, 0, 0)" stroke-width="0" fill-rule="evenodd" stroke-linejoin="miter" fill="rgb(0, 0, 0)" shape-rendering="geometricPrecision" /></g><g id="Solid"><path d="M310.09 233.02 L310.09 233.02 L309.65 232.22 L309.2 231.42 L327.5 221.19 L327.95 222 L328.39 222.8 Z" stroke="rgb(0, 0, 0)" stroke-width="0" fill-rule="evenodd" stroke-linejoin="miter" fill="rgb(0, 0, 0)" shape-rendering="geometricPrecision" /></g><g id="Solid"><path d="M298.13 268.32 L298.13 268.32 L298.66 269.07 L299.19 269.82 L284.76 279.99 L284.23 279.24 L283.7 278.49 Z" stroke="rgb(0, 0, 0)" stroke-width="0" fill-rule="evenodd" stroke-linejoin="miter" fill="rgb(0, 0, 0)" shape-rendering="geometricPrecision" /></g><g id="Solid"><path d="M281.64 287.99 L281.64 287.99 L282.52 287.72 L283.4 287.45 L288.83 305.01 L287.95 305.28 L287.07 305.55 Z" stroke="rgb(0, 0, 0)" stroke-width="0" fill-rule="evenodd" stroke-linejoin="miter" fill="rgb(0, 0, 0)" shape-rendering="geometricPrecision" /></g><g id="Solid"><path d="M293.4 311.38 L293.4 311.38 L293.41 310.46 L293.42 309.54 L315.4 309.85 L315.39 310.77 L315.38 311.69 Z" stroke="rgb(0, 0, 0)" stroke-width="0" fill-rule="evenodd" stroke-linejoin="miter" fill="rgb(0, 0, 0)" shape-rendering="geometricPrecision" /></g><g id="Solid"><path d="M326.29 288.11 L326.29 288.11 L327.16 288.4 L328.03 288.7 L322.14 305.99 L321.27 305.7 L320.4 305.4 Z" stroke="rgb(0, 0, 0)" stroke-width="0" fill-rule="evenodd" stroke-linejoin="miter" fill="rgb(0, 0, 0)" shape-rendering="geometricPrecision" /></g><g id="Oval"><circle cx="304.82" cy="289.98" r="14.923112068025" stroke="rgb(0, 0, 0)" stroke-width="1.84" fill="none" /></g><g id="Hollow"><path d="M193.4 265.65 L239.62 265.65 L239.62 259.71 L251.5 271.59 L239.62 283.47 L239.62 277.53 L193.4 277.53 Z" stroke="rgb(0, 0, 0)" stroke-width="0.99" fill-rule="evenodd" stroke-linejoin="miter" fill="none" shape-rendering="geometricPrecision" /></g><g><text xml:space="preserve" text-anchor="start" text-rendering="geometricPrecision"><tspan x="201" y="250" font-family="Times New Roman" font-size="12" fill="rgb(0, 0, 0)">GAFF2</tspan></text></g></g></g></svg>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2024/04/03/21/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -890,90 +968,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2017/12/13/fasta2csv/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://www.birdlet.github.io/2017/09/06/molecular_denovo_design/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Birdlet">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Life is Worth Living">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Life is Worth Living">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2017/09/06/molecular_denovo_design/" class="post-title-link" itemprop="url">论文笔记：药物de novo设计与深度增强学习</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2017-09-06 22:12:00" itemprop="dateCreated datePublished" datetime="2017-09-06T22:12:00+08:00">2017-09-06</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-02-18 14:12:27" itemprop="dateModified" datetime="2024-02-18T14:12:27+08:00">2024-02-18</time>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
-<p>最近拜读了一篇来自AstraZeneca R&amp;D的深度学习结合化学信息学的文章，<a target="_blank" rel="noopener" href="https://jcheminf.springeropen.com/articles/10.1186/s13321-017-0235-x">Molecular De-Novo Design through Deep Reinforcement Learning</a>。在这篇文章中，作者Marcus Olivecrona使用了RNN的方法进行了inverse QSAR，从而达到设计新的活性药物分子。而且作者的方法中可以通过inforcement learning增加各种限制，从而达到精准的调控。作者的Github项目地址在<a target="_blank" rel="noopener" href="https://github.com/MarcusOlivecrona/REINVENT">这里</a>。由于文章比较复杂，因此在这里稍作笔记以深入学习。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2017/09/06/molecular_denovo_design/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
