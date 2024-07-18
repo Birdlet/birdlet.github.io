@@ -30,8 +30,9 @@
 <meta property="og:image" content="https://www.birdlet.github.io/picture/SH_fig1.png">
 <meta property="og:image" content="https://www.birdlet.github.io/picture/SH_table1.jpg">
 <meta property="og:image" content="https://www.birdlet.github.io/picture/SH_fig3.jpg">
+<meta property="og:image" content="https://www.birdlet.github.io/picture/SH_fig5.webp">
 <meta property="article:published_time" content="2024-02-14T16:00:00.000Z">
-<meta property="article:modified_time" content="2024-02-22T11:16:40.965Z">
+<meta property="article:modified_time" content="2024-07-19T07:28:11.536Z">
 <meta property="article:author" content="Birdlet">
 <meta property="article:tag" content="CADD">
 <meta property="article:tag" content="MD">
@@ -210,7 +211,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-02-22 19:16:40" itemprop="dateModified" datetime="2024-02-22T19:16:40+08:00">2024-02-22</time>
+      <time title="Modified: 2024-07-19 15:28:11" itemprop="dateModified" datetime="2024-07-19T15:28:11+08:00">2024-07-19</time>
     </span>
 
   
@@ -535,15 +536,19 @@ L 175.7 27.3
 <p><img src="/picture/SH_fig3.jpg" alt="Figure. 4" /></p>
 <p><strong>Figure 4. 2-乙酰基噻吩不同力场或电荷模型下二面角势能面扫描</strong></p>
 <p>对此我们也通过对GAFF, GAFF+Sigma Hole (GAFF_SH)及OPLS3e力场分别进行2-乙酰基噻吩的二面角势能面扫描。没有Sigma Hole的GAFF力场给出了完全相反的能量排序，认为S和羰基氧同侧时能量更高，这显然是不合理的。添加Sigam Hole电荷描述后，GAFF_SH给出了最接近量化计算的能量差，~1.8 kcal/mol；但是与GAFF类似，势能面整体表现较差。OPLS3e也很好的描述了S和羰基氧同侧时能量最低，同时它的自由能面整体上比GAFF更接近量化计算结果，不会出现阻转异构现象。后续进一步分析认为是GAFF的二面角参数过大导致势能面能垒过高，产生了阻转异构，这会导致长时间模拟下分子无法发生翻转。因此，单纯修改电荷模型仍然不足，需要同时修改GAFF的二面角参数，来提高分子模拟的准确性。</p>
+<p><strong>Update</strong>：2024年初上海药物所在JMC（10.1021/acs.jmedchem.3c02359）的文章中探讨了Halogen Bond在蛋白-多肽结合的稳定性作用，其中Figure 4通过在HF/6-31G(d)(I使用LanL2DZ基组)条件下计算静电势，再使用ESP拟合方法对 卤素-SigmaHole 距离进行扫描，得到了Br-SH最优距离1.37Å，I-SH最优距离1.73Å。</p>
+<p><img src="/picture/SH_fig5.webp" alt="Figure. 5" /></p>
+<p><strong>Figure 5. HF/6-31G(d)精度下的ESP拟合X···SH距离势能面扫描</strong></p>
 <h2 id="参考文献"><a class="markdownIt-Anchor" href="#参考文献"></a> 参考文献</h2>
 <blockquote>
 <p>[1] <a target="_blank" rel="noopener" href="https://ambermd.org/tutorials/advanced/tutorial35/index.php">https://ambermd.org/tutorials/advanced/tutorial35/index.php</a> Tutorial 35</p>
 <p>[2] <a target="_blank" rel="noopener" href="https://ambermd.org/tutorials/advanced/tutorial28/index.php">https://ambermd.org/tutorials/advanced/tutorial28/index.php</a> Tutorial 28</p>
-<p>[3] Ignacio Soteras Gutiérrez b, et al… <a target="_blank" rel="noopener" href="https://pubmed.ncbi.nlm.nih.gov/27353885/">Parametrization of halogen bonds in the charmm general force field: improved treatment of ligand–protein interactions</a>. Bioorganic &amp; Medicinal Chemistry (2016), 24( 20), 4812-4825.</p>
+<p>[3] Ignacio Soteras Gutiérrez b, et al. <a target="_blank" rel="noopener" href="https://pubmed.ncbi.nlm.nih.gov/27353885/">Parametrization of halogen bonds in the charmm general force field: improved treatment of ligand–protein interactions</a>. Bioorganic &amp; Medicinal Chemistry (2016), 24(20), 4812-4825.</p>
 <p>[4] Jorgensen, et al. <a target="_blank" rel="noopener" href="https://pubmed.ncbi.nlm.nih.gov/28627890">Improved Description of Sulfur Charge Anisotropy in OPLS Force Fields: Model Development and Parameterization.</a> Journal of Physical Chemistry B Condensed Matter Materials Surfaces Interfaces &amp; Biophysical (2017).</p>
-<p>[5] Jorgensen, W. L., &amp; Schyman, P. (2012). [Treatment of Halogen Bonding in the OPLS-AA Force Field; Application to Potent Anti-HIV Agents].(<a target="_blank" rel="noopener" href="https://pubmed.ncbi.nlm.nih.gov/23329896">https://pubmed.ncbi.nlm.nih.gov/23329896</a>) Journal of chemical theory and computation, 8(10), 3895–3801.</p>
+<p>[5] Jorgensen, W. L., &amp; Schyman, P. (2012). <a target="_blank" rel="noopener" href="https://pubmed.ncbi.nlm.nih.gov/23329896">Treatment of Halogen Bonding in the OPLS-AA Force Field; Application to Potent Anti-HIV Agents</a>. Journal of chemical theory and computation, 8(10), 3895–3801.</p>
 <p>[6] <a target="_blank" rel="noopener" href="https://ambermd.org/Manuals.php">https://ambermd.org/Manuals.php</a> Amber Reference Manuals</p>
 <p>[7] <a target="_blank" rel="noopener" href="https://upjv.q4md-forcefieldtools.org/RED/resp/">https://upjv.q4md-forcefieldtools.org/RED/resp/</a> RESP version 2.2</p>
+<p>[8] Jintian Li, et al. (2024). <a target="_blank" rel="noopener" href="https://pubs.acs.org/doi/10.1021/acs.jmedchem.3c02359">mpact of Halogen Bonds on Protein–Peptide Binding and Protein Structural Stability Revealed by Computational Approaches</a>. Journal of Medicical Chemistry, 67(6) 4782–4792</p>
 </blockquote>
 
     </div>
