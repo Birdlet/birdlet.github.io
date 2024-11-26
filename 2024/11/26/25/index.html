@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.birdlet.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.19.1","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="为什么需要模金属离子 离子参与大量的生物学反应过程，PDB数据库中几乎超过40%的蛋白结构都含有金属离子。特别是二价金属离子，在生物大分子的结构，催化，电子转移过程中行使重要功能。金属离子的力场参数相比生物大分子或有机小分子的力场参数更简单，因此在模拟过程中往往被忽略，但错误的使用过时的、不合理的力场参数，会导致模拟过程中的能量、结构累积误差，最终导致错误的结论。因此，本文将以生物体系的金属离子">
+<meta property="og:type" content="article">
+<meta property="og:title" content="定制小分子力场(七)：金属离子参数拟合">
+<meta property="og:url" content="https://www.birdlet.github.io/2024/11/26/25/index.html">
+<meta property="og:site_name" content="Life is Worth Living">
+<meta property="og:description" content="为什么需要模金属离子 离子参与大量的生物学反应过程，PDB数据库中几乎超过40%的蛋白结构都含有金属离子。特别是二价金属离子，在生物大分子的结构，催化，电子转移过程中行使重要功能。金属离子的力场参数相比生物大分子或有机小分子的力场参数更简单，因此在模拟过程中往往被忽略，但错误的使用过时的、不合理的力场参数，会导致模拟过程中的能量、结构累积误差，最终导致错误的结论。因此，本文将以生物体系的金属离子">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://www.birdlet.github.io/picture/25/P25-3.png">
+<meta property="og:image" content="https://www.birdlet.github.io/picture/25/P25-1.png">
+<meta property="og:image" content="https://www.birdlet.github.io/picture/25/P25-2.png">
+<meta property="article:published_time" content="2024-11-26T09:00:00.000Z">
+<meta property="article:modified_time" content="2024-11-26T10:10:28.766Z">
+<meta property="article:author" content="Birdlet">
+<meta property="article:tag" content="CADD">
+<meta property="article:tag" content="MD">
+<meta property="article:tag" content="Force Field">
+<meta property="article:tag" content="GAFF">
+<meta property="article:tag" content="Amber">
+<meta property="article:tag" content="Gromacs">
+<meta property="article:tag" content="Charge">
+<meta property="article:tag" content="Ion">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.birdlet.github.io/picture/25/P25-3.png">
+
+
+<link rel="canonical" href="https://www.birdlet.github.io/2024/11/26/25/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://www.birdlet.github.io/2024/11/26/25/","path":"2024/11/26/25/","title":"定制小分子力场(七)：金属离子参数拟合"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>定制小分子力场(七)：金属离子参数拟合 | Life is Worth Living</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Life is Worth Living</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="user fa-fw"></i>About</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E6%A8%A1%E9%87%91%E5%B1%9E%E7%A6%BB%E5%AD%90"><span class="nav-number">1.</span> <span class="nav-text"> 为什么需要模金属离子</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%87%91%E5%B1%9E%E7%A6%BB%E5%AD%90%E5%8F%82%E6%95%B0%E7%B1%BB%E5%9E%8B"><span class="nav-number">2.</span> <span class="nav-text"> 金属离子参数类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%87%91%E5%B1%9E%E7%A6%BB%E5%AD%90%E5%8F%82%E6%95%B0%E5%9C%A8%E6%8B%9F%E5%90%88%E4%BB%80%E4%B9%88"><span class="nav-number">3.</span> <span class="nav-text"> 金属离子参数在拟合什么</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9D%9E%E9%94%AE%E5%8F%82%E6%95%B0%E6%8B%9F%E5%90%88"><span class="nav-number">3.1.</span> <span class="nav-text"> 非键参数拟合</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%88%90%E9%94%AE%E6%A8%A1%E5%9E%8B%E6%8B%9F%E5%90%88"><span class="nav-number">3.2.</span> <span class="nav-text"> 成键模型拟合</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E7%82%B9%E9%9D%9E%E9%94%AE%E5%8F%82%E6%95%B0%E6%8B%9F%E5%90%88"><span class="nav-number">3.3.</span> <span class="nav-text"> 多点非键参数拟合</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%87%91%E5%B1%9E%E7%A6%BB%E5%AD%90%E6%A8%A1%E6%8B%9F%E8%A6%81%E6%B3%A8%E6%84%8F%E5%8A%9B%E5%9C%BA%E5%8C%B9%E9%85%8D"><span class="nav-number">4.</span> <span class="nav-text"> 金属离子模拟要注意力场匹配</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%A7%E5%8A%9B%E5%9C%BA%E6%97%A0%E6%B3%95%E9%80%82%E9%85%8Dpme"><span class="nav-number">4.1.</span> <span class="nav-text"> 旧力场无法适配PME</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#amber%E4%B8%ADznsup2sup%E5%85%B1%E4%BB%B7%E5%8A%9B%E5%9C%BA%E8%AF%AF%E7%94%A8"><span class="nav-number">4.2.</span> <span class="nav-text"> AMBER中Zn2+共价力场误用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%87%91%E5%B1%9E%E7%A6%BB%E5%AD%90%E5%8A%9B%E5%9C%BA%E5%8F%82%E6%95%B0%E9%80%89%E6%8B%A9"><span class="nav-number">4.3.</span> <span class="nav-text"> 金属离子力场参数选择</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="nav-number">5.</span> <span class="nav-text"> 参考文献</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Birdlet</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">20</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/birdlet" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;birdlet" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:dk_dingkang@126.com" title="E-Mail → mailto:dk_dingkang@126.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://www.birdlet.github.io/2024/11/26/25/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Birdlet">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Life is Worth Living">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="定制小分子力场(七)：金属离子参数拟合 | Life is Worth Living">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          定制小分子力场(七)：金属离子参数拟合
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2024-11-26 17:00:00 / Modified: 18:10:28" itemprop="dateCreated datePublished" datetime="2024-11-26T17:00:00+08:00">2024-11-26</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="为什么需要模金属离子"><a class="markdownIt-Anchor" href="#为什么需要模金属离子"></a> 为什么需要模金属离子</h2>
+<p>离子参与大量的生物学反应过程，PDB数据库中几乎超过40%的蛋白结构都含有金属离子。特别是二价金属离子，在生物大分子的结构，催化，电子转移过程中行使重要功能。金属离子的力场参数相比生物大分子或有机小分子的力场参数更简单，因此在模拟过程中往往被忽略，但错误的使用过时的、不合理的力场参数，会导致模拟过程中的能量、结构累积误差，最终导致错误的结论。因此，本文将以生物体系的金属离子参数为主题，讨论离子参数的分类，拟合，和应用场景，为读者指出不同金属离子力场的正确使用策略。</p>
+<p><img src="/picture/25/P25-3.png" alt="Ions Models" /></p>
+<center>图7.1 常见离子模型</center></br>
+<span id="more"></span>
+<h2 id="金属离子参数类型"><a class="markdownIt-Anchor" href="#金属离子参数类型"></a> 金属离子参数类型</h2>
+<p>分子模拟中的离子模型的参数根据模型的架构模式，常见的金属离子模型可以分为非键模型，成键模型，杂化模型，约束非键模型，哑原子阳离子模型，以及可极化模型。<br />
+下面简单描述下这几类离子模型的特征和适用场景，由于作者主要在生物医药领域工作，例子局限在工作领域内，难免有遗漏。</p>
+<ol>
+<li>
+<p>非键模型<br />
+<strong>非键模型</strong>，使用Lennard-Jones (LJ)所表述的范德华作用，以及Coulomb表述的库仑作用，来描述离子模型的方法。常见的范德华参数有12-6形势，也有使用12-6-4形势。离子模型可以通过采用12-6-4形势的参数以获得更好的极化效应。非键模型是目前大多数通用全原子力场的默认组成，比如GROMACS或AMBER软件包中大部分全原子力场中使用的离子力场。这种描述方法简单，计算快速，力场间的可迁移性强，因此广泛应用在各类生物，化学，以及材料行业中的模拟计算中。</p>
+</li>
+<li>
+<p>成键模型<br />
+<strong>成键模型</strong>直接在离子和配位分子间定义成键参数（键长，键角，二面角），来描述金属复合物结构。使用成键参数的优势在于模拟过程中稳定保持金属螯合物结构，如铁-卟啉、人碳酸酐酶催化位点的锌离子核等，都可以使用这种模型。</p>
+</li>
+<li>
+<p>杂化模型<br />
+<strong>杂化模型</strong>对离子和配体之间的相互使用成键和非键参数混合进行描述，保证结构稳定性的同时兼顾非键作用参与作用的配体。如Chakravorty和Merz等人在金属伴侣蛋白CusF蛋白的金属簇描述中，对N(His)-金属离子(Cu+/Ag+)-S(Met·2)的作用进行成键参数描述，对与金属离子形成阳离子-pi相互作用的Trp作用进行非键参数描述。由Pengfei Li和Kenneth M. Merz Jr等人开发的AMBER软件包中的<a href="!https://ambermd.org/tutorials/advanced/tutorial20/index.php">MCPB.py</a>模块可以自动完成此种方法的建模。</p>
+</li>
+<li>
+<p>约束模型<br />
+与杂化模型类似，<strong>约束模型</strong>只是不使用成键参数固定金属离子和配体间的相互作用，而是替换为距离或角度约束(constrants)。这种方法相比使用成键参数，所需拟合的参数仅仅是平衡长度，不再需要力常数。该方法也被广泛应用在金属蛋白模拟中。</p>
+</li>
+<li>
+<p>多点电荷模型<br />
+<strong>多点电荷模型</strong>，或<strong>哑原子阳离子模型</strong>，是一种在点电荷模型上添加哑原子，仅使用非键参数来描述阳离子和配体(水或残基)间配位的方法。常见的哑原子模型以正八面体的结构搭建，其中阳离子参数位于中心，哑原子参数则位于各个顶点。如Zn<sup>2+</sup>离子在水中会和8个水分子形成螯合，所以可以使用正八面体分布的哑原子描述Zn<sup>2+</sup>离子，以模拟形成配位相互作用时存在构象偏好。哑原子阳离子模型的哑原子一般带正电，阳离子本身带少量正电荷、0电荷、甚至负电荷，来模拟正电荷分布在离子表面。使用哑原子阳离子模型，相比单点非键模型相比，更能准确描述离子和配体间的几何排布及能量，在Zhang等人的研究中，只有使用多点Ca<sup>2+</sup>离子模型时能够模拟RyR1阳离子通道中的Ca<sup>2+</sup>转运过程，而单点Ca<sup>2+</sup>离子模型则无法穿过该离子通道。</p>
+</li>
+<li>
+<p>可极化模型<br />
+<strong>可极化模型</strong>描述的离子即可极化离子，常见的极化模型包括<strong>Drude震荡子模型(Drude Oscillator Model, DO)</strong>，<strong>诱导偶极模型(Induced Dipole Model, IDM)<strong>和</strong>震荡电荷模型(Fluctuating Charge Model, FQ)</strong>。DO模型是Drude于1902年提出的一种用于描述金属中电子与电磁场相互作用的经典物理模型。DO模型通过在原子上添加一个弹簧(或轻杆)链接一个Drude电荷(偏电荷)。Drude电荷在模拟过程中随着环境发生电荷偏移，从而产生多变的瞬时偶极。DO模型最早在20世纪50年代就应用在金属离子的固相或液相体系的模拟，后续也逐渐扩展到有机小分子甚至生物大分子领域，比如使用DO模型描述I<sup>-</sup>离子的易极化特性等。同样地，使用FP模型或DO模型的Cl<sup>-</sup>离子时，Cl<sup>-</sup>离子会倾向于排布在溶剂表面，而非极化模型则没有此现象，Stuart和Berne认为极化模型下的表面分布行为可能与Cl<sup>-</sup>离子的“结构破坏”效应相匹配。<!--常见的FQ模型/力场有EEM，OPLS-AA-FQ，CHARMM-FQ，ABEEM/MM等。-->使用IDM模型相比非极化模型，对阳离子-π(Cation−π)相互作用有较大的提升，尽管由于阳离子-π存在“电荷转移效应(Charge Transer)”的存在，目前任何力场模型都不能完美描述这一作用。Sakharov和Lim使用IDM模型描述锌蛋白的Zn-S(Cys<sup>-</sup>)，能够极大地稳定这一结构。常见的IDM力场有AMBER ff02.pol，OPLS-AAP/CM1AP，AMOEBA，PFF，CTPOL等。</p>
+</li>
+</ol>
+<h2 id="金属离子参数在拟合什么"><a class="markdownIt-Anchor" href="#金属离子参数在拟合什么"></a> 金属离子参数在拟合什么</h2>
+<h3 id="非键参数拟合"><a class="markdownIt-Anchor" href="#非键参数拟合"></a> 非键参数拟合</h3>
+<p>Åqvist和Warshel等在1990年使用非键模型拟合Ca<sup>2+</sup>，Mn<sup>2+</sup>，Ba<sup>2+</sup>等二价阳离子参数时，认为拟合出的力场参数必须满足葡萄球菌核酸酶（Staphylococcal Nuclease, SNase）的催化动力学，即催化反应过程中的能垒。为了拟合这一过程，论文中巧妙地将酶促反应过程按照&quot;经验价键模式&quot;(Empirical Valence Bond, EVB)进行拆解，在使用FEP/MD方法计算Ca<sup>2+</sup>和Mn<sup>2+</sup>及Ba<sup>2+</sup>之间在结合SNase时进行Alchemical转换时的能量变化ddG，来判断离子非共价参数的稳定性。这里的共价参数是Lennard-Jones (LJ)所表述的范德作用，因为单点阳离子模型的库仑参数就是它本身的净电荷。<!--相似的能垒差异也可以在磷脂酶A2--></p>
+<p>经过多年的发展和讨论，拟合通用离子模型时通常会在适配多种水模型，大分子力场的前提下，尽量使得拟合出的离子参数可以复现离子的重要宏观特征，如溶剂化能(Hydration Free Energies, HFEs)，离子-氧距离(Ion-Oxygen Distances, IODs)，水坐标数(Coordination Numbers, CNs)，晶格能(Lattice Energies)，晶格常数(Lattice Constants)。对于一个简单的12-6 LJ模型描述的单点离子模型，只需要拟合 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>σ</mi></mrow><annotation encoding="application/x-tex">\sigma</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">σ</span></span></span></span> 和 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ϵ</mi></mrow><annotation encoding="application/x-tex">\epsilon</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal">ϵ</span></span></span></span> 两个即可。</p>
+<p>那么初始的 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>σ</mi></mrow><annotation encoding="application/x-tex">\sigma</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">σ</span></span></span></span> 和 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ϵ</mi></mrow><annotation encoding="application/x-tex">\epsilon</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal">ϵ</span></span></span></span> 参数如何获取呢？对于双参数优化，一种方法是给一个较大的范围进行系统搜索，比如Merz等人使用过这样一组参数进行系统搜索：<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>σ</mi></mrow><annotation encoding="application/x-tex">\sigma</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">σ</span></span></span></span> 在0.3 ~ 2.5 Å，间隔0.1 Å，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ϵ</mi></mrow><annotation encoding="application/x-tex">\epsilon</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal">ϵ</span></span></span></span> 在1e-6 ~ 1.0 Å，间隔10倍，总计23 x 7 = 161种不同的参数组合。但是随之而来的问题是，不同的 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>σ</mi></mrow><annotation encoding="application/x-tex">\sigma</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">σ</span></span></span></span> 和 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ϵ</mi></mrow><annotation encoding="application/x-tex">\epsilon</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal">ϵ</span></span></span></span> 是可以获得完全相同的LJ势能面的，这是因为LJ函数中的<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>A</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><msub><mi>ϵ</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><msubsup><mi>σ</mi><mrow><mi>i</mi><mi>j</mi></mrow><mn>12</mn></msubsup><mo separator="true">,</mo><msub><mi>B</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><msub><mi>ϵ</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><msubsup><mi>σ</mi><mrow><mi>i</mi><mi>j</mi></mrow><mn>12</mn></msubsup></mrow><annotation encoding="application/x-tex">A_{ij}=\epsilon_{ij}\sigma^{12}_{ij}, B_{ij}=\epsilon_{ij}\sigma^{12}_{ij}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.969438em;vertical-align:-0.286108em;"></span><span class="mord"><span class="mord mathnormal">A</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.311664em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mord mathnormal mtight" style="margin-right:0.05724em;">j</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1.20888em;vertical-align:-0.394772em;"></span><span class="mord"><span class="mord mathnormal">ϵ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.311664em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mord mathnormal mtight" style="margin-right:0.05724em;">j</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">σ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-2.441336em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mord mathnormal mtight" style="margin-right:0.05724em;">j</span></span></span></span><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span><span class="mord mtight">2</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.394772em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.05017em;">B</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.311664em;"><span style="top:-2.5500000000000003em;margin-left:-0.05017em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mord mathnormal mtight" style="margin-right:0.05724em;">j</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1.20888em;vertical-align:-0.394772em;"></span><span class="mord"><span class="mord mathnormal">ϵ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.311664em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mord mathnormal mtight" style="margin-right:0.05724em;">j</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">σ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-2.441336em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mord mathnormal mtight" style="margin-right:0.05724em;">j</span></span></span></span><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span><span class="mord mtight">2</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.394772em;"><span></span></span></span></span></span></span></span></span></span>两个参数由 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>σ</mi></mrow><annotation encoding="application/x-tex">\sigma</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">σ</span></span></span></span> 和 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ϵ</mi></mrow><annotation encoding="application/x-tex">\epsilon</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal">ϵ</span></span></span></span> 协同决定，因此一个 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>σ</mi></mrow><annotation encoding="application/x-tex">\sigma</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">σ</span></span></span></span> 和 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ϵ</mi></mrow><annotation encoding="application/x-tex">\epsilon</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal">ϵ</span></span></span></span> 参数组合与另一个稍小的 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>σ</mi></mrow><annotation encoding="application/x-tex">\sigma</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">σ</span></span></span></span> 和稍大的 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ϵ</mi></mrow><annotation encoding="application/x-tex">\epsilon</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal">ϵ</span></span></span></span> 参数组合所计算的LJ势能面是完全相等的。此时问题变为了解决<strong>LJ参数的唯一性</strong>问题。</p>
+<p>这一问题的解决方法由多种。第一类方法，<strong>即单参数固定法</strong>，是固定 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>σ</mi></mrow><annotation encoding="application/x-tex">\sigma</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">σ</span></span></span></span> 或 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ϵ</mi></mrow><annotation encoding="application/x-tex">\epsilon</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal">ϵ</span></span></span></span> 中的一个参数，扫描另一个参数。比如Jensen和Jorgensen在OPLS中将阳离子的 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ϵ</mi></mrow><annotation encoding="application/x-tex">\epsilon</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal">ϵ</span></span></span></span> 固定为<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.0005</mn><mi>k</mi><mi>c</mi><mi>a</mi><mi>l</mi><mi mathvariant="normal">/</mi><mi>m</mi><mi>o</mi><mi>l</mi></mrow><annotation encoding="application/x-tex">0.0005 kcal/mol</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">0</span><span class="mord">.</span><span class="mord">0</span><span class="mord">0</span><span class="mord">0</span><span class="mord">5</span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span><span class="mord mathnormal">c</span><span class="mord mathnormal">a</span><span class="mord mathnormal" style="margin-right:0.01968em;">l</span><span class="mord">/</span><span class="mord mathnormal">m</span><span class="mord mathnormal">o</span><span class="mord mathnormal" style="margin-right:0.01968em;">l</span></span></span></span>，将阴离子的 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ϵ</mi></mrow><annotation encoding="application/x-tex">\epsilon</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal">ϵ</span></span></span></span> 固定为<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.71</mn><mi>k</mi><mi>c</mi><mi>a</mi><mi>l</mi><mi mathvariant="normal">/</mi><mi>m</mi><mi>o</mi><mi>l</mi></mrow><annotation encoding="application/x-tex">0.71 kcal/mol</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">0</span><span class="mord">.</span><span class="mord">7</span><span class="mord">1</span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span><span class="mord mathnormal">c</span><span class="mord mathnormal">a</span><span class="mord mathnormal" style="margin-right:0.01968em;">l</span><span class="mord">/</span><span class="mord mathnormal">m</span><span class="mord mathnormal">o</span><span class="mord mathnormal" style="margin-right:0.01968em;">l</span></span></span></span>。又如Wo等人使用荷电壳(Charged Shell)半径和溶剂壳(Hydration Shell)半径通过经验公式计算获得计算<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ϵ</mi></mrow><annotation encoding="application/x-tex">\epsilon</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal">ϵ</span></span></span></span>，再通过 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ϵ</mi></mrow><annotation encoding="application/x-tex">\epsilon</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal">ϵ</span></span></span></span> 计算 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>σ</mi></mrow><annotation encoding="application/x-tex">\sigma</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">σ</span></span></span></span> 。<!--又或者通过QMSP获得的理想气体条件下离子的范德华半径做初猜quantum mechanics scaling principle (QMSP)。-->第二类方法，<strong>双参数协同优化法</strong>，是通过优化过程中的 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>σ</mi></mrow><annotation encoding="application/x-tex">\sigma</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">σ</span></span></span></span> 和 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ϵ</mi></mrow><annotation encoding="application/x-tex">\epsilon</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal">ϵ</span></span></span></span> 的函数关系，将两参数问题降维到单参数问题。比如通过系统搜索方法，Merz等人发现在拟合宏观测量得到HFEs，IODs或CNs时，离子的 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>σ</mi></mrow><annotation encoding="application/x-tex">\sigma</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">σ</span></span></span></span> 和 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ϵ</mi></mrow><annotation encoding="application/x-tex">\epsilon</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal">ϵ</span></span></span></span> 程一定的数学关系（类似量化的Slater函数），他们叫这个相关曲线为理想气体曲线(Nobel Gas Curve, NGC)。因此可以仅扫描<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>σ</mi></mrow><annotation encoding="application/x-tex">\sigma</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">σ</span></span></span></span> ，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ϵ</mi></mrow><annotation encoding="application/x-tex">\epsilon</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal">ϵ</span></span></span></span>直接套用NGC进行计算的方法计算。另外，在优化溶剂相参数后，同时考虑凝固相特征，如LEs和LCs的匹配情况进行参数选择，也可以缩小参数范围。</p>
+<p class='katex-block'><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>ϵ</mi><mo>=</mo><mn>0.063</mn><msqrt><mrow><mi>r</mi><mi mathvariant="normal">/</mi><mi mathvariant="normal">Δ</mi><mi>r</mi></mrow></msqrt><mtext>     </mtext><mo stretchy="false">(</mo><mi>W</mi><mi>o</mi><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\epsilon = 0.063 \sqrt{r/\Delta r}   \space\space\space\space\space (Won)
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal">ϵ</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1.24em;vertical-align:-0.25612499999999994em;"></span><span class="mord">0</span><span class="mord">.</span><span class="mord">0</span><span class="mord">6</span><span class="mord">3</span><span class="mord sqrt"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.983875em;"><span class="svg-align" style="top:-3.2em;"><span class="pstrut" style="height:3.2em;"></span><span class="mord" style="padding-left:1em;"><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="mord">/</span><span class="mord">Δ</span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span></span></span><span style="top:-2.9438750000000002em;"><span class="pstrut" style="height:3.2em;"></span><span class="hide-tail" style="min-width:1.02em;height:1.28em;"><svg width='400em' height='1.28em' viewBox='0 0 400000 1296' preserveAspectRatio='xMinYMin slice'><path d='M263,681c0.7,0,18,39.7,52,119
+c34,79.3,68.167,158.7,102.5,238c34.3,79.3,51.8,119.3,52.5,120
+c340,-704.7,510.7,-1060.3,512,-1067
+l0 -0
+c4.7,-7.3,11,-11,19,-11
+H40000v40H1012.3
+s-271.3,567,-271.3,567c-38.7,80.7,-84,175,-136,283c-52,108,-89.167,185.3,-111.5,232
+c-22.3,46.7,-33.8,70.3,-34.5,71c-4.7,4.7,-12.3,7,-23,7s-12,-1,-12,-1
+s-109,-253,-109,-253c-72.7,-168,-109.3,-252,-110,-252c-10.7,8,-22,16.7,-34,26
+c-22,17.3,-33.3,26,-34,26s-26,-26,-26,-26s76,-59,76,-59s76,-60,76,-60z
+M1001 80h400000v40h-400000z'/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.25612499999999994em;"><span></span></span></span></span></span><span class="mspace"> </span><span class="mspace"> </span><span class="mspace"> </span><span class="mspace"> </span><span class="mspace"> </span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.13889em;">W</span><span class="mord mathnormal">o</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span></span></p>
+<p class='katex-block'><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>ϵ</mi><mo>=</mo><mn>57.36</mn><mo>×</mo><msup><mi>e</mi><mrow><mo>−</mo><mn>2.471</mn><mo>×</mo><msub><mi>σ</mi><mrow><mi>m</mi><mi>i</mi><mi>n</mi></mrow></msub><mi mathvariant="normal">/</mi><mn>2</mn></mrow></msup><mtext>     </mtext><mo stretchy="false">(</mo><mi>N</mi><mi>G</mi><mi>C</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\epsilon = 57.36 \times e^{-2.471\times \sigma_{min}/2}   \space\space\space\space\space (NGC)
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal">ϵ</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">5</span><span class="mord">7</span><span class="mord">.</span><span class="mord">3</span><span class="mord">6</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1.188em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal">e</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.938em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">2</span><span class="mord mtight">.</span><span class="mord mtight">4</span><span class="mord mtight">7</span><span class="mord mtight">1</span><span class="mbin mtight">×</span><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">σ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3280857142857143em;"><span style="top:-2.357em;margin-left:-0.03588em;margin-right:0.07142857142857144em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">m</span><span class="mord mathnormal mtight">i</span><span class="mord mathnormal mtight">n</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.143em;"><span></span></span></span></span></span></span><span class="mord mtight">/</span><span class="mord mtight">2</span></span></span></span></span></span></span></span></span><span class="mspace"> </span><span class="mspace"> </span><span class="mspace"> </span><span class="mspace"> </span><span class="mspace"> </span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.10903em;">N</span><span class="mord mathnormal">G</span><span class="mord mathnormal" style="margin-right:0.07153em;">C</span><span class="mclose">)</span></span></span></span></span></p>
+<p>接下来讨论离子参数拟合时考虑的宏观量是如何计算的。溶剂相的HFE，IOD，NC都可以通过实验手段计算。离子的HFE一般通过Alchemical Free Energy方法进行计算，即自由能微扰(FEP)或热力学积分(TI)方法。IOD和NC则通过常规的NPT模拟计算，NC可以直接通过统计第一壳层的水分子数量计算，IOD则通过计算水分子的O原子相对离子的径向分布函数(Radial Distribution Functions, RDFs)计算。以Merz工作流程为例，文章首先搭建多种水模型下（TIP3P, TIP3P-FB, OPC3, SPC/E, TIP4P<sub>EW</sub>, OPC）的离子溶剂化体系，即一个(46Åx46Åx46Å)大小的PBC水盒子(约2,400水分子)中放入一个Dummy原子。对于HFE，经过NVT和NPT平衡后进行步长为1 fs的TI计算。TI变化拆分为VDW变化和ELEC变化阶段，VDW变化阶段使用3个窗口，COUL变化使用9个窗口。LJ势使用Soft-core缩放方法，ELEC使用PME计算长程静电势。对于IOD和NC，经过NVT和NPT平衡后进行步长为1 fs的10ns NPT模拟，每0.5 ps记录一帧体系坐标，模拟过程中使用PME计算长程相互作用，弱相互作用截断距离为10Å。模拟轨迹使用Kirkwood−Buff积分计算RDF，进一步即可得IOD和NC。HFE，IOD，NC等特性有时无法用单一参数同时兼顾，因此在Mertz等人的论文中会针对HFE和IOD进行专一性的优化，也有兼顾HFE和IOD的折中(ComproMise, CM)模型。</p>
+<p><strong>Table 7.1. 生物体系常用离子实验测得参数</strong></p>
+<table>
+<thead>
+<tr>
+<th>ions</th>
+<th>HFE(kcal/mol)</th>
+<th>CN(#)</th>
+<th>IOD(Å)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Li<sup>+</sup></td>
+<td>-113.5</td>
+<td>4-6</td>
+<td>2.08 ± 0.06</td>
+</tr>
+<tr>
+<td>Na<sup>+</sup></td>
+<td>-87.2</td>
+<td>4-8</td>
+<td>2.35±0.06</td>
+</tr>
+<tr>
+<td>K<sup>+</sup></td>
+<td>-70.5</td>
+<td>6-8</td>
+<td>2.79 ± 0.08</td>
+</tr>
+<tr>
+<td>Ca<sup>2+</sup></td>
+<td>-359.7</td>
+<td>8</td>
+<td>2.46</td>
+</tr>
+<tr>
+<td>Zn<sup>2+</sup></td>
+<td>-467.3</td>
+<td>6</td>
+<td>2.06 ± 0.01</td>
+</tr>
+<tr>
+<td>Mg<sup>2+</sup></td>
+<td>−437.4</td>
+<td>6</td>
+<td>2.09 ± 0.04</td>
+</tr>
+<tr>
+<td>Mn<sup>2+</sup></td>
+<td>−420.7</td>
+<td>6</td>
+<td>2.19 ± 0.01</td>
+</tr>
+<tr>
+<td>Cu<sup>2+</sup></td>
+<td>-480.4</td>
+<td>6</td>
+<td>1.96 ± 0.04</td>
+</tr>
+<tr>
+<td>Fe<sup>2+</sup></td>
+<td>-439.8</td>
+<td>6</td>
+<td>2.11 ± 0.01</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>HFE实验值引自 Marcus, Y. J. Chem. Soc., Faraday Trans. 1991, 87, 2995−2999.</p>
+</blockquote>
+<p>这里给出Merz的Zn<sup>2+</sup>单点非键力场参数：</p>
+<p><strong>代码 7.1. Zn<sup>2+</sup>单点非键力场参数 GROMACS和AMBER力场格式</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"># Amber Format</span><br><span class="line"># ion         r_d(A)   epsilon(kcal/mol)</span><br><span class="line">Zn2+          1.271 0.00354287      JTTC,9,6,2733 (2013) CM TIP3P</span><br><span class="line">Zn2+          1.455 0.02662782      JCTC,10,289, (2014)  TIP3P</span><br><span class="line">Zn2+          1.280 0.00374505      JCTC,16,4429, (2020) CM OPC3</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># Gromacs Format</span><br><span class="line"># ion         sigma(nm)   epsilon(kJ/mol)</span><br><span class="line">Zn2+          2.26466e-1 0.01482343      JTTC,9,6,2733 (2013) CM TIP3P</span><br><span class="line">Zn2+          2.59251e-1 0.11141080      JCTC,10,289,  (2014)  TIP3P</span><br><span class="line">Zn2+          2.28070e-1 0.01566929      JCTC,16,4429, (2020) CM OPC3</span><br></pre></td></tr></table></figure>
+<h3 id="成键模型拟合"><a class="markdownIt-Anchor" href="#成键模型拟合"></a> 成键模型拟合</h3>
+<p>成键模型诞生之初就是为了金属蛋白的模拟，也能应用在类似领域比如金属有机框架(Metal-Organic Frameworks, MOFs)等。使用成键模型的金属-生物大分子复合物在整个模拟过程中都不会发生巨大的构象变化，可以用于研究酶促反应过程中的各种现象。<a target="_blank" rel="noopener" href="http://xn--LiMerzAMBERTOOLSMCPB-nt65av46cevh1kah9be0gpr7az48b8ssqrf55w29bj0f38igl1d5fdr22jfay913bjq0vxcre.py">目前最流行的成键参数拟合的方法是Li和Merz基于AMBERTOOLS开发的MCPB.py</a>，可以较为简单地构建金属-蛋白复合的共价参数。</p>
+<p>MCPB.py方法参数拟合可分为以下几步。1. 确定金属离子周围配位残基/或有机小分子片段形成的簇结构，对这一簇结构进行切除并封端；2. 使用量化软件，如GAUSSIAN或GAMESS-US，对不同大小簇模型的结构选择合理的优化策略进行构象优化；3. 对配位残基的进行两步RESP电荷拟合，可选策略包括全电荷拟合，氢原子拟合，侧链拟合等；4. 对金属-配位残基间的共价参数进行拟合，可使用Seminario或Z-matrix方法，对Zn<sup>2+</sup>离子可直接使用经验参数；5. 检查并补全缺失参数，拼合其余不参与拟合部分的参数，导出最终的AMBER格式拓扑和坐标文件；6. (可选)转化AMBER格式为GROMACS或LAMMPS或CHARMM格式。</p>
+<h3 id="多点非键参数拟合"><a class="markdownIt-Anchor" href="#多点非键参数拟合"></a> 多点非键参数拟合</h3>
+<p>在生物大分子如金属蛋白的模拟中，非键单点离子模型主要问题在于无法维持和蛋白配位时的几何结构。尽管共价/杂化能够刚性地维持金属-生物大分子间的几何结构，但是共价/杂化模型参数复杂，力场迁移性差，无法研究离子的解离过程，限制了它的使用范围。因此非键的多点模型被认为能够即保证一定的空间结构，也不引入刚性的共价参数。</p>
+<p>多点模型的一般结构是一个位于中心的金属离子M，和分布在金属离子荷电壳层的哑原子D。D会分担一定的金属离子所携带的正电荷，因此需要将D均匀分布在金属离子的球面。又因为金属离子和水以及蛋白配位时具有一定的空间结构，比如前文中提到Zn<sup>2+</sup>的IOD等于6，因此可以将M放在正八面体的中央，D放在正八面体的6个顶尖。同理Ca<sup>2+</sup>的IOD等于8，可以使用正八面体(6顶尖)或者十面体(双五角锥/双正五角锥)(8顶点)。</p>
+<p><img src="/picture/25/P25-1.png" alt="MutipointIonModel" /></p>
+<center>图7.2 多点离子模型</center></br>
+<p>相比单点离子模型，多点离子模型需要拟合的参数从2个LJ参数扩展到7+N个（以正八面体为例），其中7个是：M和D的距离d<sub>M-D</sub>，D携带的电荷Q<sub>D</sub>，M的<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>σ</mi><mi>M</mi></msub></mrow><annotation encoding="application/x-tex">\sigma_M</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.58056em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">σ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.32833099999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.10903em;">M</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> 和 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ϵ</mi><mi>M</mi></msub></mrow><annotation encoding="application/x-tex">\epsilon_M</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.58056em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">ϵ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.32833099999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.10903em;">M</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>，D的<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>σ</mi><mi>D</mi></msub></mrow><annotation encoding="application/x-tex">\sigma_D</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.58056em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">σ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.32833099999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.02778em;">D</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> 和 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ϵ</mi><mi>D</mi></msub></mrow><annotation encoding="application/x-tex">\epsilon_D</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.58056em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">ϵ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.32833099999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.02778em;">D</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>，D的质量m<sub>D</sub>。其他N个参数可以通过这6个参数计算获得，比如M携带的电荷，和维持正八面体所需的D-D距离，D-M-D角度等。D围绕M旋转是允许的。最初的参数初猜同样来自Åqvist和Warshel等1990年的文章，在这篇文章中，针对Mg<sup>2+</sup>离子，Åqvist和Warshel等将6个哑原子D全部设置为仅携带Q<sub>D</sub>电荷的库仑势点，中心金属离子M则是范德华势和静电势点，因此该模型仅需扫描<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>σ</mi><mi>M</mi></msub></mrow><annotation encoding="application/x-tex">\sigma_M</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.58056em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">σ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.32833099999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.10903em;">M</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ϵ</mi><mi>M</mi></msub></mrow><annotation encoding="application/x-tex">\epsilon_M</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.58056em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">ϵ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.32833099999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.10903em;">M</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>，d<sub>M-D</sub>和Q<sub>D</sub>四个参数。</p>
+<p>Oelschlaeger等人，Saxena和Sept等人在后续的类似工作中也按照这一思路，只是将哑原子的范德华势能的斥力部分和哑原子质量也引入，即拟合6个参数，以保证其他分子不会过于靠近离子的哑原子。Duarte等人更是按此思路对多种过度二价金属进行了多点模型参数化。5参数形势的好处在于减少哑原子与其他分子过近的问题，但是缺点也明显：Buckingham形势的范德华参数在仅有斥力的C12参数下，使用时需要对模拟引擎进行调整适配。比如AMBER模拟引擎编译后力场参数文件中是Buckingham形势，因此只需<a target="_blank" rel="noopener" href="https://septlab.engin.umich.edu/multisite-divalent-cation-models/">手动修改参数</a>；但GROMACS参数存储主要使用 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>σ</mi></mrow><annotation encoding="application/x-tex">\sigma</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">σ</span></span></span></span> 和 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ϵ</mi></mrow><annotation encoding="application/x-tex">\epsilon</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal">ϵ</span></span></span></span> 形势，且改gmx grompp编译出的力场参数文件.tpr文件是二进制文件，修改门槛较高。也可以手动将所有原子类型和哑原子的非键作用使用Buckingham形势<code>[nonbond_parms]</code>直接强制定义，虽然繁琐但确可行。</p>
+<p><img src="/picture/25/P25-2.png" alt="Duarte Model" /></p>
+<center>图7.2 Duarte多点离子模型</center></br>
+<p>因此如果需要在GROMAC中简单可用的多点离子参数，可选择Åqvist和Warshel等人的初版参数作为初猜，在现代模拟算法(如PME)/引擎下进行优化。或者将哑原子的<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>σ</mi><mi>D</mi></msub></mrow><annotation encoding="application/x-tex">\sigma_D</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.58056em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">σ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.32833099999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.02778em;">D</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> 和 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ϵ</mi><mi>D</mi></msub></mrow><annotation encoding="application/x-tex">\epsilon_D</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.58056em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">ϵ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.32833099999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.02778em;">D</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>都给出。<a target="_blank" rel="noopener" href="https://www.nature.com/articles/s41467-020-14573-w">Zhang等人</a>在研究Ryanodine receptors (RyR)时就使用第二种策略优化了Ca<sup>2+</sup>离子的7个参数。和之前参数拟合中多固定经验参数不同，Zhang等人优化过程对所有参数使用了系统搜索的方法，工作量极大。他们的Ca<sup>2+</sup>离子参数可从<a target="_blank" rel="noopener" href="https://github.com/ComputBiophys/Multisite_Calcium">Git仓库</a>获取，该参数与AMBER蛋白参数匹配情况仍有待验证。</p>
+<p>多点离子模型与单点非键离子模型的优化目标基本一致，溶剂相的HFE，IOD，NC都需要进行匹配。除此之外，多点模型存在的主要意义在于生物大分子的模拟，因此多点模型往往也要考虑与蛋白配位时的构象稳定性和结合自由能。如Zhang等人就优化了多点Ca<sup>2+</sup>离子模型在Ca<sup>2+</sup>离子结合蛋白中的亲和力，Duarte等人优化了多种金属结合蛋白的RMSD等。值得注意的是，Zhang等人在研究Ca<sup>2+</sup>离子多点模型时，发现无法同时满足Ca<sup>2+</sup>离子的溶剂化性质和蛋白结合性质，因此他们巧妙地将离子-水的LJ参数拆出后单独优化，最终获得了与CHARMM36和TIP3P模型匹配的Ca<sup>2+</sup>离子多点模型，且适配GROMACS模拟引擎。</p>
+<p><strong>代码2. Zhang等人多点Ca<sup>2+</sup>离子与水的非键参数在GROMACS的ffnonbond.itp中的写法</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">## ffnonbond</span><br><span class="line">[ atomtypes ]</span><br><span class="line">......</span><br><span class="line">......</span><br><span class="line">  Dz       28.08    0.0000  A       0.267     6.78</span><br><span class="line">  Da       2.0      0.0000  A       0.0095     2.2</span><br><span class="line">......</span><br><span class="line"></span><br><span class="line">[ nonbond_params ]</span><br><span class="line">; type1  type2  1  sigma	 epsilon</span><br><span class="line">  Dz    OT  1  .27842871134150000000 1.57541137484785223953</span><br><span class="line">  Dz    HT  1  .14090067622225000000 .86637728502079277447</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="金属离子模拟要注意力场匹配"><a class="markdownIt-Anchor" href="#金属离子模拟要注意力场匹配"></a> 金属离子模拟要注意力场匹配</h2>
+<h3 id="旧力场无法适配pme"><a class="markdownIt-Anchor" href="#旧力场无法适配pme"></a> 旧力场无法适配PME</h3>
+<p>翻阅AMBER力场中的parm99.dat，可见AMBER99中的离子力场参数：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"># parm99.dat</span><br><span class="line">  Li          1.1370  0.0183             Li+ Aqvist JPC 1990,94,8021. (adapted)</span><br><span class="line">  IP          1.8680  0.00277            Na+ Aqvist JPC 1990,94,8021. (adapted)</span><br><span class="line">  Na          1.8680  0.00277            Na+ Aqvist JPC 1990,94,8021. (adapted)</span><br><span class="line">  K           2.6580  0.000328           K+  Aqvist JPC 1990,94,8021. (adapted)</span><br><span class="line">  Rb          2.9560  0.00017            Rb+ Aqvist JPC 1990,94,8021. (adapted)</span><br><span class="line">  Cs          3.3950  0.0000806          Cs+ Aqvist JPC 1990,94,8021. (adapted)</span><br><span class="line">  MG          0.7926  0.8947             Mg2+ Aqvist JPC 1990,94,8021.(adapted)</span><br><span class="line">  C0          1.7131  0.459789           Ca2+ Aqvist JPC 1990,94,8021.(adapted)</span><br><span class="line">  Zn          1.10    0.0125             Zn2+, Merz,PAK, JACS,113,8262,(1991)</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>早期的离子模型，比如AMBER99中的离子模型，甚至包括后续继承此套参数的AMBER09，AMBER12，AMBER14等，使用的离子模型主要来自Åqvist模型，以及Merz模型。但在Merz等人在现代AMBER11引擎中模拟时，发现Åqvist模型的计算结果与原始论文存在<strong>巨大误差</strong>。</p>
+<p><strong>Table 7.2. Åqvist离子参数在PME下的计算误差</strong></p>
+<table>
+<thead>
+<tr>
+<th>ions</th>
+<th>HFE Expt (kcal/mol)</th>
+<th>HFE in AMBER Engine</th>
+<th>HFE in Åqvist Paper</th>
+<th>Merz 2013 TIP3P</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Zn<sup>2+</td>
+<td>-467.3</td>
+<td>-443.8</td>
+<td>NA</td>
+<td>-467.4</td>
+</tr>
+<tr>
+<td>Mg<sup>2+</td>
+<td>-437.6</td>
+<td>-432.6</td>
+<td>-455.9 ± 2.6</td>
+<td>-437.7</td>
+</tr>
+<tr>
+<td>Ca<sup>2+</td>
+<td>-420.7</td>
+<td>-307.0</td>
+<td>-380.6 ±1.3</td>
+<td>-419.9</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>HFE实验值引自 Marcus, Y. J. Chem. Soc., Faraday Trans. 1991, 87, 2995−2999.</p>
+</blockquote>
+<p>误差产生的原因在于，MD引擎在发展中对长程静电势进行了计算精度和速度的优化，即采用了Particle Mesh Ewald (PME)方法，而Åqvist在1990年时的MD方法还没有PME来计算长程静电势，因此在使用支持PME的AMBER或CHARMM力场时<span style="color:red">无脑复制Åqvist的离子参数在现在是非常危险的行为</span>，特别是在当研究金属离子本身的特性和金属蛋白相关研究时。这里建议改用Merz团队发表的最新离子力场，这里给出生物体系模拟常用离子的非键模型，同时也建议读者<strong>放弃老旧的TIP3P和TIP4P，使用较新的OPC系列或TIPXP-FB系列水模型</strong>：</p>
+<p><strong>Table 7.3. Merz离子参数</strong></p>
+<table>
+<thead>
+<tr>
+<th>ions</th>
+<th>TIP3P<sup>a</sup></th>
+<th></th>
+<th>OPC3<sup>b</sup></th>
+<th></th>
+<th>OPC<sup>b</sup></th>
+<th></th>
+<th>TIP3P-FB<sup>b</sup></th>
+<th></th>
+<th>TIP4P-FB<sup>b</sup></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ϵ</mi></mrow><annotation encoding="application/x-tex">\epsilon</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal">ϵ</span></span></span></span></td>
+<td><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>σ</mi></mrow><annotation encoding="application/x-tex">\sigma</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">σ</span></span></span></span></td>
+<td><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ϵ</mi></mrow><annotation encoding="application/x-tex">\epsilon</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal">ϵ</span></span></span></span></td>
+<td><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>σ</mi></mrow><annotation encoding="application/x-tex">\sigma</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">σ</span></span></span></span></td>
+<td><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ϵ</mi></mrow><annotation encoding="application/x-tex">\epsilon</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal">ϵ</span></span></span></span></td>
+<td><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>σ</mi></mrow><annotation encoding="application/x-tex">\sigma</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">σ</span></span></span></span></td>
+<td><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ϵ</mi></mrow><annotation encoding="application/x-tex">\epsilon</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal">ϵ</span></span></span></span></td>
+<td><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>σ</mi></mrow><annotation encoding="application/x-tex">\sigma</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">σ</span></span></span></span></td>
+<td><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ϵ</mi></mrow><annotation encoding="application/x-tex">\epsilon</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal">ϵ</span></span></span></span></td>
+<td><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>σ</mi></mrow><annotation encoding="application/x-tex">\sigma</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">σ</span></span></span></span></td>
+</tr>
+<tr>
+<td>Li<sup>+</td>
+<td>\</td>
+<td>\</td>
+<td>1.270</td>
+<td>0.00325650</td>
+<td>1.242</td>
+<td>0.00216058</td>
+<td>1.260</td>
+<td>0.00282180</td>
+<td>1.240</td>
+<td>0.00209587</td>
+</tr>
+<tr>
+<td>Na<sup>+</td>
+<td>\</td>
+<td>\</td>
+<td>1.469</td>
+<td>0.03012160</td>
+<td>1.467</td>
+<td>0.02960343</td>
+<td>1.459</td>
+<td>0.02759452</td>
+<td>1.448</td>
+<td>0.02499549</td>
+</tr>
+<tr>
+<td>K<sup>+</td>
+<td>\</td>
+<td>\</td>
+<td>1.703</td>
+<td>0.14021803</td>
+<td>1.702</td>
+<td>0.13953816</td>
+<td>1.705</td>
+<td>0.14158262</td>
+<td>1.685</td>
+<td>0.12823270</td>
+</tr>
+<tr>
+<td>Ag<sup>+</td>
+<td>\</td>
+<td>\</td>
+<td>1.335</td>
+<td>0.00761745</td>
+<td>1.316</td>
+<td>0.00602547</td>
+<td>1.328</td>
+<td>0.00699604</td>
+<td>1.313</td>
+<td>0.00580060</td>
+</tr>
+<tr>
+<td>Mg<sup>2+</td>
+<td>1.360</td>
+<td>0.01020237</td>
+<td>1.363</td>
+<td>0.01055378</td>
+<td>1.330</td>
+<td>0.0071693</td>
+<td>1.363</td>
+<td>0.01055378</td>
+<td>1.342</td>
+<td>0.00828195</td>
+</tr>
+<tr>
+<td>Ca<sup>2+</td>
+<td>1.649</td>
+<td>0.09788018</td>
+<td>1.628</td>
+<td>0.09399072</td>
+<td>1.608</td>
+<td>0.08337961</td>
+<td>1.635</td>
+<td>0.09788018</td>
+<td>1.627</td>
+<td>0.09344247</td>
+</tr>
+<tr>
+<td>Zn<sup>2+</td>
+<td>1.271</td>
+<td>0.00354287</td>
+<td>1.280</td>
+<td>0.00374505</td>
+<td>1.219</td>
+<td>0.00150903</td>
+<td>1.276</td>
+<td>0.00354287</td>
+<td>1.234</td>
+<td>0.00191142</td>
+</tr>
+<tr>
+<td>Cu<sup>2+</td>
+<td>1.218</td>
+<td>0.00160860</td>
+<td>1.228</td>
+<td>0.00174080</td>
+<td>1.178</td>
+<td>0.0007549</td>
+<td>1.223</td>
+<td>0.00160860</td>
+<td>1.181</td>
+<td>0.00089969</td>
+</tr>
+<tr>
+<td>Fe<sup>2+</td>
+<td>1.353</td>
+<td>0.00952704</td>
+<td>1.356</td>
+<td>0.00974813</td>
+<td>1.323</td>
+<td>0.00657749</td>
+<td>1.356</td>
+<td>0.00974813</td>
+<td>1.334</td>
+<td>0.00752608</td>
+</tr>
+<tr>
+<td>Co<sup>2+</td>
+<td>1.299</td>
+<td>0.00523385</td>
+<td>1.306</td>
+<td>0.00530214</td>
+<td>1.263</td>
+<td>0.00294683</td>
+<td>1.304</td>
+<td>0.00516628</td>
+<td>1.277</td>
+<td>0.00359255</td>
+</tr>
+<tr>
+<td>Mn<sup>2+</td>
+<td>1.407</td>
+<td>0.01669760</td>
+<td>1.410</td>
+<td>0.01738340</td>
+<td>1.381</td>
+<td>0.01286460</td>
+<td>1.411</td>
+<td>0.01755812</td>
+<td>1.394</td>
+<td>0.01476261</td>
+</tr>
+<tr>
+<td>F<sup>-</td>
+<td>\</td>
+<td>\</td>
+<td>1.818</td>
+<td>0.22795460</td>
+<td>1.840</td>
+<td>0.24650465</td>
+<td>1.834</td>
+<td>0.24140216</td>
+<td>1.845</td>
+<td>0.25078000</td>
+</tr>
+<tr>
+<td>Cl<sup>-</td>
+<td>\</td>
+<td>\</td>
+<td>2.306</td>
+<td>0.64226672</td>
+<td>2.360</td>
+<td>0.67878870</td>
+<td>2.300</td>
+<td>0.63803333</td>
+<td>2.313</td>
+<td>0.64716164</td>
+</tr>
+<tr>
+<td>Br<sup>-</td>
+<td>\</td>
+<td>\</td>
+<td>2.501</td>
+<td>0.76074098</td>
+<td>2.499</td>
+<td>0.75971103</td>
+<td>2.481</td>
+<td>0.75027433</td>
+<td>2.454</td>
+<td>0.73554824</td>
+</tr>
+<tr>
+<td>I<sup>-</td>
+<td>\</td>
+<td>\</td>
+<td>2.780</td>
+<td>0.87175814</td>
+<td>2.900</td>
+<td>0.90300541</td>
+<td>2.742</td>
+<td>0.86005879</td>
+<td>2.804</td>
+<td>0.87867445</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>a. CM parameters compatible with TIP3P arefor JTTC,9,6,2733 (2013)</p>
+<p>b. CM parameters for Monovalent ions are from JCIM,61,869−880 (2021), for Divalent metal ions are from JCTC,16,4429 (2020)</p>
+<p>单位：<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ϵ</mi><mo stretchy="false">(</mo><mover accent="true"><mi>A</mi><mo>˚</mo></mover><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\epsilon(Å)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.19677em;vertical-align:-0.25em;"></span><span class="mord mathnormal">ϵ</span><span class="mopen">(</span><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9467699999999999em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal">A</span></span><span style="top:-3.25233em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.23611em;"><span class="mord">˚</span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span>，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>σ</mi></mrow><annotation encoding="application/x-tex">\sigma</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">σ</span></span></span></span>(kcal/mol)</p>
+</blockquote>
+<h3 id="amber中znsup2sup共价力场误用"><a class="markdownIt-Anchor" href="#amber中znsup2sup共价力场误用"></a> AMBER中Zn<sup>2+</sup>共价力场误用</h3>
+<p>AMBER力场中的Zn<sup>2+</sup>还有一个非常隐蔽的误用： Merz等人在JACS,113,8262,(1991)论文中发表的Zn<sup>2+</sup>参数来自于Ligand-Zn<sup>2+</sup>-(HIS)<sub>3</sub>配位蛋白中的成键离子模型，而不是游离的非键离子模型，因此<strong>只有在配合成键模型/杂化模型时才可以使用该参数</strong>。Merz等人在JTTC,9,6,2733 (2013)，JCTC,10,289, (2014)和JCTC,16,7,4429 (2020)中各发表了一组新的Zn<sup>2+</sup>参数，可用于游离的Zn<sup>2+</sup>模拟。两组参数的<code>r_d</code>有着非常明显的变化，水溶液中的Zn<sup>2+</sup>离子模型的原子半径显著高于配位的Zn<sup>2+</sup>离子模型。这一参数误用也被继承在了GROMACS或其他模拟引擎中的AMBER力场参数中，使用时要格外注意。在GROMACS文件中，可通过在<code>[ nonbonded ]</code>参数块下添加<code>[ nonbond_params ]</code>参数块，指定特定原子间如Zn<sup>2+</sup>与水分子的O和H之间的VDW参数。</p>
+<h3 id="金属离子力场参数选择"><a class="markdownIt-Anchor" href="#金属离子力场参数选择"></a> 金属离子力场参数选择</h3>
+<p>b. 一般情况：目前的单点非键离子模型对HFE有定向优化，因此除去有特定空间配位要求的情况，<strong>单点非键离子模型</strong>对能量方面的研究足够优秀；</p>
+<p>a. 研究金属-蛋白配合物：如果金属和蛋白之间结构稳定，不需要模拟金属离子的解离/结合过程，则使用MCPB.py或Sobtop进行<strong>共价离子模型</strong>参数化；如果需要兼顾金属离子的解离/结合研究，<a target="_blank" rel="noopener" href="http://xn--MCPB-fb5ft9chuv30jq49a.py">或不会使用MCPB.py</a>，可以使用<strong>多点离子模型</strong>；</p>
+<p>b. 研究离子通道的转运、金属离子的结合/解离等可逆过程：使用<strong>多点离子模型</strong>或<strong>单点非键离子模型</strong>，如果结合过程中设计离子的配位，则多点离子模型略优于非键单点离子模型。</p>
+<p>另外，上世纪80年代发表的TIP3P和TIP4P在过去40年时间后，已经落后于新的水模型，因此最新离子模型都使用较新的水模型如OPC系列，TIPXP-EW或TIXP-FB系列等进行拟合，因此建议读者直接将自己的力场参数的水模型和离子模型直接替换到现代力场模型，在计算量完全不变的情况下有着更准确的计算结果。</p>
+<p>PS: 感兴趣的读者可进一步阅读Li和Merz等人2017年发表的Chemical Review文章<a target="_blank" rel="noopener" href="https://pubs.acs.org/doi/10.1021/acs.chemrev.6b00440">《Metal Ion Modeling Using Classical Mechanics》</a>。</p>
+<h2 id="参考文献"><a class="markdownIt-Anchor" href="#参考文献"></a> 参考文献</h2>
+<blockquote>
+<p>[1] Li, P. , &amp; Merz, K. M. . (2017). Metal ion modeling using classical mechanics. Chemical Reviews, 117(3), 1564-1686.</p>
+<p>[2] Zhang, A. , Yu, H. , Liu, C. , &amp; Song, C. . (2020). The Ca2+ permeation mechanism of the ryanodine receptor revealed by a multi-site ion model. Nature Communications, 11(1).</p>
+<p>[3] Chakravorty, D. K., Wang, B., Ucisik, M. N., &amp; Merz Jr, K. M. (2011). Insight into the cation−π interaction at the metal binding site of the copper metallochaperone CusF. Journal of the American Chemical Society, 133(48), 19330-19333.</p>
+<p>[4] Li, P. , &amp; Merz, K. M. . (2016). <a target="_blank" rel="noopener" href="http://Mcpb.py">Mcpb.py</a>: a python based metal center parameter builder. Journal of Chemical Information and Modeling, 599.</p>
+<p>[5] Sakharov, D. V. , &amp; Lim, C. . (2005). Zn protein simulations including charge transfer and local polarization effects. Journal of the American Chemical Society, 127(13), 4921-4929.</p>
+<p>[6] Stuart, S. J.; Berne, B. Effects of Polarizability on the Hydration of the Chloride Ion. J. Phys. Chem. 1996, 100, 11934−11943.</p>
+<p>[7] Åqvist, J., &amp; Warshel, A. (1990). Free energy relationships in metalloenzyme-catalyzed reactions. Calculations of the effects of metal ion substitutions in staphylococcal nuclease. Journal of the American Chemical Society, 112(8), 2860-2868.</p>
+<p>[8] Li, P., Roberts, B. P., Chakravorty, D. K., &amp; Merz Jr, K. M. (2013). Rational design of particle mesh Ewald compatible Lennard-Jones parameters for+ 2 metal cations in explicit solvent. Journal of chemical theory and computation, 9(6), 2733-2748.</p>
+<p>[9] Sengupta, A. , Li, Z. , Song, L. F. , Li, P. , &amp; Merz, K. M. . (2021). Parameterization of monovalent ions for the OPC3, OPC, TIP3P-FB, and TIP4P-FB water models (vol 61, pg 869, 2021). Journal of chemical information and modeling(7), 61.</p>
+<p>[10] Li, Z., Song, L. F., Li, P., &amp; Merz Jr, K. M. (2020). Systematic parametrization of divalent metal ions for the OPC3, OPC, TIP3P-FB, and TIP4P-FB water models. Journal of chemical theory and computation, 16(7), 4429-4442.</p>
+<p>[11] Hoops, S. C. , Anderson, K. W. , &amp; Merz, K. M. . (1991). Force field design for metalloproteins. Journal of the American Chemical Society, 113(22), 8262-8270.</p>
+<p>[12] Saxena, A. , &amp; Sept, D. . (2013). Multisite ion models that improve coordination and free energy calculations in molecular dynamics simulations. Journal of Chemical Theory &amp; Computation, 9(8), 3538-3542.</p>
+<p>[13] Duarte, F. , Bauer, P. , Barrozo, A. , Amrein, B. A. , Purg, M. , &amp; Åqvist, Johan, et al. (2014). Force field independent metal parameters using a nonbonded dummy model. Journal of Physical Chemistry B, 118(16), 4351-4362.</p>
+<p>[14] Oelschlaeger, P. , Klahn, M. , Beard, W. A. , Wilson, S. H. , &amp; Warshel, A. . (2007). Magnesium-cationic dummy atom molecules enhance representation of dna polymerase β in molecular dynamics simulations: improved accuracy in studies of structural features and mutational effects. Journal of Molecular Biology, 366(2), 687-701.</p>
+<p>[15] Marcus, Y. . (1993). Thermodynamics of solvation of ions. part 6.—the standard partial molar volumes of aqueous ions at 298.15 k. Journal of the Chemical Society, Faraday Transactions, 89(4), 713-718.</p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/CADD/" rel="tag"># CADD</a>
+              <a href="/tags/MD/" rel="tag"># MD</a>
+              <a href="/tags/Force-Field/" rel="tag"># Force Field</a>
+              <a href="/tags/GAFF/" rel="tag"># GAFF</a>
+              <a href="/tags/Amber/" rel="tag"># Amber</a>
+              <a href="/tags/Gromacs/" rel="tag"># Gromacs</a>
+              <a href="/tags/Charge/" rel="tag"># Charge</a>
+              <a href="/tags/Ion/" rel="tag"># Ion</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/04/29/24/" rel="prev" title="定制小分子力场(六)：GAFF力场的参数拟合-软参数">
+                  <i class="fa fa-angle-left"></i> 定制小分子力场(六)：GAFF力场的参数拟合-软参数
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2017-2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Birdlet</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+<div> Visited <span id="busuanzi_value_site_pv"></span> | Visitors <span id="busuanzi_value_site_uv"></span>  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css" integrity="sha256-UF1fgpAiu3tPJN/uCqEUHNe7pnr+QR0SQDNfgglgtcM=" crossorigin="anonymous">
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"birdlet","repo":"birdlet.github.io","client_id":"0f3d8d5b00e8b378ccd0","client_secret":"049507faf0c3169f86f9e6e2c9422a32c24393b7","admin_user":"birdlet","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"en","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"d97f9a31aba521247333d1ab2bf9fcda"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>
